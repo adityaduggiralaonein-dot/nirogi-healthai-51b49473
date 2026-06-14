@@ -60,7 +60,7 @@ function ToolPage() {
           <p className="mt-4 max-w-2xl text-muted-foreground">{tool.description}</p>
 
           <div className="mt-6 grid gap-3 sm:grid-cols-3">
-            {tool.howItWorks.map((step, i) => (
+            {tool.howItWorks.map((step: string, i: number) => (
               <div key={i} className="rounded-xl border border-border bg-card/70 p-4 text-sm backdrop-blur">
                 <span className="font-display font-bold text-primary">{i + 1}.</span> {step}
               </div>
