@@ -47,7 +47,7 @@ export const runTool = createServerFn({ method: "POST" })
       tool: data.tool,
       title: result.title,
       summary: result.summary,
-      result: result as unknown as Record<string, unknown>,
+      result: JSON.parse(JSON.stringify(result)),
     });
 
     if (data.tool === "calorieeye" && result.nutrition) {
@@ -61,7 +61,7 @@ export const runTool = createServerFn({ method: "POST" })
         sodium_mg: n.sodium_mg ?? null,
         saturated_fat_g: n.saturated_fat_g ?? null,
         fibre_g: n.fibre_g ?? null,
-        analysis: result as unknown as Record<string, unknown>,
+        analysis: JSON.parse(JSON.stringify(result)),
       });
     }
 
