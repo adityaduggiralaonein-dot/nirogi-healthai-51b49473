@@ -14,7 +14,165 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      food_diary: {
+        Row: {
+          analysis: Json | null
+          calories: number | null
+          created_at: string
+          dish_name: string
+          fibre_g: number | null
+          id: string
+          protein_g: number | null
+          saturated_fat_g: number | null
+          sodium_mg: number | null
+          sugar_g: number | null
+          user_id: string
+        }
+        Insert: {
+          analysis?: Json | null
+          calories?: number | null
+          created_at?: string
+          dish_name: string
+          fibre_g?: number | null
+          id?: string
+          protein_g?: number | null
+          saturated_fat_g?: number | null
+          sodium_mg?: number | null
+          sugar_g?: number | null
+          user_id: string
+        }
+        Update: {
+          analysis?: Json | null
+          calories?: number | null
+          created_at?: string
+          dish_name?: string
+          fibre_g?: number | null
+          id?: string
+          protein_g?: number | null
+          saturated_fat_g?: number | null
+          sodium_mg?: number | null
+          sugar_g?: number | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          age: number | null
+          allergies: string | null
+          avatar_url: string | null
+          blood_group: string | null
+          bmi: number | null
+          created_at: string
+          current_medicines: string | null
+          email: string | null
+          family_history: string | null
+          full_name: string | null
+          gender: string | null
+          health_conditions: string | null
+          height_cm: number | null
+          id: string
+          prescription_analysis: string | null
+          recent_surgeries: string | null
+          updated_at: string
+          weight_kg: number | null
+        }
+        Insert: {
+          age?: number | null
+          allergies?: string | null
+          avatar_url?: string | null
+          blood_group?: string | null
+          bmi?: number | null
+          created_at?: string
+          current_medicines?: string | null
+          email?: string | null
+          family_history?: string | null
+          full_name?: string | null
+          gender?: string | null
+          health_conditions?: string | null
+          height_cm?: number | null
+          id: string
+          prescription_analysis?: string | null
+          recent_surgeries?: string | null
+          updated_at?: string
+          weight_kg?: number | null
+        }
+        Update: {
+          age?: number | null
+          allergies?: string | null
+          avatar_url?: string | null
+          blood_group?: string | null
+          bmi?: number | null
+          created_at?: string
+          current_medicines?: string | null
+          email?: string | null
+          family_history?: string | null
+          full_name?: string | null
+          gender?: string | null
+          health_conditions?: string | null
+          height_cm?: number | null
+          id?: string
+          prescription_analysis?: string | null
+          recent_surgeries?: string | null
+          updated_at?: string
+          weight_kg?: number | null
+        }
+        Relationships: []
+      }
+      scan_history: {
+        Row: {
+          created_at: string
+          id: string
+          result: Json | null
+          summary: string | null
+          title: string | null
+          tool: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          result?: Json | null
+          summary?: string | null
+          title?: string | null
+          tool: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          result?: Json | null
+          summary?: string | null
+          title?: string | null
+          tool?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      updates: {
+        Row: {
+          body: string
+          category: string | null
+          id: string
+          published_at: string
+          title: string
+        }
+        Insert: {
+          body: string
+          category?: string | null
+          id?: string
+          published_at?: string
+          title: string
+        }
+        Update: {
+          body?: string
+          category?: string | null
+          id?: string
+          published_at?: string
+          title?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
