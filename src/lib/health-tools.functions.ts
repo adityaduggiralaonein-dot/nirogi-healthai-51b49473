@@ -6,6 +6,8 @@ const RunToolInput = z.object({
   tool: z.string().min(1).max(40),
   fields: z.record(z.string(), z.string().max(4000)),
   image: z.string().max(12_000_000).nullable().optional(),
+  file: z.string().max(16_000_000).nullable().optional(),
+  fileName: z.string().max(200).nullable().optional(),
 });
 
 export const runTool = createServerFn({ method: "POST" })
@@ -33,12 +35,14 @@ export const runTool = createServerFn({ method: "POST" })
       .map(([k, v]) => `${k}: ${v}`)
       .join("\n");
 
-    const userText = `${profileText}\n\nTool input:\n${fieldText || "(see attached image)"}`;
+    const userText = `${profileText}\n\nTool input:\n${fieldText || "(see attached image/file)"}`;
 
     const result = await callHealthAI({
       system: buildToolPrompt(data.tool),
       userText,
       imageDataUrl: data.image ?? null,
+      fileDataUrl: data.file ?? null,
+      fileName: data.fileName ?? null,
     });
 
     // Persist to history (best-effort)

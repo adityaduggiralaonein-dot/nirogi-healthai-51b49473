@@ -1,7 +1,8 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { ArrowLeft, AlertTriangle } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { ToolRunner } from "@/components/tools/ToolRunner";
+import { ClinicalDisclaimer } from "@/components/site/ClinicalDisclaimer";
 import { getTool, TOOLS } from "@/lib/tools";
 import { cn } from "@/lib/utils";
 
@@ -70,9 +71,8 @@ function ToolPage() {
       </div>
 
       <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6">
-        <div className="mb-8 flex items-start gap-3 rounded-xl border border-warning/40 bg-warning/10 p-4 text-sm text-foreground/80">
-          <AlertTriangle className="mt-0.5 size-5 shrink-0 text-warning" />
-          <p>{tool.disclaimer}</p>
+        <div className="mb-8">
+          <ClinicalDisclaimer tool={tool} />
         </div>
         <ToolRunner tool={tool} />
       </div>

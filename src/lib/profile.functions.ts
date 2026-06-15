@@ -91,5 +91,15 @@ export const analyzePrescription = createServerFn({ method: "POST" })
 
     await supabase.from("profiles").update({ prescription_analysis: analysis }).eq("id", userId);
 
+    // Record in history so it shows on the medical history page.
+    const firstLine = analysis.split("\n").find((l) => l.trim())?.slice(0, 140) ?? "Prescription analyzed";
+    await supabase.from("scan_history").insert({
+      user_id: userId,
+      tool: "prescription",
+      title: "Prescription reading",
+      summary: firstLine,
+      result: { riskLevel: "info", analysis },
+    });
+
     return { analysis };
   });

@@ -1,6 +1,14 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { AlertTriangle, Loader2, Stethoscope, ShieldAlert, Lightbulb, Mic } from "lucide-react";
+import {
+  Loader2,
+  Stethoscope,
+  ShieldAlert,
+  Lightbulb,
+  Mic,
+  FileText,
+  Gauge,
+} from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,6 +25,7 @@ import { toast } from "sonner";
 import { runTool } from "@/lib/health-tools.functions";
 import type { ToolDef } from "@/lib/tools";
 import type { ToolResult } from "@/lib/health-tools.server";
+import { ClinicalDisclaimer } from "@/components/site/ClinicalDisclaimer";
 import { cn } from "@/lib/utils";
 
 const riskStyles: Record<string, string> = {
@@ -25,6 +34,14 @@ const riskStyles: Record<string, string> = {
   moderate: "bg-warning/10 text-warning border-warning/30",
   high: "bg-pulse/10 text-pulse border-pulse/30",
   urgent: "bg-destructive/10 text-destructive border-destructive/40",
+};
+
+const urgencyStyles: Record<string, string> = {
+  normal: "bg-success/10 text-success border-success/30",
+  watch: "bg-warning/10 text-warning border-warning/30",
+  attention: "bg-pulse/10 text-pulse border-pulse/30",
+  urgent: "bg-destructive/10 text-destructive border-destructive/40",
+  emergency: "bg-destructive text-destructive-foreground border-destructive",
 };
 
 function fileToDataUrl(file: File): Promise<string> {
@@ -41,6 +58,9 @@ export function ToolRunner({ tool }: { tool: ToolDef }) {
   const [fields, setFields] = useState<Record<string, string>>({});
   const [image, setImage] = useState<string | null>(null);
   const [imageName, setImageName] = useState<string>("");
+  const [docFile, setDocFile] = useState<string | null>(null);
+  const [docName, setDocName] = useState<string>("");
+  const [docIsPdf, setDocIsPdf] = useState(false);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<ToolResult | null>(null);
 
@@ -80,13 +100,34 @@ export function ToolRunner({ tool }: { tool: ToolDef }) {
     setImageName(file.name);
   };
 
+  const onDoc = async (file: File | undefined) => {
+    if (!file) return;
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error("File is too large (max 10MB).");
+      return;
+    }
+    const isPdf = file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf");
+    if (!isPdf && !file.type.startsWith("image/")) {
+      toast.error("Please upload an image (X-ray/scan) or a PDF report.");
+      return;
+    }
+    const url = await fileToDataUrl(file);
+    setDocFile(url);
+    setDocName(file.name);
+    setDocIsPdf(isPdf);
+  };
+
   const submit = async () => {
     for (const f of tool.fields) {
       if (f.required && f.type === "image" && !image) {
         toast.error(`${f.label} is required.`);
         return;
       }
-      if (f.required && f.type !== "image" && !fields[f.name]?.trim()) {
+      if (f.required && f.type === "file" && !docFile) {
+        toast.error(`${f.label} is required.`);
+        return;
+      }
+      if (f.required && f.type !== "image" && f.type !== "file" && !fields[f.name]?.trim()) {
         toast.error(`${f.label} is required.`);
         return;
       }
@@ -94,7 +135,15 @@ export function ToolRunner({ tool }: { tool: ToolDef }) {
     setLoading(true);
     setResult(null);
     try {
-      const res = await run({ data: { tool: tool.slug, fields, image } });
+      const res = await run({
+        data: {
+          tool: tool.slug,
+          fields,
+          image,
+          file: docFile,
+          fileName: docName || null,
+        },
+      });
       setResult(res as ToolResult);
       toast.success("Analysis ready.");
     } catch (err) {
@@ -138,6 +187,14 @@ export function ToolRunner({ tool }: { tool: ToolDef }) {
                   onChange={(e) => setField(f.name, e.target.value)}
                 />
               )}
+              {f.type === "number" && (
+                <Input
+                  type="number"
+                  value={fields[f.name] ?? ""}
+                  placeholder={f.placeholder}
+                  onChange={(e) => setField(f.name, e.target.value)}
+                />
+              )}
               {f.type === "textarea" && (
                 <Textarea
                   value={fields[f.name] ?? ""}
@@ -176,6 +233,26 @@ export function ToolRunner({ tool }: { tool: ToolDef }) {
                   {imageName && <span className="mt-2 text-xs text-muted-foreground">{imageName}</span>}
                 </label>
               )}
+              {f.type === "file" && (
+                <label className="flex cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed border-border bg-muted/40 px-4 py-8 text-center transition-colors hover:bg-muted">
+                  <input
+                    type="file"
+                    accept="image/*,application/pdf"
+                    className="hidden"
+                    onChange={(e) => onDoc(e.target.files?.[0])}
+                  />
+                  {docFile && !docIsPdf ? (
+                    <img src={docFile} alt="preview" className="max-h-40 rounded-lg object-contain" />
+                  ) : docFile && docIsPdf ? (
+                    <span className="inline-flex items-center gap-2 text-sm text-foreground/80">
+                      <FileText className="size-5 text-primary" /> PDF ready
+                    </span>
+                  ) : (
+                    <span className="text-sm text-muted-foreground">Upload a scan image or PDF report</span>
+                  )}
+                  {docName && <span className="mt-2 text-xs text-muted-foreground">{docName}</span>}
+                </label>
+              )}
             </div>
           ))}
         </div>
@@ -211,9 +288,48 @@ export function ToolRunner({ tool }: { tool: ToolDef }) {
               <span className={cn("rounded-full border px-3 py-1 text-xs font-semibold uppercase", riskStyles[result.riskLevel] ?? riskStyles.info)}>
                 {result.riskLevel}
               </span>
+              {result.urgency && (
+                <span className={cn("rounded-full border px-3 py-1 text-xs font-semibold uppercase", urgencyStyles[result.urgency] ?? urgencyStyles.normal)}>
+                  {result.urgency}
+                </span>
+              )}
               <h3 className="font-display text-lg font-semibold">{result.title}</h3>
             </div>
             <p className="text-sm text-muted-foreground">{result.summary}</p>
+
+            {typeof result.preventionScore === "number" && (
+              <div className="rounded-xl border border-border bg-muted/40 p-4">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="inline-flex items-center gap-2 font-semibold">
+                    <Gauge className="size-4 text-primary" /> Prevention Score
+                  </span>
+                  <span className="font-display text-lg font-bold">{result.preventionScore}/100</span>
+                </div>
+                <div className="mt-2 h-2 overflow-hidden rounded-full bg-border">
+                  <div
+                    className="h-full rounded-full bg-gradient-primary"
+                    style={{ width: `${Math.max(0, Math.min(100, result.preventionScore))}%` }}
+                  />
+                </div>
+              </div>
+            )}
+
+            {result.sugarImpact && (
+              <div className="grid grid-cols-3 gap-2 rounded-xl border border-border bg-muted/40 p-3 text-center">
+                <div>
+                  <div className="font-display text-base font-bold">{result.sugarImpact.score ?? "—"}</div>
+                  <div className="text-[11px] text-muted-foreground">Sugar Impact</div>
+                </div>
+                <div>
+                  <div className="font-display text-base font-bold">{result.sugarImpact.glycemicIndex ?? "—"}</div>
+                  <div className="text-[11px] text-muted-foreground">Glycemic Index</div>
+                </div>
+                <div>
+                  <div className="font-display text-base font-bold">{result.sugarImpact.verdict ?? "—"}</div>
+                  <div className="text-[11px] text-muted-foreground">Verdict</div>
+                </div>
+              </div>
+            )}
 
             {result.nutrition && (
               <div className="grid grid-cols-3 gap-2 rounded-xl border border-border bg-muted/40 p-3 text-center">
@@ -282,10 +398,7 @@ export function ToolRunner({ tool }: { tool: ToolDef }) {
               </div>
             )}
 
-            <div className="flex items-start gap-2 rounded-xl border border-warning/40 bg-warning/10 p-4 text-xs text-foreground/80">
-              <AlertTriangle className="mt-0.5 size-4 shrink-0 text-warning" />
-              <span>{tool.disclaimer}</span>
-            </div>
+            <ClinicalDisclaimer tool={tool} />
           </motion.div>
         )}
       </div>
