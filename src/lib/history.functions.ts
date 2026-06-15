@@ -1,6 +1,14 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
+export type JsonValue =
+  | string
+  | number
+  | boolean
+  | null
+  | JsonValue[]
+  | { [key: string]: JsonValue };
+
 export type HistoryItem = {
   id: string;
   kind: "tool" | "prescription" | "meal";
@@ -9,7 +17,7 @@ export type HistoryItem = {
   summary: string;
   riskLevel?: string;
   created_at: string;
-  result?: unknown;
+  result?: JsonValue;
 };
 
 export const getMyHistory = createServerFn({ method: "GET" })
