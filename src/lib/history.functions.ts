@@ -52,7 +52,7 @@ export const getMyHistory = createServerFn({ method: "GET" })
         summary: s.summary ?? "",
         riskLevel: result?.riskLevel,
         created_at: s.created_at,
-        result: s.result,
+        result: s.result as JsonValue,
       });
     }
 
@@ -64,7 +64,7 @@ export const getMyHistory = createServerFn({ method: "GET" })
         title: m.dish_name ?? "Meal",
         summary: `${m.calories ?? "?"} kcal · ${m.sugar_g ?? "?"} g sugar`,
         created_at: m.created_at,
-        result: m.analysis,
+        result: m.analysis as JsonValue,
       });
     }
 
