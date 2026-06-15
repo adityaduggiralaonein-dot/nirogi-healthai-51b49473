@@ -1,61 +1,48 @@
-# Nirogi AI — Build Plan
+## Nirogi AI — New Tools, History & UX Upgrades
 
-A premium, AI-powered preventive-health platform with six functional AI tools, secure Google login, a personal health dashboard, and a polished marketing homepage. Built for the Redrob × Hack2skill hackathon.
+This builds on the existing platform. No database schema changes are needed — the `scan_history`, `food_diary`, and `profiles` tables and the private `prescriptions` bucket already cover everything. All work stays in frontend + server-function code.
 
-## Design Direction
-- **Aesthetic:** trustworthy medical-tech — deep clinical teal/emerald + a vital "pulse red" accent, on near-white with soft depth (layered shadows, subtle gradients, glassy cards). Distinctive type pairing (a strong display face + clean body face), not Inter/Poppins.
-- **Hero:** animated ECG heart-pulse line tracing across the screen with a catchy life-saving tagline above it ("Catch it before it's too late"), plus primary CTAs.
-- Motion via framer-motion (scroll reveals, one hero centerpiece animation). Fully responsive, light/dark aware. All colors as semantic tokens in `src/styles.css`.
+### 1. Header logo + animated heart
+- Enlarge the header logo from `h-9 w-9` to a bolder `h-11 w-11` (≈44px) with the wordmark slightly larger, keeping the sticky glass header.
+- Apply the existing `animate-heartbeat` pulse to the logo mark so the heart visibly beats in the header.
+- Confirm the Hero ECG line keeps animating (`ecg-line` keyframes already exist) and add the heartbeat pulse to the Hero heart graphic.
 
-## Homepage (rich, multi-section)
-1. Hero — pulse animation + tagline + CTA
-2. Trust strip / impact stats ("Built for Bharat", 24/7, voice + camera)
-3. **Six AI tools** feature grid — each card links to its own page
-4. How it works (3 steps: profile → choose tool → AI insight)
-5. **Latest updates** section (changelog/news cards)
-6. **Data sources** section — WHO, Harvard research, CDSCO, peer-reviewed studies, with logos/citations
-7. **FAQs** (accordion)
-8. Mission band ("doesn't wait for you to fall sick…")
-9. Footer — Redrob + Hack2skill logos, legal links, Cookie Settings trigger
+### 2. Three new tools (brings total to 9)
+Added to the tool registry and the unified ToolRunner (no per-tool pages needed):
 
-## Six AI tool pages (one route each, fully functional)
-Each page: purpose, "how it works", live tool UI, results display, and the exact **disclaimer/warning** from the document. Every tool reads the user's health profile before generating output.
-1. **MedGuard** — medicine + dosage + duration → 3-level (short/medium/long) side-effect report, dangerous-combination flags, safer alternatives, specialist suggestion.
-2. **CancerSense** — lifestyle questionnaire → personalized cancer-risk report (type / risk % / reason), recommended tests + specialist.
-3. **SenseCheck** — voice-first vision & hearing diagnostic (speech in/out via browser Web Speech API) → condition report, downloadable PDF.
-4. **CalorieEye** — meal photo → nutrient breakdown vs daily limits; saves to a weekly food diary; weekly disease-risk report.
-5. **SkinScan** — skin photo → condition + severity (incl. URGENT skin-cancer flag), home-care vs specialist guidance, history tracking.
-6. **MedVerify** — batch number entry → medicine authenticity/expiry/recall verification (AI-simulated CDSCO-style lookup with clear "verify with pharmacist" warning).
+- **SugarSense** (#7) — Diabetes & Sugar Impact Detector. Questionnaire (thirst, urination, fatigue, blurry vision, slow healing, numbness, hunger, family history, BMI auto-noted, daily sweets/soft drinks). Output: one of four risk verdicts, Sugar Impact Index education, organ-level damage explainer, daily sugar budget, and safer Indian-food alternatives.
+- **HeartSense** (#8) — Silent Heart Condition Detector. Questionnaire (breathlessness on one floor, palpitations, swelling, murmur history, bluish lips, fatigue) + family/personal history. Output: risk level + urgency flag, conditions screened (ASD, VSD, valve prolapse, arrhythmia, etc.), and an ECG/Echo/Holter diagnostic roadmap with INR cost ranges.
+- **ScanIQ** (#9) — Medical Scan & Report Analyser. Upload an X-ray/MRI/CT image **or a PDF report**. Output follows the doc's 5 sections: What Was Found (jargon → plain language), colour-coded Urgency Level (Normal→Emergency), Possible Conditions, What To Do Next (specialist + tests + INR cost), and trend note vs prior reports. Each ScanIQ run is saved to history.
 
-AI is powered by Lovable AI (Gemini, multimodal for photos) via secure server functions — keys never exposed to the browser. Each tool returns structured output rendered in clean result cards.
+### 3. Upgrade existing tools
+- **CancerSense**: expanded questionnaire (red/processed meat, fruit & veg, water, night shifts, chemical exposure, tobacco forms, prior biopsy, sun exposure, women's reproductive history). Deeper prompt → risk meter (Low/Moderate/High/Critical), top contributing factors, organ-impact notes, a step-by-step diagnostic roadmap with costs, and a Cancer Prevention Score (out of 100) with 3 weekly actions.
+- **CalorieEye**: add Sugar Impact Index (0–100, colour-coded), Glycemic Index / Glycemic Load with Safe/Caution/Avoid labels, and Diabetic Mode (extra warnings when the profile marks diabetes/pre-diabetes). Nutrition strip extended to show the sugar-impact score.
 
-## Auth & Profile Dashboard
-- **Google sign-in** via the Lovable broker, saved to Lovable Cloud. Auth-gated dashboard routes.
-- **Profile dashboard:** weight, height, **BMI auto-calculated**, health issues/conditions, current medicines, family history, recent surgeries.
-- **Prescription upload** → stored privately per-user; AI reads and explains it deeply.
-- Per-user data isolation (RLS): each user only ever sees their own health data; prescriptions in a private storage bucket.
+### 4. Strengthen disclaimers (every tool)
+- Add `redFlags` (symptoms that mean "stop and seek care now") and an `emergency` block to each tool definition.
+- New shared `ClinicalDisclaimer` component shown on every tool page and in each result: prominent warning styling, tool-specific red-flag list, and India emergency resources (call **112** national / **108** ambulance, plus "go to the nearest emergency room"). Reinforce "AI is educational, not a diagnosis."
 
-## Cookies & Legal
-- Cookie consent banner: **Accept all** / **Essential only** / customize.
-- Footer **Cookie Settings** link reopens the banner.
-- Legal pages: Terms of Service, Privacy Policy, Cookie Policy.
+### 5. Prescription reader — step-by-step status UI
+Replace the single upload box in the dashboard with a guided flow component showing clear stages:
+```text
+[1 Select file] → [2 Uploading] → [3 Reading text] → [4 Analyzing] → [5 Done / Error]
+```
+- Visual stepper with progress, per-stage spinners, and explicit, friendly error messages (file too large, unreadable image, rate limit, AI unavailable) each with a Retry action.
+- Accept image or PDF. Each analysis is saved to history (tool = `prescription`) with a timestamp so it appears on the new History page; latest summary still shows on the dashboard.
 
-## Footer Branding
-- Redrob and Hack2skill logos (sourced official where possible; clean styled wordmark fallback), "Made for India Runs by Redrob AI — Track 2 / Hack2skill".
+### 6. Medical report history page
+- New route `/_authenticated/history` (linked from the dashboard and header when signed in).
+- Lists past tool runs, prescription analyses, and meal scans newest-first with timestamps, tool name, risk badge, and a short summary; clicking expands the full saved output.
+- Backed by a new `getMyHistory` server function reading `scan_history` (and `food_diary` for meals), all scoped to the signed-in user via existing RLS.
+
+### 7. Site copy refresh
+Update "six tools" → "nine tools" across the Hero, tools section heading, stats, and FAQ; add the three new tool cards to the homepage grid.
 
 ---
 
-## Technical Notes
-- **Stack:** TanStack Start + Tailwind v4 tokens + shadcn/ui + framer-motion.
-- **Backend:** Lovable Cloud (Supabase). Tables: `profiles` (health data, RLS to `auth.uid()`), `food_diary` (CalorieEye weekly tracking), `scan_history` (SkinScan/tool history), `updates` (latest-updates content). Private `prescriptions` storage bucket with per-user policies. All tables get explicit GRANTs + RLS.
-- **AI:** `createServerFn` handlers calling Lovable AI Gateway (`google/gemini-3-flash-preview`, multimodal for image tools), structured output, with 429/402 error handling surfaced in the UI.
-- **Routes:** `/`, `/tools/medguard`, `/tools/cancersense`, `/tools/sensecheck`, `/tools/calorieeye`, `/tools/skinscan`, `/tools/medverify`, `/auth`, `/_authenticated/dashboard`, `/terms`, `/privacy`, `/cookies`. Each route gets its own SEO `head()` metadata.
-- **Disclaimers:** every tool shows its document-specified medical disclaimer prominently.
-
-## Build Order
-1. Enable Lovable Cloud + Google auth + AI key; create DB schema, storage, RLS.
-2. Design tokens + shared layout (header/footer) + homepage sections.
-3. Auth flow + profile dashboard + prescription upload/AI read.
-4. Six tool pages with live AI server functions.
-5. Cookie consent system + legal pages.
-6. Latest-updates + data-sources content, logos, SEO, QA across viewports.
+### Technical notes
+- **Tool registry** (`src/lib/tools.tsx`): extend `ToolField` to support a `file` type (image + PDF). Extend `ToolDef` with `redFlags: string[]` and `emergency: string`. Add SugarSense, HeartSense, ScanIQ; update CancerSense & CalorieEye fields/disclaimers.
+- **AI layer** (`src/lib/health-tools.server.ts`): add per-tool prompts for the new/upgraded tools; extend `callHealthAI` to accept a PDF `file` content part (`{type:"file",file:{filename,file_data}}`) in addition to images; add optional `sugarImpact`/`prevention`/`urgency` fields to `ToolResult` and render them in `ToolRunner`.
+- **Server fns**: `runTool` already persists to `scan_history`; pass through PDF data. Add `getMyHistory` in a new `history.functions.ts`. Update `analyzePrescription` to also insert a `scan_history` row.
+- **Components**: new `ClinicalDisclaimer`, new `PrescriptionAnalyzer` (stepper), new history route; minor edits to `Header`, `Hero`, `ToolRunner`, `dashboard.tsx`, `index.tsx`.
+- All server functions stay under `requireSupabaseAuth`; `attachSupabaseAuth` is already wired in `start.ts`. No migration required.
