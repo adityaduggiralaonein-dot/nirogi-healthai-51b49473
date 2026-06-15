@@ -1,7 +1,8 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { ArrowLeft, AlertTriangle } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { ToolRunner } from "@/components/tools/ToolRunner";
+import { ClinicalDisclaimer } from "@/components/site/ClinicalDisclaimer";
 import { getTool, TOOLS } from "@/lib/tools";
 import { cn } from "@/lib/utils";
 
