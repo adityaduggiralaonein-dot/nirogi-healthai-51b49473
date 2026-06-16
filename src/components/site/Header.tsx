@@ -22,8 +22,8 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6">
-        <Link to="/" className="flex items-center gap-2">
-          <img src={logo} alt="Nirogi logo" width={36} height={36} className="h-9 w-9" />
+        <Link to="/" className="flex items-center gap-2.5">
+          <img src={logo} alt="Nirogi logo" width={48} height={48} className="h-12 w-12 animate-heartbeat" />
           <span className="font-display text-xl font-bold tracking-tight">Nirogi</span>
         </Link>
 
