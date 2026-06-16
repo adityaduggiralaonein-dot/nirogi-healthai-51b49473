@@ -34,12 +34,12 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Nirogi gives everyone six free AI health tools: check medicines, scan skin, read meals, assess cancer risk, test vision & hearing, and verify medicines.",
+          "Nirogi gives everyone nine free AI health tools: check medicines, scan skin, read meals, assess cancer, diabetes & heart risk, test vision & hearing, read scans and verify medicines.",
       },
       { property: "og:title", content: "Nirogi — Free AI Healthcare" },
       {
         property: "og:description",
-        content: "Six AI tools for free preventive healthcare. Catch it before it's too late.",
+        content: "Nine AI tools for free preventive healthcare. Catch it before it's too late.",
       },
       { property: "og:type", content: "website" },
     ],
@@ -55,7 +55,7 @@ const accentRing: Record<string, string> = {
 };
 
 const STATS = [
-  { value: "6", label: "AI health tools" },
+  { value: "9", label: "AI health tools" },
   { value: "24/7", label: "Always available" },
   { value: "₹0", label: "Free to use" },
   { value: "100%", label: "Private to you" },
@@ -73,7 +73,7 @@ const SOURCES = [
 const FAQS = [
   {
     q: "Is Nirogi free?",
-    a: "Yes. All six AI tools are free to use. Nirogi was built to make basic preventive healthcare accessible to everyone, especially where doctors are hard to reach.",
+    a: "Yes. All nine AI tools are free to use. Nirogi was built to make basic preventive healthcare accessible to everyone, especially where doctors are hard to reach.",
   },
   {
     q: "Can Nirogi diagnose my disease?",
@@ -121,7 +121,7 @@ function HomePage() {
       {/* Tools */}
       <section id="tools" className="mx-auto max-w-7xl scroll-mt-20 px-4 py-20 sm:px-6">
         <Reveal className="mx-auto max-w-2xl text-center">
-          <h2 className="font-display text-3xl font-bold sm:text-4xl">Six AI tools, one mission</h2>
+          <h2 className="font-display text-3xl font-bold sm:text-4xl">Nine AI tools, one mission</h2>
           <p className="mt-3 text-muted-foreground">
             Each tool reads your private health profile to give guidance tailored to you.
           </p>
@@ -164,7 +164,7 @@ function HomePage() {
           <div className="mt-12 grid gap-6 md:grid-cols-3">
             {[
               { icon: UserPlus, title: "Build your profile", text: "Add your health details once — weight, conditions, medicines, history. BMI is calculated for you." },
-              { icon: MousePointerClick, title: "Choose a tool", text: "Pick from six tools — type, speak or snap a photo depending on what you need to check." },
+              { icon: MousePointerClick, title: "Choose a tool", text: "Pick from nine tools — type, speak or snap a photo depending on what you need to check." },
               { icon: Activity, title: "Get AI insight", text: "Receive a clear, personalized report with warnings, recommendations and which specialist to see." },
             ].map((step, i) => (
               <Reveal key={step.title} i={i}>
