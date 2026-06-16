@@ -397,8 +397,6 @@ export function ToolRunner({ tool }: { tool: ToolDef }) {
                 </span>
               </div>
             )}
-
-            <ClinicalDisclaimer tool={tool} />
           </motion.div>
         )}
       </div>

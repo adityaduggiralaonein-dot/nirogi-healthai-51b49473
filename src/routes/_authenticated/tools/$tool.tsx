@@ -71,10 +71,10 @@ function ToolPage() {
       </div>
 
       <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6">
-        <div className="mb-8">
+        <ToolRunner tool={tool} />
+        <div className="mt-8">
           <ClinicalDisclaimer tool={tool} />
         </div>
-        <ToolRunner tool={tool} />
       </div>
     </SiteLayout>
   );
