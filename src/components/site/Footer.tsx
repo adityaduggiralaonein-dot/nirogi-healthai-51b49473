@@ -30,6 +30,9 @@ export function Footer() {
               <li><Link to="/tools/$tool" params={{ tool: "calorieeye" }} className="hover:text-foreground">CalorieEye</Link></li>
               <li><Link to="/tools/$tool" params={{ tool: "skinscan" }} className="hover:text-foreground">SkinScan</Link></li>
               <li><Link to="/tools/$tool" params={{ tool: "medverify" }} className="hover:text-foreground">MedVerify</Link></li>
+              <li><Link to="/tools/$tool" params={{ tool: "sugarsense" }} className="hover:text-foreground">SugarSense</Link></li>
+              <li><Link to="/tools/$tool" params={{ tool: "heartsense" }} className="hover:text-foreground">HeartSense</Link></li>
+              <li><Link to="/tools/$tool" params={{ tool: "scaniq" }} className="hover:text-foreground">ScanIQ</Link></li>
             </ul>
           </div>
 
