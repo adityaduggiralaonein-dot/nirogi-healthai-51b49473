@@ -65,7 +65,7 @@ function AuthPage() {
           <img src={logo} alt="Nirogi" width={56} height={56} className="h-14 w-14" />
           <h1 className="mt-4 font-display text-2xl font-bold">Welcome to Nirogi</h1>
           <p className="mt-2 text-sm text-muted-foreground">
-            Sign in to unlock your six AI health tools and your private profile.
+            Sign in to unlock your nine AI health tools and your private profile.
           </p>
         </div>
 
