@@ -25,7 +25,7 @@ import { toast } from "sonner";
 import { runTool } from "@/lib/health-tools.functions";
 import type { ToolDef } from "@/lib/tools";
 import type { ToolResult } from "@/lib/health-tools.server";
-import { ClinicalDisclaimer } from "@/components/site/ClinicalDisclaimer";
+
 import { cn } from "@/lib/utils";
 
 const riskStyles: Record<string, string> = {
