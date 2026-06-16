@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { Loader2, LogOut, Upload, FileText, ArrowRight } from "lucide-react";
+import { Loader2, LogOut, Upload, FileText, ArrowRight, History } from "lucide-react";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -145,9 +145,16 @@ function Dashboard() {
             <h1 className="font-display text-3xl font-bold">Your health profile</h1>
             <p className="mt-1 text-muted-foreground">Keep this updated — every AI tool reads it to personalize results.</p>
           </div>
-          <Button variant="outline" size="sm" onClick={() => signOut()}>
-            <LogOut className="size-4" /> Sign out
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button asChild variant="outline" size="sm">
+              <Link to="/history">
+                <History className="size-4" /> History
+              </Link>
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => signOut()}>
+              <LogOut className="size-4" /> Sign out
+            </Button>
+          </div>
         </div>
 
         {isLoading ? (

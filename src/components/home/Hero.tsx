@@ -15,7 +15,7 @@ export function Hero() {
           className="mx-auto inline-flex items-center gap-2 rounded-full border border-border bg-card/70 px-4 py-1.5 text-sm font-medium text-muted-foreground backdrop-blur"
         >
           <Sparkles className="size-4 text-primary" />
-          Six AI tools · free preventive healthcare for everyone
+          Nine AI tools · free preventive healthcare for everyone
         </motion.div>
 
         <motion.p
@@ -42,8 +42,8 @@ export function Hero() {
           transition={{ duration: 0.6, delay: 0.18 }}
           className="mx-auto mt-5 max-w-2xl text-base text-muted-foreground sm:text-lg"
         >
-          Nirogi turns powerful medical AI into six simple tools — check your medicines, scan your skin,
-          read your meals, assess cancer risk and more. Health that doesn't wait for you to fall sick.
+          Nirogi turns powerful medical AI into nine simple tools — check your medicines, scan your skin,
+          read your meals, assess cancer, diabetes & heart risk and more. Health that doesn't wait for you to fall sick.
         </motion.p>
 
         {/* Animated ECG heart-pulse */}
