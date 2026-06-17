@@ -41,17 +41,37 @@ export function Header() {
           ))}
         </nav>
 
+        <div class="hidden items-center gap-2 md:flex".replace as never}
         <div className="hidden items-center gap-2 md:flex">
+          <div className="flex items-center rounded-full border border-border p-0.5">
+            <button
+              onClick={() => setLang("en")}
+              className={cn("rounded-full px-2 py-0.5 text-xs font-semibold transition-colors", lang === "en" ? "bg-primary text-primary-foreground" : "text-muted-foreground")}
+            >
+              EN
+            </button>
+            <button
+              onClick={() => setLang("hi")}
+              className={cn("rounded-full px-2 py-0.5 text-xs font-semibold transition-colors", lang === "hi" ? "bg-primary text-primary-foreground" : "text-muted-foreground")}
+            >
+              हिं
+            </button>
+          </div>
+          <Button asChild size="sm" variant="outline" className="border-destructive/40 text-destructive hover:bg-destructive hover:text-destructive-foreground">
+            <Link to="/sos">
+              <Siren className="size-4" /> {t("common.sos", "SOS")}
+            </Link>
+          </Button>
           {user ? (
             <Button asChild size="sm">
               <Link to="/dashboard">
-                <LayoutDashboard className="size-4" /> Dashboard
+                <LayoutDashboard className="size-4" /> {t("nav.dashboard", "Dashboard")}
               </Link>
             </Button>
           ) : (
             <Button asChild size="sm">
               <Link to="/auth">
-                <LogIn className="size-4" /> Sign in
+                <LogIn className="size-4" /> {t("nav.signin", "Sign in")}
               </Link>
             </Button>
           )}
