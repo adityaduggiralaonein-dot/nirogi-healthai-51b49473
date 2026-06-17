@@ -14,6 +14,69 @@ export type Database = {
   }
   public: {
     Tables: {
+      family_members: {
+        Row: {
+          age: number | null
+          allergies: string | null
+          blood_group: string | null
+          bmi: number | null
+          created_at: string
+          current_medicines: string | null
+          emergency_contact: string | null
+          family_history: string | null
+          full_name: string
+          gender: string | null
+          health_conditions: string | null
+          height_cm: number | null
+          id: string
+          owner_id: string
+          recent_surgeries: string | null
+          relation: string | null
+          updated_at: string
+          weight_kg: number | null
+        }
+        Insert: {
+          age?: number | null
+          allergies?: string | null
+          blood_group?: string | null
+          bmi?: number | null
+          created_at?: string
+          current_medicines?: string | null
+          emergency_contact?: string | null
+          family_history?: string | null
+          full_name: string
+          gender?: string | null
+          health_conditions?: string | null
+          height_cm?: number | null
+          id?: string
+          owner_id: string
+          recent_surgeries?: string | null
+          relation?: string | null
+          updated_at?: string
+          weight_kg?: number | null
+        }
+        Update: {
+          age?: number | null
+          allergies?: string | null
+          blood_group?: string | null
+          bmi?: number | null
+          created_at?: string
+          current_medicines?: string | null
+          emergency_contact?: string | null
+          family_history?: string | null
+          full_name?: string
+          gender?: string | null
+          health_conditions?: string | null
+          height_cm?: number | null
+          id?: string
+          owner_id?: string
+          recent_surgeries?: string | null
+          relation?: string | null
+          updated_at?: string
+          weight_kg?: number | null
+        }
+        Relationships: []
+      }
       food_diary: {
         Row: {
           analysis: Json | null
@@ -22,6 +85,7 @@ export type Database = {
           dish_name: string
           fibre_g: number | null
           id: string
+          member_id: string | null
           protein_g: number | null
           saturated_fat_g: number | null
           sodium_mg: number | null
@@ -35,6 +99,7 @@ export type Database = {
           dish_name: string
           fibre_g?: number | null
           id?: string
+          member_id?: string | null
           protein_g?: number | null
           saturated_fat_g?: number | null
           sodium_mg?: number | null
@@ -48,13 +113,154 @@ export type Database = {
           dish_name?: string
           fibre_g?: number | null
           id?: string
+          member_id?: string | null
           protein_g?: number | null
           saturated_fat_g?: number | null
           sodium_mg?: number | null
           sugar_g?: number | null
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "food_diary_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "family_members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      health_score_history: {
+        Row: {
+          breakdown: Json | null
+          created_at: string
+          id: string
+          member_id: string | null
+          score: number
+          user_id: string
+        }
+        Insert: {
+          breakdown?: Json | null
+          created_at?: string
+          id?: string
+          member_id?: string | null
+          score: number
+          user_id: string
+        }
+        Update: {
+          breakdown?: Json | null
+          created_at?: string
+          id?: string
+          member_id?: string | null
+          score?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "health_score_history_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "family_members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      medicine_logs: {
+        Row: {
+          created_at: string
+          due_at: string
+          id: string
+          marked_at: string
+          reminder_id: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          due_at: string
+          id?: string
+          marked_at?: string
+          reminder_id: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          due_at?: string
+          id?: string
+          marked_at?: string
+          reminder_id?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "medicine_logs_reminder_id_fkey"
+            columns: ["reminder_id"]
+            isOneToOne: false
+            referencedRelation: "medicine_reminders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      medicine_reminders: {
+        Row: {
+          active: boolean
+          created_at: string
+          doctor: string | null
+          dose: string | null
+          duration: string | null
+          id: string
+          medicine_name: string
+          member_id: string | null
+          special_instructions: string | null
+          tablets_remaining: number | null
+          timings: string[]
+          updated_at: string
+          user_id: string
+          with_food: string | null
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          doctor?: string | null
+          dose?: string | null
+          duration?: string | null
+          id?: string
+          medicine_name: string
+          member_id?: string | null
+          special_instructions?: string | null
+          tablets_remaining?: number | null
+          timings?: string[]
+          updated_at?: string
+          user_id: string
+          with_food?: string | null
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          doctor?: string | null
+          dose?: string | null
+          duration?: string | null
+          id?: string
+          medicine_name?: string
+          member_id?: string | null
+          special_instructions?: string | null
+          tablets_remaining?: number | null
+          timings?: string[]
+          updated_at?: string
+          user_id?: string
+          with_food?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "medicine_reminders_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "family_members"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
@@ -66,12 +272,14 @@ export type Database = {
           created_at: string
           current_medicines: string | null
           email: string | null
+          emergency_contact: string | null
           family_history: string | null
           full_name: string | null
           gender: string | null
           health_conditions: string | null
           height_cm: number | null
           id: string
+          preferred_language: string
           prescription_analysis: string | null
           recent_surgeries: string | null
           updated_at: string
@@ -86,12 +294,14 @@ export type Database = {
           created_at?: string
           current_medicines?: string | null
           email?: string | null
+          emergency_contact?: string | null
           family_history?: string | null
           full_name?: string | null
           gender?: string | null
           health_conditions?: string | null
           height_cm?: number | null
           id: string
+          preferred_language?: string
           prescription_analysis?: string | null
           recent_surgeries?: string | null
           updated_at?: string
@@ -106,12 +316,14 @@ export type Database = {
           created_at?: string
           current_medicines?: string | null
           email?: string | null
+          emergency_contact?: string | null
           family_history?: string | null
           full_name?: string | null
           gender?: string | null
           health_conditions?: string | null
           height_cm?: number | null
           id?: string
+          preferred_language?: string
           prescription_analysis?: string | null
           recent_surgeries?: string | null
           updated_at?: string
@@ -123,6 +335,7 @@ export type Database = {
         Row: {
           created_at: string
           id: string
+          member_id: string | null
           result: Json | null
           summary: string | null
           title: string | null
@@ -132,6 +345,7 @@ export type Database = {
         Insert: {
           created_at?: string
           id?: string
+          member_id?: string | null
           result?: Json | null
           summary?: string | null
           title?: string | null
@@ -141,13 +355,22 @@ export type Database = {
         Update: {
           created_at?: string
           id?: string
+          member_id?: string | null
           result?: Json | null
           summary?: string | null
           title?: string | null
           tool?: string
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "scan_history_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "family_members"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       updates: {
         Row: {
