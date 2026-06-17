@@ -41,7 +41,6 @@ export function Header() {
           ))}
         </nav>
 
-        <div class="hidden items-center gap-2 md:flex".replace as never}
         <div className="hidden items-center gap-2 md:flex">
           <div className="flex items-center rounded-full border border-border p-0.5">
             <button
