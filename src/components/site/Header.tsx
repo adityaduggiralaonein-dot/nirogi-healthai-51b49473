@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 
 export function Header() {
   const { user } = useAuth();
+  const { lang, setLang, t } = useI18n();
   const [open, setOpen] = useState(false);
 
   const nav = [
