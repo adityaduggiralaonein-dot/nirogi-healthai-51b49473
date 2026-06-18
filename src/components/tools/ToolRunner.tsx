@@ -25,6 +25,8 @@ import { toast } from "sonner";
 import { runTool } from "@/lib/health-tools.functions";
 import type { ToolDef } from "@/lib/tools";
 import type { ToolResult } from "@/lib/health-tools.server";
+import { ReportActions } from "@/components/site/ReportActions";
+import { useI18n } from "@/lib/i18n";
 
 import { cn } from "@/lib/utils";
 
