@@ -401,6 +401,8 @@ export function ToolRunner({ tool }: { tool: ToolDef }) {
                 </span>
               </div>
             )}
+
+            <ReportActions source={{ toolName: tool.name, result }} />
           </motion.div>
         )}
       </div>
