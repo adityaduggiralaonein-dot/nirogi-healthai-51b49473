@@ -145,6 +145,7 @@ export function ToolRunner({ tool }: { tool: ToolDef }) {
           image,
           file: docFile,
           fileName: docName || null,
+          lang,
         },
       });
       setResult(res as ToolResult);
