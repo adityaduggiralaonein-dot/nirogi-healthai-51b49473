@@ -45,6 +45,7 @@ const empty: FormState = {
 
 function Dashboard() {
   const { signOut } = useAuth();
+  const { t, lang } = useI18n();
   const getProfile = useServerFn(getMyProfile);
   const saveProfile = useServerFn(updateMyProfile);
   const analyze = useServerFn(analyzePrescription);
