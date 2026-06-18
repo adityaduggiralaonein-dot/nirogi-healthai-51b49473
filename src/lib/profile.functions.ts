@@ -47,6 +47,7 @@ export const updateMyProfile = createServerFn({ method: "POST" })
 
 const PrescriptionInput = z.object({
   image: z.string().max(12_000_000),
+  lang: z.enum(["en", "hi"]).optional(),
 });
 
 export const analyzePrescription = createServerFn({ method: "POST" })
@@ -57,6 +58,11 @@ export const analyzePrescription = createServerFn({ method: "POST" })
     const key = process.env.LOVABLE_API_KEY;
     if (!key) throw new Error("AI is not configured.");
 
+    const langLine =
+      data.lang === "hi"
+        ? " Respond entirely in simple, everyday Hindi (Devanagari script), keeping medicine names recognisable."
+        : "";
+
     const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
@@ -66,7 +72,8 @@ export const analyzePrescription = createServerFn({ method: "POST" })
           {
             role: "system",
             content:
-              "You are a clinical assistant. Read the prescription image and explain it in clear, simple language for a patient. For each medicine give: what it is, what it treats, how to take it, common side effects, and key cautions. End with a clear reminder to follow the prescribing doctor and pharmacist, and to never self-medicate. Use short headed paragraphs in plain text (no markdown symbols).",
+              "You are a clinical assistant. Read the prescription image and explain it in clear, simple language for a patient. For each medicine give: what it is, what it treats, how to take it, common side effects, and key cautions. End with a clear reminder to follow the prescribing doctor and pharmacist, and to never self-medicate. Use short headed paragraphs in plain text (no markdown symbols)." +
+              langLine,
           },
           {
             role: "user",

@@ -60,9 +60,15 @@ export async function callHealthAI(opts: {
   imageDataUrl?: string | null;
   fileDataUrl?: string | null;
   fileName?: string | null;
+  lang?: "en" | "hi";
 }): Promise<ToolResult> {
   const key = process.env.LOVABLE_API_KEY;
   if (!key) throw new Error("AI is not configured. Missing LOVABLE_API_KEY.");
+
+  const langInstruction =
+    opts.lang === "hi"
+      ? "\n\nIMPORTANT: Write every string value in the JSON (title, summary, all section headings and items, warnings, recommendations, specialist, verdicts) in simple, everyday Hindi (Devanagari script). Keep the JSON keys and the enum values for riskLevel and urgency in English exactly as specified. Keep medicine and test names recognisable."
+      : "";
 
   const userContent: ContentPart[] = [{ type: "text", text: opts.userText }];
 
@@ -89,7 +95,7 @@ export async function callHealthAI(opts: {
     body: JSON.stringify({
       model: "google/gemini-2.5-flash",
       messages: [
-        { role: "system", content: `${opts.system}\n\n${RESULT_SHAPE}` },
+        { role: "system", content: `${opts.system}\n\n${RESULT_SHAPE}${langInstruction}` },
         { role: "user", content: userContent },
       ],
     }),

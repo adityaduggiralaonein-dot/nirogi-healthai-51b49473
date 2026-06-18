@@ -8,6 +8,8 @@ const RunToolInput = z.object({
   image: z.string().max(12_000_000).nullable().optional(),
   file: z.string().max(16_000_000).nullable().optional(),
   fileName: z.string().max(200).nullable().optional(),
+  lang: z.enum(["en", "hi"]).optional(),
+  memberId: z.string().uuid().nullable().optional(),
 });
 
 export const runTool = createServerFn({ method: "POST" })
@@ -43,11 +45,13 @@ export const runTool = createServerFn({ method: "POST" })
       imageDataUrl: data.image ?? null,
       fileDataUrl: data.file ?? null,
       fileName: data.fileName ?? null,
+      lang: data.lang ?? "en",
     });
 
     // Persist to history (best-effort)
     await supabase.from("scan_history").insert({
       user_id: userId,
+      member_id: data.memberId ?? null,
       tool: data.tool,
       title: result.title,
       summary: result.summary,

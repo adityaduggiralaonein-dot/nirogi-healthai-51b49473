@@ -13,6 +13,11 @@ import { toast } from "sonner";
 import { useAuth } from "@/hooks/use-auth";
 import { getMyProfile, updateMyProfile, analyzePrescription } from "@/lib/profile.functions";
 import { TOOLS } from "@/lib/tools";
+import { useI18n } from "@/lib/i18n";
+import { HealthScoreCard } from "@/components/dashboard/HealthScoreCard";
+import { FamilySection } from "@/components/dashboard/FamilySection";
+import { MedicineReminders } from "@/components/dashboard/MedicineReminders";
+import { ReportActions } from "@/components/site/ReportActions";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({ meta: [{ title: "Your dashboard · Nirogi" }] }),
@@ -40,6 +45,7 @@ const empty: FormState = {
 
 function Dashboard() {
   const { signOut } = useAuth();
+  const { t, lang } = useI18n();
   const getProfile = useServerFn(getMyProfile);
   const saveProfile = useServerFn(updateMyProfile);
   const analyze = useServerFn(analyzePrescription);
@@ -124,7 +130,7 @@ function Dashboard() {
     });
     setAnalyzing(true);
     try {
-      const res = await analyze({ data: { image: dataUrl } });
+      const res = await analyze({ data: { image: dataUrl, lang } });
       setPrescription(res.analysis);
       toast.success("Prescription analyzed.");
     } catch (err) {
@@ -142,17 +148,17 @@ function Dashboard() {
       <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <h1 className="font-display text-3xl font-bold">Your health profile</h1>
-            <p className="mt-1 text-muted-foreground">Keep this updated — every AI tool reads it to personalize results.</p>
+            <h1 className="font-display text-3xl font-bold">{t("dash.title", "Your health profile")}</h1>
+            <p className="mt-1 text-muted-foreground">{t("dash.subtitle", "Keep this updated — every AI tool reads it to personalize results.")}</p>
           </div>
           <div className="flex items-center gap-2">
             <Button asChild variant="outline" size="sm">
               <Link to="/history">
-                <History className="size-4" /> History
+                <History className="size-4" /> {t("nav.history", "History")}
               </Link>
             </Button>
             <Button variant="outline" size="sm" onClick={() => signOut()}>
-              <LogOut className="size-4" /> Sign out
+              <LogOut className="size-4" /> {t("nav.signout", "Sign out")}
             </Button>
           </div>
         </div>
@@ -162,73 +168,89 @@ function Dashboard() {
             <Loader2 className="size-7 animate-spin text-primary" />
           </div>
         ) : (
-          <div className="mt-8 grid gap-6 lg:grid-cols-3">
-            <div className="space-y-6 lg:col-span-2">
-              <section className="rounded-2xl border border-border bg-card p-6 shadow-card">
-                <h2 className="font-display text-lg font-semibold">Basics</h2>
-                <div className="mt-4 grid gap-4 sm:grid-cols-2">
-                  <Field label="Full name"><Input value={form.full_name} onChange={(e) => set("full_name", e.target.value)} /></Field>
-                  <Field label="Age"><Input type="number" value={form.age} onChange={(e) => set("age", e.target.value)} /></Field>
-                  <Field label="Gender"><Input value={form.gender} onChange={(e) => set("gender", e.target.value)} placeholder="e.g. Female" /></Field>
-                  <Field label="Blood group"><Input value={form.blood_group} onChange={(e) => set("blood_group", e.target.value)} placeholder="e.g. O+" /></Field>
-                  <Field label="Weight (kg)"><Input type="number" value={form.weight_kg} onChange={(e) => set("weight_kg", e.target.value)} /></Field>
-                  <Field label="Height (cm)"><Input type="number" value={form.height_cm} onChange={(e) => set("height_cm", e.target.value)} /></Field>
-                </div>
-              </section>
-
-              <section className="rounded-2xl border border-border bg-card p-6 shadow-card">
-                <h2 className="font-display text-lg font-semibold">Medical history</h2>
-                <div className="mt-4 space-y-4">
-                  <Field label="Health conditions"><Textarea rows={2} value={form.health_conditions} onChange={(e) => set("health_conditions", e.target.value)} placeholder="e.g. Type 2 diabetes, hypertension" /></Field>
-                  <Field label="Current medicines"><Textarea rows={2} value={form.current_medicines} onChange={(e) => set("current_medicines", e.target.value)} placeholder="e.g. Metformin 500mg" /></Field>
-                  <Field label="Family history"><Textarea rows={2} value={form.family_history} onChange={(e) => set("family_history", e.target.value)} placeholder="e.g. Father — heart disease" /></Field>
-                  <Field label="Recent surgeries"><Textarea rows={2} value={form.recent_surgeries} onChange={(e) => set("recent_surgeries", e.target.value)} /></Field>
-                  <Field label="Allergies"><Textarea rows={2} value={form.allergies} onChange={(e) => set("allergies", e.target.value)} /></Field>
-                </div>
-                <Button onClick={save} disabled={saving} className="mt-5">
-                  {saving ? <Loader2 className="size-4 animate-spin" /> : null}
-                  {saving ? "Saving…" : "Save profile"}
-                </Button>
-              </section>
+          <>
+            <div className="mt-8 grid gap-6 lg:grid-cols-3">
+              <div className="lg:col-span-2">
+                <HealthScoreCard />
+              </div>
+              <FamilySection />
             </div>
 
-            <div className="space-y-6">
-              <section className="rounded-2xl border border-border bg-gradient-primary p-6 text-center text-primary-foreground shadow-elegant">
-                <p className="text-sm font-medium opacity-90">Your BMI</p>
-                <div className="mt-1 font-display text-5xl font-extrabold">{bmi ?? "—"}</div>
-                <p className="mt-1 text-sm opacity-90">{bmiLabel || "Add weight & height"}</p>
-              </section>
+            <div className="mt-6 grid gap-6 lg:grid-cols-3">
+              <div className="space-y-6 lg:col-span-2">
+                <section className="rounded-2xl border border-border bg-card p-6 shadow-card">
+                  <h2 className="font-display text-lg font-semibold">{t("dash.basics", "Basics")}</h2>
+                  <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                    <Field label={t("dash.full_name", "Full name")}><Input value={form.full_name} onChange={(e) => set("full_name", e.target.value)} /></Field>
+                    <Field label={t("dash.age", "Age")}><Input type="number" value={form.age} onChange={(e) => set("age", e.target.value)} /></Field>
+                    <Field label={t("dash.gender", "Gender")}><Input value={form.gender} onChange={(e) => set("gender", e.target.value)} placeholder="e.g. Female" /></Field>
+                    <Field label={t("dash.blood_group", "Blood group")}><Input value={form.blood_group} onChange={(e) => set("blood_group", e.target.value)} placeholder="e.g. O+" /></Field>
+                    <Field label={t("dash.weight", "Weight (kg)")}><Input type="number" value={form.weight_kg} onChange={(e) => set("weight_kg", e.target.value)} /></Field>
+                    <Field label={t("dash.height", "Height (cm)")}><Input type="number" value={form.height_cm} onChange={(e) => set("height_cm", e.target.value)} /></Field>
+                  </div>
+                </section>
 
-              <section className="rounded-2xl border border-border bg-card p-6 shadow-card">
-                <h2 className="flex items-center gap-2 font-display text-lg font-semibold">
-                  <FileText className="size-5 text-primary" /> Prescription reader
-                </h2>
-                <p className="mt-1 text-sm text-muted-foreground">Upload a prescription photo and AI explains it in simple words. Stored privately to you.</p>
-                <label className="mt-4 flex cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed border-border bg-muted/40 px-4 py-6 text-center hover:bg-muted">
-                  <input type="file" accept="image/*" className="hidden" onChange={(e) => onPrescription(e.target.files?.[0])} />
-                  {analyzing ? <Loader2 className="size-5 animate-spin text-primary" /> : <Upload className="size-5 text-muted-foreground" />}
-                  <span className="mt-2 text-sm text-muted-foreground">{analyzing ? "Reading…" : "Upload prescription"}</span>
-                </label>
-                {prescription && (
-                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-4 max-h-64 overflow-auto whitespace-pre-wrap rounded-xl border border-border bg-muted/30 p-4 text-sm text-foreground/80">
-                    {prescription}
-                  </motion.div>
-                )}
-              </section>
+                <section className="rounded-2xl border border-border bg-card p-6 shadow-card">
+                  <h2 className="font-display text-lg font-semibold">{t("dash.medical_history", "Medical history")}</h2>
+                  <div className="mt-4 space-y-4">
+                    <Field label={t("dash.conditions", "Health conditions")}><Textarea rows={2} value={form.health_conditions} onChange={(e) => set("health_conditions", e.target.value)} placeholder="e.g. Type 2 diabetes, hypertension" /></Field>
+                    <Field label={t("dash.medicines", "Current medicines")}><Textarea rows={2} value={form.current_medicines} onChange={(e) => set("current_medicines", e.target.value)} placeholder="e.g. Metformin 500mg" /></Field>
+                    <Field label={t("dash.family_history", "Family history")}><Textarea rows={2} value={form.family_history} onChange={(e) => set("family_history", e.target.value)} placeholder="e.g. Father — heart disease" /></Field>
+                    <Field label={t("dash.surgeries", "Recent surgeries")}><Textarea rows={2} value={form.recent_surgeries} onChange={(e) => set("recent_surgeries", e.target.value)} /></Field>
+                    <Field label={t("dash.allergies", "Allergies")}><Textarea rows={2} value={form.allergies} onChange={(e) => set("allergies", e.target.value)} /></Field>
+                  </div>
+                  <Button onClick={save} disabled={saving} className="mt-5">
+                    {saving ? <Loader2 className="size-4 animate-spin" /> : null}
+                    {saving ? t("dash.saving", "Saving…") : t("dash.save_profile", "Save profile")}
+                  </Button>
+                </section>
 
-              <section className="rounded-2xl border border-border bg-card p-6 shadow-card">
-                <h2 className="font-display text-lg font-semibold">Jump into a tool</h2>
-                <div className="mt-3 space-y-2">
-                  {TOOLS.map((t) => (
-                    <Link key={t.slug} to="/tools/$tool" params={{ tool: t.slug }} className="flex items-center justify-between rounded-lg border border-border px-3 py-2 text-sm hover:bg-muted">
-                      <span className="inline-flex items-center gap-2"><t.icon className="size-4 text-primary" /> {t.name}</span>
-                      <ArrowRight className="size-4 text-muted-foreground" />
-                    </Link>
-                  ))}
-                </div>
-              </section>
+                <MedicineReminders />
+              </div>
+
+              <div className="space-y-6">
+                <section className="rounded-2xl border border-border bg-gradient-primary p-6 text-center text-primary-foreground shadow-elegant">
+                  <p className="text-sm font-medium opacity-90">{t("dash.your_bmi", "Your BMI")}</p>
+                  <div className="mt-1 font-display text-5xl font-extrabold">{bmi ?? "—"}</div>
+                  <p className="mt-1 text-sm opacity-90">{bmiLabel || t("dash.add_wh", "Add weight & height")}</p>
+                </section>
+
+                <section className="rounded-2xl border border-border bg-card p-6 shadow-card">
+                  <h2 className="flex items-center gap-2 font-display text-lg font-semibold">
+                    <FileText className="size-5 text-primary" /> {t("dash.prescription_reader", "Prescription reader")}
+                  </h2>
+                  <p className="mt-1 text-sm text-muted-foreground">{t("dash.prescription_note", "Upload a prescription photo and AI explains it in simple words. Stored privately to you.")}</p>
+                  <label className="mt-4 flex cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed border-border bg-muted/40 px-4 py-6 text-center hover:bg-muted">
+                    <input type="file" accept="image/*" className="hidden" onChange={(e) => onPrescription(e.target.files?.[0])} />
+                    {analyzing ? <Loader2 className="size-5 animate-spin text-primary" /> : <Upload className="size-5 text-muted-foreground" />}
+                    <span className="mt-2 text-sm text-muted-foreground">{analyzing ? t("dash.reading", "Reading…") : t("dash.upload_prescription", "Upload prescription")}</span>
+                  </label>
+                  {prescription && (
+                    <>
+                      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-4 max-h-64 overflow-auto whitespace-pre-wrap rounded-xl border border-border bg-muted/30 p-4 text-sm text-foreground/80">
+                        {prescription}
+                      </motion.div>
+                      <div className="mt-3">
+                        <ReportActions source={{ toolName: "Prescription reading", text: prescription }} />
+                      </div>
+                    </>
+                  )}
+                </section>
+
+                <section className="rounded-2xl border border-border bg-card p-6 shadow-card">
+                  <h2 className="font-display text-lg font-semibold">{t("dash.jump_tool", "Jump into a tool")}</h2>
+                  <div className="mt-3 space-y-2">
+                    {TOOLS.map((tl) => (
+                      <Link key={tl.slug} to="/tools/$tool" params={{ tool: tl.slug }} className="flex items-center justify-between rounded-lg border border-border px-3 py-2 text-sm hover:bg-muted">
+                        <span className="inline-flex items-center gap-2"><tl.icon className="size-4 text-primary" /> {tl.name}</span>
+                        <ArrowRight className="size-4 text-muted-foreground" />
+                      </Link>
+                    ))}
+                  </div>
+                </section>
+              </div>
             </div>
-          </div>
+          </>
         )}
       </div>
     </SiteLayout>

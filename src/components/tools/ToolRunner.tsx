@@ -25,6 +25,8 @@ import { toast } from "sonner";
 import { runTool } from "@/lib/health-tools.functions";
 import type { ToolDef } from "@/lib/tools";
 import type { ToolResult } from "@/lib/health-tools.server";
+import { ReportActions } from "@/components/site/ReportActions";
+import { useI18n } from "@/lib/i18n";
 
 import { cn } from "@/lib/utils";
 
@@ -55,6 +57,7 @@ function fileToDataUrl(file: File): Promise<string> {
 
 export function ToolRunner({ tool }: { tool: ToolDef }) {
   const run = useServerFn(runTool);
+  const { lang } = useI18n();
   const [fields, setFields] = useState<Record<string, string>>({});
   const [image, setImage] = useState<string | null>(null);
   const [imageName, setImageName] = useState<string>("");
@@ -142,6 +145,7 @@ export function ToolRunner({ tool }: { tool: ToolDef }) {
           image,
           file: docFile,
           fileName: docName || null,
+          lang,
         },
       });
       setResult(res as ToolResult);
@@ -397,6 +401,8 @@ export function ToolRunner({ tool }: { tool: ToolDef }) {
                 </span>
               </div>
             )}
+
+            <ReportActions source={{ toolName: tool.name, result }} />
           </motion.div>
         )}
       </div>
