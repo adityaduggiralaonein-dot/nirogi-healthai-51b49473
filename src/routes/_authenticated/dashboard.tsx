@@ -13,6 +13,11 @@ import { toast } from "sonner";
 import { useAuth } from "@/hooks/use-auth";
 import { getMyProfile, updateMyProfile, analyzePrescription } from "@/lib/profile.functions";
 import { TOOLS } from "@/lib/tools";
+import { useI18n } from "@/lib/i18n";
+import { HealthScoreCard } from "@/components/dashboard/HealthScoreCard";
+import { FamilySection } from "@/components/dashboard/FamilySection";
+import { MedicineReminders } from "@/components/dashboard/MedicineReminders";
+import { ReportActions } from "@/components/site/ReportActions";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({ meta: [{ title: "Your dashboard · Nirogi" }] }),
