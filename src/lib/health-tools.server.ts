@@ -95,7 +95,7 @@ export async function callHealthAI(opts: {
     body: JSON.stringify({
       model: "google/gemini-2.5-flash",
       messages: [
-        { role: "system", content: `${opts.system}\n\n${RESULT_SHAPE}` },
+        { role: "system", content: `${opts.system}\n\n${RESULT_SHAPE}${langInstruction}` },
         { role: "user", content: userContent },
       ],
     }),
