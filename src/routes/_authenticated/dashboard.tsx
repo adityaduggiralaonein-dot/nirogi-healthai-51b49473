@@ -130,7 +130,7 @@ function Dashboard() {
     });
     setAnalyzing(true);
     try {
-      const res = await analyze({ data: { image: dataUrl } });
+      const res = await analyze({ data: { image: dataUrl, lang } });
       setPrescription(res.analysis);
       toast.success("Prescription analyzed.");
     } catch (err) {
