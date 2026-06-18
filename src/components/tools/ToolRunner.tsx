@@ -57,6 +57,7 @@ function fileToDataUrl(file: File): Promise<string> {
 
 export function ToolRunner({ tool }: { tool: ToolDef }) {
   const run = useServerFn(runTool);
+  const { lang } = useI18n();
   const [fields, setFields] = useState<Record<string, string>>({});
   const [image, setImage] = useState<string | null>(null);
   const [imageName, setImageName] = useState<string>("");
