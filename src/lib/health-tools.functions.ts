@@ -45,11 +45,13 @@ export const runTool = createServerFn({ method: "POST" })
       imageDataUrl: data.image ?? null,
       fileDataUrl: data.file ?? null,
       fileName: data.fileName ?? null,
+      lang: data.lang ?? "en",
     });
 
     // Persist to history (best-effort)
     await supabase.from("scan_history").insert({
       user_id: userId,
+      member_id: data.memberId ?? null,
       tool: data.tool,
       title: result.title,
       summary: result.summary,
