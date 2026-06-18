@@ -8,6 +8,8 @@ const RunToolInput = z.object({
   image: z.string().max(12_000_000).nullable().optional(),
   file: z.string().max(16_000_000).nullable().optional(),
   fileName: z.string().max(200).nullable().optional(),
+  lang: z.enum(["en", "hi"]).optional(),
+  memberId: z.string().uuid().nullable().optional(),
 });
 
 export const runTool = createServerFn({ method: "POST" })
