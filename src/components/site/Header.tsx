@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { Menu, X, LogIn, LayoutDashboard, Siren } from "lucide-react";
+import { Menu, X, LogIn, LayoutDashboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
 import { useI18n } from "@/lib/i18n";
@@ -14,11 +14,11 @@ export function Header() {
   const [open, setOpen] = useState(false);
 
   const nav = [
-    { label: "Tools", href: "/#tools" },
-    { label: "How it works", href: "/#how" },
-    { label: "Updates", href: "/#updates" },
-    { label: "Data sources", href: "/#sources" },
-    { label: "FAQ", href: "/#faq" },
+    { label: t("nav.tools", "Tools"), href: "/#tools" },
+    { label: t("nav.how", "How it works"), href: "/#how" },
+    { label: t("nav.updates", "Updates"), href: "/#updates" },
+    { label: t("nav.sources", "Data sources"), href: "/#sources" },
+    { label: t("nav.faq", "FAQ"), href: "/#faq" },
   ];
 
   return (
@@ -56,11 +56,6 @@ export function Header() {
               हिं
             </button>
           </div>
-          <Button asChild size="sm" variant="outline" className="border-destructive/40 text-destructive hover:bg-destructive hover:text-destructive-foreground">
-            <Link to="/sos">
-              <Siren className="size-4" /> {t("common.sos", "SOS")}
-            </Link>
-          </Button>
           {user ? (
             <Button asChild size="sm">
               <Link to="/dashboard">
