@@ -56,6 +56,11 @@ export function Header() {
               हिं
             </button>
           </div>
+          <Button asChild size="sm" variant="destructive">
+            <Link to="/sos">
+              <Siren className="size-4" /> {t("common.sos", "SOS")}
+            </Link>
+          </Button>
           {user ? (
             <Button asChild size="sm">
               <Link to="/dashboard">
