@@ -16,6 +16,7 @@ import { Route as CookiesRouteImport } from './routes/cookies'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedWaterTrackerRouteImport } from './routes/_authenticated/water-tracker'
 import { Route as AuthenticatedHistoryRouteImport } from './routes/_authenticated/history'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedToolsToolRouteImport } from './routes/_authenticated/tools/$tool'
@@ -54,6 +55,12 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedWaterTrackerRoute =
+  AuthenticatedWaterTrackerRouteImport.update({
+    id: '/water-tracker',
+    path: '/water-tracker',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedHistoryRoute = AuthenticatedHistoryRouteImport.update({
   id: '/history',
   path: '/history',
@@ -79,6 +86,7 @@ export interface FileRoutesByFullPath {
   '/terms': typeof TermsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/history': typeof AuthenticatedHistoryRoute
+  '/water-tracker': typeof AuthenticatedWaterTrackerRoute
   '/tools/$tool': typeof AuthenticatedToolsToolRoute
 }
 export interface FileRoutesByTo {
@@ -90,6 +98,7 @@ export interface FileRoutesByTo {
   '/terms': typeof TermsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/history': typeof AuthenticatedHistoryRoute
+  '/water-tracker': typeof AuthenticatedWaterTrackerRoute
   '/tools/$tool': typeof AuthenticatedToolsToolRoute
 }
 export interface FileRoutesById {
@@ -103,6 +112,7 @@ export interface FileRoutesById {
   '/terms': typeof TermsRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/history': typeof AuthenticatedHistoryRoute
+  '/_authenticated/water-tracker': typeof AuthenticatedWaterTrackerRoute
   '/_authenticated/tools/$tool': typeof AuthenticatedToolsToolRoute
 }
 export interface FileRouteTypes {
@@ -116,6 +126,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/dashboard'
     | '/history'
+    | '/water-tracker'
     | '/tools/$tool'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -127,6 +138,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/dashboard'
     | '/history'
+    | '/water-tracker'
     | '/tools/$tool'
   id:
     | '__root__'
@@ -139,6 +151,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/_authenticated/dashboard'
     | '/_authenticated/history'
+    | '/_authenticated/water-tracker'
     | '/_authenticated/tools/$tool'
   fileRoutesById: FileRoutesById
 }
@@ -203,6 +216,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/water-tracker': {
+      id: '/_authenticated/water-tracker'
+      path: '/water-tracker'
+      fullPath: '/water-tracker'
+      preLoaderRoute: typeof AuthenticatedWaterTrackerRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/history': {
       id: '/_authenticated/history'
       path: '/history'
@@ -230,12 +250,14 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedHistoryRoute: typeof AuthenticatedHistoryRoute
+  AuthenticatedWaterTrackerRoute: typeof AuthenticatedWaterTrackerRoute
   AuthenticatedToolsToolRoute: typeof AuthenticatedToolsToolRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedHistoryRoute: AuthenticatedHistoryRoute,
+  AuthenticatedWaterTrackerRoute: AuthenticatedWaterTrackerRoute,
   AuthenticatedToolsToolRoute: AuthenticatedToolsToolRoute,
 }
 
