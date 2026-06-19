@@ -17,6 +17,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedWaterTrackerRouteImport } from './routes/_authenticated/water-tracker'
+import { Route as AuthenticatedSleepTrackerRouteImport } from './routes/_authenticated/sleep-tracker'
 import { Route as AuthenticatedHistoryRouteImport } from './routes/_authenticated/history'
 import { Route as AuthenticatedExerciseTrackerRouteImport } from './routes/_authenticated/exercise-tracker'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
@@ -62,6 +63,12 @@ const AuthenticatedWaterTrackerRoute =
     path: '/water-tracker',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedSleepTrackerRoute =
+  AuthenticatedSleepTrackerRouteImport.update({
+    id: '/sleep-tracker',
+    path: '/sleep-tracker',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedHistoryRoute = AuthenticatedHistoryRouteImport.update({
   id: '/history',
   path: '/history',
@@ -94,6 +101,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/exercise-tracker': typeof AuthenticatedExerciseTrackerRoute
   '/history': typeof AuthenticatedHistoryRoute
+  '/sleep-tracker': typeof AuthenticatedSleepTrackerRoute
   '/water-tracker': typeof AuthenticatedWaterTrackerRoute
   '/tools/$tool': typeof AuthenticatedToolsToolRoute
 }
@@ -107,6 +115,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/exercise-tracker': typeof AuthenticatedExerciseTrackerRoute
   '/history': typeof AuthenticatedHistoryRoute
+  '/sleep-tracker': typeof AuthenticatedSleepTrackerRoute
   '/water-tracker': typeof AuthenticatedWaterTrackerRoute
   '/tools/$tool': typeof AuthenticatedToolsToolRoute
 }
@@ -122,6 +131,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/exercise-tracker': typeof AuthenticatedExerciseTrackerRoute
   '/_authenticated/history': typeof AuthenticatedHistoryRoute
+  '/_authenticated/sleep-tracker': typeof AuthenticatedSleepTrackerRoute
   '/_authenticated/water-tracker': typeof AuthenticatedWaterTrackerRoute
   '/_authenticated/tools/$tool': typeof AuthenticatedToolsToolRoute
 }
@@ -137,6 +147,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/exercise-tracker'
     | '/history'
+    | '/sleep-tracker'
     | '/water-tracker'
     | '/tools/$tool'
   fileRoutesByTo: FileRoutesByTo
@@ -150,6 +161,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/exercise-tracker'
     | '/history'
+    | '/sleep-tracker'
     | '/water-tracker'
     | '/tools/$tool'
   id:
@@ -164,6 +176,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard'
     | '/_authenticated/exercise-tracker'
     | '/_authenticated/history'
+    | '/_authenticated/sleep-tracker'
     | '/_authenticated/water-tracker'
     | '/_authenticated/tools/$tool'
   fileRoutesById: FileRoutesById
@@ -236,6 +249,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedWaterTrackerRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/sleep-tracker': {
+      id: '/_authenticated/sleep-tracker'
+      path: '/sleep-tracker'
+      fullPath: '/sleep-tracker'
+      preLoaderRoute: typeof AuthenticatedSleepTrackerRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/history': {
       id: '/_authenticated/history'
       path: '/history'
@@ -271,6 +291,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedExerciseTrackerRoute: typeof AuthenticatedExerciseTrackerRoute
   AuthenticatedHistoryRoute: typeof AuthenticatedHistoryRoute
+  AuthenticatedSleepTrackerRoute: typeof AuthenticatedSleepTrackerRoute
   AuthenticatedWaterTrackerRoute: typeof AuthenticatedWaterTrackerRoute
   AuthenticatedToolsToolRoute: typeof AuthenticatedToolsToolRoute
 }
@@ -279,6 +300,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedExerciseTrackerRoute: AuthenticatedExerciseTrackerRoute,
   AuthenticatedHistoryRoute: AuthenticatedHistoryRoute,
+  AuthenticatedSleepTrackerRoute: AuthenticatedSleepTrackerRoute,
   AuthenticatedWaterTrackerRoute: AuthenticatedWaterTrackerRoute,
   AuthenticatedToolsToolRoute: AuthenticatedToolsToolRoute,
 }
