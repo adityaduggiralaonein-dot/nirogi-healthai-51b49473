@@ -21,53 +21,41 @@ export function WellnessTrackers() {
 
   const goal = settings?.settings?.water_goal_ml ?? 3000;
   const waterPct = Math.min(100, Math.round(((water?.todayTotal ?? 0) / goal) * 100));
+  const cardBase = "group rounded-xl border border-border p-4 transition-colors hover:bg-muted/50";
 
   return (
     <section className="rounded-2xl border border-border bg-card p-6 shadow-card">
       <h2 className="font-display text-lg font-semibold">{t("dash.wellness", "Wellness trackers")}</h2>
       <div className="mt-4 grid gap-3 sm:grid-cols-3">
-        <TrackerCard
-          to="/water-tracker"
-          icon={<Droplets className="size-5" />}
-          accent="bg-primary/10 text-primary"
-          title={t("water.title", "Water")}
-          value={`${((water?.todayTotal ?? 0) / 1000).toFixed(1)}L`}
-          sub={`${waterPct}% ${t("water.of_goal", "of goal")}`}
-        />
-        <TrackerCard
-          to="/exercise-tracker"
-          icon={<Dumbbell className="size-5" />}
-          accent="bg-pulse/10 text-pulse"
-          title={t("exercise.title", "Exercise")}
-          value={`${ex?.weekMinutes ?? 0} min`}
-          sub={t("exercise.this_week", "This week")}
-        />
-        <TrackerCard
-          to="/sleep-tracker"
-          icon={<Moon className="size-5" />}
-          accent="bg-primary/10 text-primary"
-          title={t("sleep.title", "Sleep")}
-          value={sleep?.avgDuration ? `${Math.floor(sleep.avgDuration / 60)}h ${sleep.avgDuration % 60}m` : "—"}
-          sub={t("sleep.avg", "Avg / night")}
-        />
+        <Link to="/water-tracker" className={cardBase}>
+          <Head accent="bg-primary/10 text-primary" icon={<Droplets className="size-5" />} />
+          <p className="mt-3 font-display text-xl font-bold">{((water?.todayTotal ?? 0) / 1000).toFixed(1)}L</p>
+          <p className="text-xs text-muted-foreground">{t("water.title", "Water")} · {waterPct}% {t("water.of_goal", "of goal")}</p>
+        </Link>
+
+        <Link to="/exercise-tracker" className={cardBase}>
+          <Head accent="bg-pulse/10 text-pulse" icon={<Dumbbell className="size-5" />} />
+          <p className="mt-3 font-display text-xl font-bold">{ex?.weekMinutes ?? 0} min</p>
+          <p className="text-xs text-muted-foreground">{t("exercise.title", "Exercise")} · {t("exercise.this_week", "This week")}</p>
+        </Link>
+
+        <Link to="/sleep-tracker" className={cardBase}>
+          <Head accent="bg-primary/10 text-primary" icon={<Moon className="size-5" />} />
+          <p className="mt-3 font-display text-xl font-bold">
+            {sleep?.avgDuration ? `${Math.floor(sleep.avgDuration / 60)}h ${sleep.avgDuration % 60}m` : "—"}
+          </p>
+          <p className="text-xs text-muted-foreground">{t("sleep.title", "Sleep")} · {t("sleep.avg", "Avg / night")}</p>
+        </Link>
       </div>
     </section>
   );
 }
 
-function TrackerCard({
-  to, icon, accent, title, value, sub,
-}: {
-  to: string; icon: React.ReactNode; accent: string; title: string; value: string; sub: string;
-}) {
+function Head({ accent, icon }: { accent: string; icon: React.ReactNode }) {
   return (
-    <Link to={to} className="group rounded-xl border border-border p-4 transition-colors hover:bg-muted/50">
-      <div className="flex items-center justify-between">
-        <span className={`flex size-9 items-center justify-center rounded-xl ${accent}`}>{icon}</span>
-        <ArrowRight className="size-4 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
-      </div>
-      <p className="mt-3 font-display text-xl font-bold">{value}</p>
-      <p className="text-xs text-muted-foreground">{title} · {sub}</p>
-    </Link>
+    <div className="flex items-center justify-between">
+      <span className={`flex size-9 items-center justify-center rounded-xl ${accent}`}>{icon}</span>
+      <ArrowRight className="size-4 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
+    </div>
   );
 }
