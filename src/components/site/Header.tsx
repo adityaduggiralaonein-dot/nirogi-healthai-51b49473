@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { Menu, X, LogIn, LayoutDashboard } from "lucide-react";
+import { Menu, X, LogIn, LayoutDashboard, Siren } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
 import { useI18n } from "@/lib/i18n";
@@ -56,6 +56,11 @@ export function Header() {
               हिं
             </button>
           </div>
+          <Button asChild size="sm" variant="destructive">
+            <Link to="/sos">
+              <Siren className="size-4" /> {t("common.sos", "SOS")}
+            </Link>
+          </Button>
           {user ? (
             <Button asChild size="sm">
               <Link to="/dashboard">
@@ -97,9 +102,14 @@ export function Header() {
               {n.label}
             </a>
           ))}
-          <Button asChild size="sm" className="mt-2">
+          <Button asChild size="sm" variant="destructive" className="mt-2">
+            <Link to="/sos" onClick={() => setOpen(false)}>
+              <Siren className="size-4" /> {t("common.sos", "SOS")}
+            </Link>
+          </Button>
+          <Button asChild size="sm" className="mt-1">
             <Link to={user ? "/dashboard" : "/auth"} onClick={() => setOpen(false)}>
-              {user ? "Dashboard" : "Sign in"}
+              {user ? t("nav.dashboard", "Dashboard") : t("nav.signin", "Sign in")}
             </Link>
           </Button>
         </div>

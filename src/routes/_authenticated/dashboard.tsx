@@ -17,6 +17,7 @@ import { useI18n } from "@/lib/i18n";
 import { HealthScoreCard } from "@/components/dashboard/HealthScoreCard";
 import { FamilySection } from "@/components/dashboard/FamilySection";
 import { MedicineReminders } from "@/components/dashboard/MedicineReminders";
+import { WellnessTrackers } from "@/components/dashboard/WellnessTrackers";
 import { ReportActions } from "@/components/site/ReportActions";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
@@ -174,6 +175,10 @@ function Dashboard() {
                 <HealthScoreCard />
               </div>
               <FamilySection />
+            </div>
+
+            <div className="mt-6">
+              <WellnessTrackers />
             </div>
 
             <div className="mt-6 grid gap-6 lg:grid-cols-3">

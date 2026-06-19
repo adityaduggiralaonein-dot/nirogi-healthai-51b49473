@@ -16,7 +16,10 @@ import { Route as CookiesRouteImport } from './routes/cookies'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedWaterTrackerRouteImport } from './routes/_authenticated/water-tracker'
+import { Route as AuthenticatedSleepTrackerRouteImport } from './routes/_authenticated/sleep-tracker'
 import { Route as AuthenticatedHistoryRouteImport } from './routes/_authenticated/history'
+import { Route as AuthenticatedExerciseTrackerRouteImport } from './routes/_authenticated/exercise-tracker'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedToolsToolRouteImport } from './routes/_authenticated/tools/$tool'
 
@@ -54,11 +57,29 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedWaterTrackerRoute =
+  AuthenticatedWaterTrackerRouteImport.update({
+    id: '/water-tracker',
+    path: '/water-tracker',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedSleepTrackerRoute =
+  AuthenticatedSleepTrackerRouteImport.update({
+    id: '/sleep-tracker',
+    path: '/sleep-tracker',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedHistoryRoute = AuthenticatedHistoryRouteImport.update({
   id: '/history',
   path: '/history',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedExerciseTrackerRoute =
+  AuthenticatedExerciseTrackerRouteImport.update({
+    id: '/exercise-tracker',
+    path: '/exercise-tracker',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -78,7 +99,10 @@ export interface FileRoutesByFullPath {
   '/sos': typeof SosRoute
   '/terms': typeof TermsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/exercise-tracker': typeof AuthenticatedExerciseTrackerRoute
   '/history': typeof AuthenticatedHistoryRoute
+  '/sleep-tracker': typeof AuthenticatedSleepTrackerRoute
+  '/water-tracker': typeof AuthenticatedWaterTrackerRoute
   '/tools/$tool': typeof AuthenticatedToolsToolRoute
 }
 export interface FileRoutesByTo {
@@ -89,7 +113,10 @@ export interface FileRoutesByTo {
   '/sos': typeof SosRoute
   '/terms': typeof TermsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/exercise-tracker': typeof AuthenticatedExerciseTrackerRoute
   '/history': typeof AuthenticatedHistoryRoute
+  '/sleep-tracker': typeof AuthenticatedSleepTrackerRoute
+  '/water-tracker': typeof AuthenticatedWaterTrackerRoute
   '/tools/$tool': typeof AuthenticatedToolsToolRoute
 }
 export interface FileRoutesById {
@@ -102,7 +129,10 @@ export interface FileRoutesById {
   '/sos': typeof SosRoute
   '/terms': typeof TermsRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/exercise-tracker': typeof AuthenticatedExerciseTrackerRoute
   '/_authenticated/history': typeof AuthenticatedHistoryRoute
+  '/_authenticated/sleep-tracker': typeof AuthenticatedSleepTrackerRoute
+  '/_authenticated/water-tracker': typeof AuthenticatedWaterTrackerRoute
   '/_authenticated/tools/$tool': typeof AuthenticatedToolsToolRoute
 }
 export interface FileRouteTypes {
@@ -115,7 +145,10 @@ export interface FileRouteTypes {
     | '/sos'
     | '/terms'
     | '/dashboard'
+    | '/exercise-tracker'
     | '/history'
+    | '/sleep-tracker'
+    | '/water-tracker'
     | '/tools/$tool'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -126,7 +159,10 @@ export interface FileRouteTypes {
     | '/sos'
     | '/terms'
     | '/dashboard'
+    | '/exercise-tracker'
     | '/history'
+    | '/sleep-tracker'
+    | '/water-tracker'
     | '/tools/$tool'
   id:
     | '__root__'
@@ -138,7 +174,10 @@ export interface FileRouteTypes {
     | '/sos'
     | '/terms'
     | '/_authenticated/dashboard'
+    | '/_authenticated/exercise-tracker'
     | '/_authenticated/history'
+    | '/_authenticated/sleep-tracker'
+    | '/_authenticated/water-tracker'
     | '/_authenticated/tools/$tool'
   fileRoutesById: FileRoutesById
 }
@@ -203,11 +242,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/water-tracker': {
+      id: '/_authenticated/water-tracker'
+      path: '/water-tracker'
+      fullPath: '/water-tracker'
+      preLoaderRoute: typeof AuthenticatedWaterTrackerRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/sleep-tracker': {
+      id: '/_authenticated/sleep-tracker'
+      path: '/sleep-tracker'
+      fullPath: '/sleep-tracker'
+      preLoaderRoute: typeof AuthenticatedSleepTrackerRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/history': {
       id: '/_authenticated/history'
       path: '/history'
       fullPath: '/history'
       preLoaderRoute: typeof AuthenticatedHistoryRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/exercise-tracker': {
+      id: '/_authenticated/exercise-tracker'
+      path: '/exercise-tracker'
+      fullPath: '/exercise-tracker'
+      preLoaderRoute: typeof AuthenticatedExerciseTrackerRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/dashboard': {
@@ -229,13 +289,19 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedExerciseTrackerRoute: typeof AuthenticatedExerciseTrackerRoute
   AuthenticatedHistoryRoute: typeof AuthenticatedHistoryRoute
+  AuthenticatedSleepTrackerRoute: typeof AuthenticatedSleepTrackerRoute
+  AuthenticatedWaterTrackerRoute: typeof AuthenticatedWaterTrackerRoute
   AuthenticatedToolsToolRoute: typeof AuthenticatedToolsToolRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedExerciseTrackerRoute: AuthenticatedExerciseTrackerRoute,
   AuthenticatedHistoryRoute: AuthenticatedHistoryRoute,
+  AuthenticatedSleepTrackerRoute: AuthenticatedSleepTrackerRoute,
+  AuthenticatedWaterTrackerRoute: AuthenticatedWaterTrackerRoute,
   AuthenticatedToolsToolRoute: AuthenticatedToolsToolRoute,
 }
 

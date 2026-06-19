@@ -14,6 +14,62 @@ export type Database = {
   }
   public: {
     Tables: {
+      exercise_logs: {
+        Row: {
+          activity: string
+          calories: number | null
+          category: string | null
+          created_at: string
+          distance_km: number | null
+          duration_min: number
+          id: string
+          intensity: string | null
+          logged_at: string
+          member_id: string | null
+          notes: string | null
+          steps: number | null
+          user_id: string
+        }
+        Insert: {
+          activity: string
+          calories?: number | null
+          category?: string | null
+          created_at?: string
+          distance_km?: number | null
+          duration_min: number
+          id?: string
+          intensity?: string | null
+          logged_at?: string
+          member_id?: string | null
+          notes?: string | null
+          steps?: number | null
+          user_id: string
+        }
+        Update: {
+          activity?: string
+          calories?: number | null
+          category?: string | null
+          created_at?: string
+          distance_km?: number | null
+          duration_min?: number
+          id?: string
+          intensity?: string | null
+          logged_at?: string
+          member_id?: string | null
+          notes?: string | null
+          steps?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exercise_logs_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "family_members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       family_members: {
         Row: {
           age: number | null
@@ -372,6 +428,56 @@ export type Database = {
           },
         ]
       }
+      sleep_logs: {
+        Row: {
+          ai_analysis: Json | null
+          bedtime: string | null
+          created_at: string
+          duration_min: number | null
+          id: string
+          logged_at: string
+          member_id: string | null
+          notes: string | null
+          quality_score: number | null
+          user_id: string
+          wake_time: string | null
+        }
+        Insert: {
+          ai_analysis?: Json | null
+          bedtime?: string | null
+          created_at?: string
+          duration_min?: number | null
+          id?: string
+          logged_at?: string
+          member_id?: string | null
+          notes?: string | null
+          quality_score?: number | null
+          user_id: string
+          wake_time?: string | null
+        }
+        Update: {
+          ai_analysis?: Json | null
+          bedtime?: string | null
+          created_at?: string
+          duration_min?: number | null
+          id?: string
+          logged_at?: string
+          member_id?: string | null
+          notes?: string | null
+          quality_score?: number | null
+          user_id?: string
+          wake_time?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sleep_logs_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "family_members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       updates: {
         Row: {
           body: string
@@ -395,6 +501,91 @@ export type Database = {
           title?: string
         }
         Relationships: []
+      }
+      water_logs: {
+        Row: {
+          amount_ml: number
+          created_at: string
+          id: string
+          logged_at: string
+          member_id: string | null
+          user_id: string
+        }
+        Insert: {
+          amount_ml: number
+          created_at?: string
+          id?: string
+          logged_at?: string
+          member_id?: string | null
+          user_id: string
+        }
+        Update: {
+          amount_ml?: number
+          created_at?: string
+          id?: string
+          logged_at?: string
+          member_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "water_logs_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "family_members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      wellness_settings: {
+        Row: {
+          created_at: string
+          exercise_goal_min: number
+          id: string
+          member_id: string | null
+          sleep_goal_min: number
+          target_bedtime: string | null
+          target_wake_time: string | null
+          updated_at: string
+          user_id: string
+          water_goal_ml: number
+          water_reminder_min: number
+        }
+        Insert: {
+          created_at?: string
+          exercise_goal_min?: number
+          id?: string
+          member_id?: string | null
+          sleep_goal_min?: number
+          target_bedtime?: string | null
+          target_wake_time?: string | null
+          updated_at?: string
+          user_id: string
+          water_goal_ml?: number
+          water_reminder_min?: number
+        }
+        Update: {
+          created_at?: string
+          exercise_goal_min?: number
+          id?: string
+          member_id?: string | null
+          sleep_goal_min?: number
+          target_bedtime?: string | null
+          target_wake_time?: string | null
+          updated_at?: string
+          user_id?: string
+          water_goal_ml?: number
+          water_reminder_min?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wellness_settings_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "family_members"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
