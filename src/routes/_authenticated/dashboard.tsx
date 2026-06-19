@@ -177,6 +177,10 @@ function Dashboard() {
               <FamilySection />
             </div>
 
+            <div className="mt-6">
+              <WellnessTrackers />
+            </div>
+
             <div className="mt-6 grid gap-6 lg:grid-cols-3">
               <div className="space-y-6 lg:col-span-2">
                 <section className="rounded-2xl border border-border bg-card p-6 shadow-card">
