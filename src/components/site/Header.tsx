@@ -102,9 +102,14 @@ export function Header() {
               {n.label}
             </a>
           ))}
-          <Button asChild size="sm" className="mt-2">
+          <Button asChild size="sm" variant="destructive" className="mt-2">
+            <Link to="/sos" onClick={() => setOpen(false)}>
+              <Siren className="size-4" /> {t("common.sos", "SOS")}
+            </Link>
+          </Button>
+          <Button asChild size="sm" className="mt-1">
             <Link to={user ? "/dashboard" : "/auth"} onClick={() => setOpen(false)}>
-              {user ? "Dashboard" : "Sign in"}
+              {user ? t("nav.dashboard", "Dashboard") : t("nav.signin", "Sign in")}
             </Link>
           </Button>
         </div>
