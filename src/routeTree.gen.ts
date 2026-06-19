@@ -18,6 +18,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedWaterTrackerRouteImport } from './routes/_authenticated/water-tracker'
 import { Route as AuthenticatedHistoryRouteImport } from './routes/_authenticated/history'
+import { Route as AuthenticatedExerciseTrackerRouteImport } from './routes/_authenticated/exercise-tracker'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedToolsToolRouteImport } from './routes/_authenticated/tools/$tool'
 
@@ -66,6 +67,12 @@ const AuthenticatedHistoryRoute = AuthenticatedHistoryRouteImport.update({
   path: '/history',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedExerciseTrackerRoute =
+  AuthenticatedExerciseTrackerRouteImport.update({
+    id: '/exercise-tracker',
+    path: '/exercise-tracker',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -85,6 +92,7 @@ export interface FileRoutesByFullPath {
   '/sos': typeof SosRoute
   '/terms': typeof TermsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/exercise-tracker': typeof AuthenticatedExerciseTrackerRoute
   '/history': typeof AuthenticatedHistoryRoute
   '/water-tracker': typeof AuthenticatedWaterTrackerRoute
   '/tools/$tool': typeof AuthenticatedToolsToolRoute
@@ -97,6 +105,7 @@ export interface FileRoutesByTo {
   '/sos': typeof SosRoute
   '/terms': typeof TermsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/exercise-tracker': typeof AuthenticatedExerciseTrackerRoute
   '/history': typeof AuthenticatedHistoryRoute
   '/water-tracker': typeof AuthenticatedWaterTrackerRoute
   '/tools/$tool': typeof AuthenticatedToolsToolRoute
@@ -111,6 +120,7 @@ export interface FileRoutesById {
   '/sos': typeof SosRoute
   '/terms': typeof TermsRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/exercise-tracker': typeof AuthenticatedExerciseTrackerRoute
   '/_authenticated/history': typeof AuthenticatedHistoryRoute
   '/_authenticated/water-tracker': typeof AuthenticatedWaterTrackerRoute
   '/_authenticated/tools/$tool': typeof AuthenticatedToolsToolRoute
@@ -125,6 +135,7 @@ export interface FileRouteTypes {
     | '/sos'
     | '/terms'
     | '/dashboard'
+    | '/exercise-tracker'
     | '/history'
     | '/water-tracker'
     | '/tools/$tool'
@@ -137,6 +148,7 @@ export interface FileRouteTypes {
     | '/sos'
     | '/terms'
     | '/dashboard'
+    | '/exercise-tracker'
     | '/history'
     | '/water-tracker'
     | '/tools/$tool'
@@ -150,6 +162,7 @@ export interface FileRouteTypes {
     | '/sos'
     | '/terms'
     | '/_authenticated/dashboard'
+    | '/_authenticated/exercise-tracker'
     | '/_authenticated/history'
     | '/_authenticated/water-tracker'
     | '/_authenticated/tools/$tool'
@@ -230,6 +243,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedHistoryRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/exercise-tracker': {
+      id: '/_authenticated/exercise-tracker'
+      path: '/exercise-tracker'
+      fullPath: '/exercise-tracker'
+      preLoaderRoute: typeof AuthenticatedExerciseTrackerRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
       path: '/dashboard'
@@ -249,6 +269,7 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedExerciseTrackerRoute: typeof AuthenticatedExerciseTrackerRoute
   AuthenticatedHistoryRoute: typeof AuthenticatedHistoryRoute
   AuthenticatedWaterTrackerRoute: typeof AuthenticatedWaterTrackerRoute
   AuthenticatedToolsToolRoute: typeof AuthenticatedToolsToolRoute
@@ -256,6 +277,7 @@ interface AuthenticatedRouteRouteChildren {
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedExerciseTrackerRoute: AuthenticatedExerciseTrackerRoute,
   AuthenticatedHistoryRoute: AuthenticatedHistoryRoute,
   AuthenticatedWaterTrackerRoute: AuthenticatedWaterTrackerRoute,
   AuthenticatedToolsToolRoute: AuthenticatedToolsToolRoute,
