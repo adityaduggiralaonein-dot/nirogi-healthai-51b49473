@@ -244,3 +244,89 @@ export const deleteSleep = createServerFn({ method: "POST" })
     await supabase.from("sleep_logs").delete().eq("id", data.id).eq("user_id", userId);
     return { ok: true };
   });
+
+/* ------------------------------- Breathing ------------------------------ */
+
+export const getBreathing = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => z.object({ memberId }).parse(input ?? {}))
+  .handler(async ({ data, context }) => {
+    const { supabase, userId } = context;
+    let q = supabase.from("breathing_sessions").select("*").eq("user_id", userId).gte("logged_at", daysAgo(6).toISOString());
+    q = data.memberId ? q.eq("member_id", data.memberId) : q.is("member_id", null);
+    const { data: logs } = await q.order("logged_at", { ascending: false });
+    const rows = logs ?? [];
+    const today = startOfDay().getTime();
+    const todaySec = rows.filter((r) => new Date(r.logged_at).getTime() >= today).reduce((s, r) => s + (r.duration_sec ?? 0), 0);
+    const weekSessions = rows.length;
+    return { logs: rows, todaySec, weekSessions };
+  });
+
+export const logBreathing = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) =>
+    z
+      .object({
+        memberId,
+        technique: z.string().min(1).max(60),
+        duration_sec: z.number().int().min(10).max(7200),
+        cycles: z.number().int().min(0).max(500).nullable().optional(),
+      })
+      .parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    const { supabase, userId } = context;
+    const { memberId: mId, ...rest } = data;
+    const { error } = await supabase.from("breathing_sessions").insert({ user_id: userId, member_id: mId ?? null, ...rest });
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
+/* ------------------------------ Heart rate ------------------------------ */
+
+export const getHeartRate = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => z.object({ memberId }).parse(input ?? {}))
+  .handler(async ({ data, context }) => {
+    const { supabase, userId } = context;
+    let q = supabase.from("heart_rate_logs").select("*").eq("user_id", userId);
+    q = data.memberId ? q.eq("member_id", data.memberId) : q.is("member_id", null);
+    const { data: logs } = await q.order("logged_at", { ascending: false }).limit(30);
+    const rows = logs ?? [];
+    const last = rows[0] ?? null;
+    const avg = rows.length ? Math.round(rows.reduce((s, r) => s + (r.bpm ?? 0), 0) / rows.length) : 0;
+    return { logs: rows, last, avg };
+  });
+
+export const logHeartRate = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) =>
+    z
+      .object({
+        memberId,
+        bpm: z.number().int().min(25).max(240),
+        context: z.string().max(60).nullable().optional(),
+        lang: z.enum(["en", "hi"]).optional(),
+      })
+      .parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    const { supabase, userId } = context;
+    // Simple, deterministic rhythm note (not a medical ECG).
+    const bpm = data.bpm;
+    const hi = data.lang === "hi";
+    let note: string;
+    if (bpm < 60) note = hi ? "आपकी विश्राम हृदय गति सामान्य से कम (ब्रैडीकार्डिया) है। यदि चक्कर आते हों तो डॉक्टर से मिलें।" : "Your resting rate is below the typical range (bradycardia). Common in athletes; see a doctor if you feel dizzy or faint.";
+    else if (bpm <= 100) note = hi ? "आपकी विश्राम हृदय गति सामान्य सीमा में है।" : "Your resting heart rate is within the normal range (60–100 bpm).";
+    else note = hi ? "आपकी विश्राम हृदय गति अधिक (टैकीकार्डिया) है। आराम करके दोबारा मापें; बार-बार अधिक रहने पर डॉक्टर से मिलें।" : "Your resting rate is elevated (tachycardia). Rest and re-measure; if it stays high, consult a doctor.";
+
+    const { error } = await supabase.from("heart_rate_logs").insert({
+      user_id: userId,
+      member_id: data.memberId ?? null,
+      bpm,
+      context: data.context ?? "resting",
+      ai_note: note,
+    });
+    if (error) throw new Error(error.message);
+    return { ok: true, note };
+  });

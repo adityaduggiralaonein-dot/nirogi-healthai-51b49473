@@ -14,6 +14,136 @@ export type Database = {
   }
   public: {
     Tables: {
+      breathing_sessions: {
+        Row: {
+          cycles: number | null
+          duration_sec: number
+          id: string
+          logged_at: string
+          member_id: string | null
+          technique: string
+          user_id: string
+        }
+        Insert: {
+          cycles?: number | null
+          duration_sec: number
+          id?: string
+          logged_at?: string
+          member_id?: string | null
+          technique: string
+          user_id: string
+        }
+        Update: {
+          cycles?: number | null
+          duration_sec?: number
+          id?: string
+          logged_at?: string
+          member_id?: string | null
+          technique?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "breathing_sessions_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "family_members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      diet_compliance: {
+        Row: {
+          created_at: string
+          eaten: boolean
+          id: string
+          meal_date: string
+          meal_slot: string
+          member_id: string | null
+          plan_id: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          eaten?: boolean
+          id?: string
+          meal_date: string
+          meal_slot: string
+          member_id?: string | null
+          plan_id?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          eaten?: boolean
+          id?: string
+          meal_date?: string
+          meal_slot?: string
+          member_id?: string | null
+          plan_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "diet_compliance_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "family_members"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "diet_compliance_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "diet_plans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      diet_plans: {
+        Row: {
+          active: boolean
+          created_at: string
+          id: string
+          member_id: string | null
+          plan: Json | null
+          preferences: Json | null
+          source: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          id?: string
+          member_id?: string | null
+          plan?: Json | null
+          preferences?: Json | null
+          source?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          id?: string
+          member_id?: string | null
+          plan?: Json | null
+          preferences?: Json | null
+          source?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "diet_plans_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "family_members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       exercise_logs: {
         Row: {
           activity: string
@@ -70,6 +200,53 @@ export type Database = {
           },
         ]
       }
+      family_invites: {
+        Row: {
+          accepted_at: string | null
+          accepted_user_id: string | null
+          created_at: string
+          id: string
+          label: string | null
+          member_id: string | null
+          owner_id: string
+          relation: string | null
+          status: string
+          token: string
+        }
+        Insert: {
+          accepted_at?: string | null
+          accepted_user_id?: string | null
+          created_at?: string
+          id?: string
+          label?: string | null
+          member_id?: string | null
+          owner_id: string
+          relation?: string | null
+          status?: string
+          token: string
+        }
+        Update: {
+          accepted_at?: string | null
+          accepted_user_id?: string | null
+          created_at?: string
+          id?: string
+          label?: string | null
+          member_id?: string | null
+          owner_id?: string
+          relation?: string | null
+          status?: string
+          token?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "family_invites_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "family_members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       family_members: {
         Row: {
           age: number | null
@@ -85,6 +262,8 @@ export type Database = {
           health_conditions: string | null
           height_cm: number | null
           id: string
+          invite_status: string | null
+          member_user_id: string | null
           owner_id: string
           recent_surgeries: string | null
           relation: string | null
@@ -105,6 +284,8 @@ export type Database = {
           health_conditions?: string | null
           height_cm?: number | null
           id?: string
+          invite_status?: string | null
+          member_user_id?: string | null
           owner_id: string
           recent_surgeries?: string | null
           relation?: string | null
@@ -125,6 +306,8 @@ export type Database = {
           health_conditions?: string | null
           height_cm?: number | null
           id?: string
+          invite_status?: string | null
+          member_user_id?: string | null
           owner_id?: string
           recent_surgeries?: string | null
           relation?: string | null
@@ -186,6 +369,71 @@ export type Database = {
           },
         ]
       }
+      health_goals: {
+        Row: {
+          ai_plan: Json | null
+          created_at: string
+          current_height_cm: number | null
+          current_weight_kg: number | null
+          daily_calorie_target: number | null
+          goal_type: string
+          id: string
+          member_id: string | null
+          protein_target_g: number | null
+          start_weight_kg: number | null
+          status: string
+          target_height_cm: number | null
+          target_weight_kg: number | null
+          timeline_months: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          ai_plan?: Json | null
+          created_at?: string
+          current_height_cm?: number | null
+          current_weight_kg?: number | null
+          daily_calorie_target?: number | null
+          goal_type: string
+          id?: string
+          member_id?: string | null
+          protein_target_g?: number | null
+          start_weight_kg?: number | null
+          status?: string
+          target_height_cm?: number | null
+          target_weight_kg?: number | null
+          timeline_months?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          ai_plan?: Json | null
+          created_at?: string
+          current_height_cm?: number | null
+          current_weight_kg?: number | null
+          daily_calorie_target?: number | null
+          goal_type?: string
+          id?: string
+          member_id?: string | null
+          protein_target_g?: number | null
+          start_weight_kg?: number | null
+          status?: string
+          target_height_cm?: number | null
+          target_weight_kg?: number | null
+          timeline_months?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "health_goals_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "family_members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       health_score_history: {
         Row: {
           breakdown: Json | null
@@ -214,6 +462,44 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "health_score_history_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "family_members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      heart_rate_logs: {
+        Row: {
+          ai_note: string | null
+          bpm: number
+          context: string | null
+          id: string
+          logged_at: string
+          member_id: string | null
+          user_id: string
+        }
+        Insert: {
+          ai_note?: string | null
+          bpm: number
+          context?: string | null
+          id?: string
+          logged_at?: string
+          member_id?: string | null
+          user_id: string
+        }
+        Update: {
+          ai_note?: string | null
+          bpm?: number
+          context?: string | null
+          id?: string
+          logged_at?: string
+          member_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "heart_rate_logs_member_id_fkey"
             columns: ["member_id"]
             isOneToOne: false
             referencedRelation: "family_members"
@@ -530,6 +816,47 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "water_logs_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "family_members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      weight_logs: {
+        Row: {
+          bmi: number | null
+          created_at: string
+          id: string
+          logged_at: string
+          member_id: string | null
+          note: string | null
+          user_id: string
+          weight_kg: number
+        }
+        Insert: {
+          bmi?: number | null
+          created_at?: string
+          id?: string
+          logged_at?: string
+          member_id?: string | null
+          note?: string | null
+          user_id: string
+          weight_kg: number
+        }
+        Update: {
+          bmi?: number | null
+          created_at?: string
+          id?: string
+          logged_at?: string
+          member_id?: string | null
+          note?: string | null
+          user_id?: string
+          weight_kg?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "weight_logs_member_id_fkey"
             columns: ["member_id"]
             isOneToOne: false
             referencedRelation: "family_members"

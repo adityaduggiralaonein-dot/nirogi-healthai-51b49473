@@ -30,6 +30,14 @@ export type ToolResult = {
     fibre_g?: number;
     dish_name?: string;
   };
+  /** Packaged-food label / ingredient analysis (CalorieEye label mode). */
+  ingredientScan?: {
+    productName?: string;
+    productScore?: number; // 0-10
+    grade?: string; // Excellent / Good / Average / Poor / Very Poor / Dangerous
+    ingredients?: { name: string; rating: string; reason: string; disease_risk: string }[];
+    indiaAlerts?: string[];
+  };
 };
 
 const GATEWAY_URL = "https://ai.gateway.lovable.dev/v1/chat/completions";
@@ -46,7 +54,8 @@ const RESULT_SHAPE = `Return ONLY valid JSON (no markdown, no code fences) with 
   "specialist": string (which doctor/specialist to consult, or ""),
   "preventionScore": number (0-100, ONLY for CancerSense, otherwise omit),
   "sugarImpact": { "score": number, "level": string, "glycemicIndex": number, "glycemicLoad": number, "verdict": "Safe"|"Caution"|"Avoid" } (ONLY for SugarSense and CalorieEye, otherwise omit),
-  "nutrition": { "dish_name": string, "calories": number, "protein_g": number, "sugar_g": number, "sodium_mg": number, "saturated_fat_g": number, "fibre_g": number } (ONLY for meal analysis, otherwise omit)
+  "nutrition": { "dish_name": string, "calories": number, "protein_g": number, "sugar_g": number, "sodium_mg": number, "saturated_fat_g": number, "fibre_g": number } (ONLY for meal analysis, otherwise omit),
+  "ingredientScan": { "productName": string, "productScore": number (0-10), "grade": "Excellent"|"Good"|"Average"|"Poor"|"Very Poor"|"Dangerous", "ingredients": [{ "name": string, "rating": "Safe"|"Caution"|"Harmful", "reason": string (plain language), "disease_risk": string }], "indiaAlerts": string[] } (ONLY for CalorieEye when a packaged food label / ingredient list is shown, otherwise omit)
 }`;
 
 type ContentPart =
@@ -142,6 +151,7 @@ export async function callHealthAI(opts: {
     preventionScore: typeof parsed.preventionScore === "number" ? parsed.preventionScore : undefined,
     sugarImpact: parsed.sugarImpact,
     nutrition: parsed.nutrition,
+    ingredientScan: parsed.ingredientScan,
   };
 }
 
@@ -154,7 +164,7 @@ export function buildToolPrompt(tool: string): string {
     case "sensecheck":
       return "You are SenseCheck, a comprehensive vision and hearing screening assistant. Produce a full clinical-depth report from the described symptoms. VISION — use a 'Vision assessment' section covering likely refractive errors (myopia, hyperopia, astigmatism, presbyopia), and screen for red-flag conditions (glaucoma risk, cataract, colour blindness, night blindness/retinitis pigmentosa, macular issues); for each finding give a plain-language clinical explanation, daily-life impact, and the action/specialist (optometrist vs ophthalmologist) with the tests to request and rough INR cost (e.g. refraction Rs.200-500, Ishihara colour test Rs.300-800, IOP/visual field/OCT for glaucoma Rs.500-3000). HEARING — use a 'Hearing assessment' section covering conductive vs sensorineural patterns, tinnitus patterns and what each suggests (noise exposure, early Meniere's, sensorineural damage) with severity, the 60-60 rule advice, and age-related hearing loss (presbycusis) risk if the person is above 50. Recommend specific home checks and when to see an optometrist, ophthalmologist or ENT/audiologist. Map riskLevel sensibly and flag sudden vision/hearing loss as urgent.";
     case "calorieeye":
-      return "You are CalorieEye, a nutrition vision assistant with diabetes intelligence. Identify the meal in the photo and estimate nutrition. ALWAYS fill the nutrition object with numeric estimates AND the sugarImpact object: score (0-100 Sugar Impact Index), level (Safe/Low/Moderate/High/Critical), glycemicIndex, glycemicLoad and verdict (Safe/Caution/Avoid for diabetics). Use sections 'What I see', 'Nutrition vs daily limits', and 'Sugar & glycemic impact'. If the user's profile mentions diabetes or pre-diabetes, add a clear diabetes-specific warning for any high-risk item in warnings.";
+      return "You are CalorieEye, a nutrition vision assistant with diabetes intelligence AND packaged-food label intelligence. FIRST decide what the image shows. (A) If it is a PREPARED MEAL/DISH: identify it, ALWAYS fill the nutrition object with numeric estimates AND the sugarImpact object (score 0-100, level Safe/Low/Moderate/High/Critical, glycemicIndex, glycemicLoad, verdict Safe/Caution/Avoid). Use sections 'What I see', 'Nutrition vs daily limits', 'Sugar & glycemic impact'. (B) If it is a PACKAGED-FOOD LABEL or INGREDIENT LIST: fill the ingredientScan object instead — productName, a productScore (0-10, higher is healthier), a grade, and an ingredients array where each item has name, rating (Safe/Caution/Harmful), a plain-language reason, and disease_risk. Put India-specific additive/palm-oil/maida/added-sugar/high-sodium concerns in indiaAlerts. Use sections 'Product overview', 'Ingredient breakdown', 'Healthier alternatives'. If the user's profile mentions diabetes or pre-diabetes, add a clear diabetes-specific warning for any high-risk item in warnings.";
     case "skinscan":
       return "You are SkinScan, a dermatology visual screening assistant. From the photo and notes, assess the most likely condition and severity. Use sections 'Likely condition', 'Severity', and 'Care guidance'. If ANY sign suggests possible skin cancer (asymmetry, irregular border, multiple colours, large diameter, evolving), set riskLevel to 'urgent' and say so clearly in warnings. Never give a definitive diagnosis.";
     case "medverify":
