@@ -151,6 +151,7 @@ export async function callHealthAI(opts: {
     preventionScore: typeof parsed.preventionScore === "number" ? parsed.preventionScore : undefined,
     sugarImpact: parsed.sugarImpact,
     nutrition: parsed.nutrition,
+    ingredientScan: parsed.ingredientScan,
   };
 }
 
