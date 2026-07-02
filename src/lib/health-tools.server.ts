@@ -54,7 +54,8 @@ const RESULT_SHAPE = `Return ONLY valid JSON (no markdown, no code fences) with 
   "specialist": string (which doctor/specialist to consult, or ""),
   "preventionScore": number (0-100, ONLY for CancerSense, otherwise omit),
   "sugarImpact": { "score": number, "level": string, "glycemicIndex": number, "glycemicLoad": number, "verdict": "Safe"|"Caution"|"Avoid" } (ONLY for SugarSense and CalorieEye, otherwise omit),
-  "nutrition": { "dish_name": string, "calories": number, "protein_g": number, "sugar_g": number, "sodium_mg": number, "saturated_fat_g": number, "fibre_g": number } (ONLY for meal analysis, otherwise omit)
+  "nutrition": { "dish_name": string, "calories": number, "protein_g": number, "sugar_g": number, "sodium_mg": number, "saturated_fat_g": number, "fibre_g": number } (ONLY for meal analysis, otherwise omit),
+  "ingredientScan": { "productName": string, "productScore": number (0-10), "grade": "Excellent"|"Good"|"Average"|"Poor"|"Very Poor"|"Dangerous", "ingredients": [{ "name": string, "rating": "Safe"|"Caution"|"Harmful", "reason": string (plain language), "disease_risk": string }], "indiaAlerts": string[] } (ONLY for CalorieEye when a packaged food label / ingredient list is shown, otherwise omit)
 }`;
 
 type ContentPart =
