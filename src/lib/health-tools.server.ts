@@ -30,6 +30,14 @@ export type ToolResult = {
     fibre_g?: number;
     dish_name?: string;
   };
+  /** Packaged-food label / ingredient analysis (CalorieEye label mode). */
+  ingredientScan?: {
+    productName?: string;
+    productScore?: number; // 0-10
+    grade?: string; // Excellent / Good / Average / Poor / Very Poor / Dangerous
+    ingredients?: { name: string; rating: string; reason: string; disease_risk: string }[];
+    indiaAlerts?: string[];
+  };
 };
 
 const GATEWAY_URL = "https://ai.gateway.lovable.dev/v1/chat/completions";
