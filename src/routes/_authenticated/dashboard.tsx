@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { Loader2, LogOut, Upload, FileText, ArrowRight, History } from "lucide-react";
+import { Loader2, LogOut, Upload, FileText, ArrowRight, History, Target, UtensilsCrossed, Wind, HeartPulse } from "lucide-react";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -179,6 +179,34 @@ function Dashboard() {
 
             <div className="mt-6">
               <WellnessTrackers />
+            </div>
+
+            <div className="mt-6">
+              <section className="rounded-2xl border border-border bg-card p-6 shadow-card">
+                <h2 className="font-display text-lg font-semibold">{t("dash.more_tools", "Goals & wellness tools")}</h2>
+                <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                  <Link to="/goals" className="group rounded-xl border border-border p-4 transition-colors hover:bg-muted/50">
+                    <span className="flex size-9 items-center justify-center rounded-xl bg-primary/10 text-primary"><Target className="size-5" /></span>
+                    <p className="mt-3 font-display text-sm font-bold">{t("dash.goals", "Health Goals")}</p>
+                    <p className="text-xs text-muted-foreground">{t("dash.goals_note", "Weight, BMI & daily targets")}</p>
+                  </Link>
+                  <Link to="/diet-plan" className="group rounded-xl border border-border p-4 transition-colors hover:bg-muted/50">
+                    <span className="flex size-9 items-center justify-center rounded-xl bg-success/10 text-success"><UtensilsCrossed className="size-5" /></span>
+                    <p className="mt-3 font-display text-sm font-bold">{t("dash.diet", "AI Diet Plan")}</p>
+                    <p className="text-xs text-muted-foreground">{t("dash.diet_note", "7-day personalised meals")}</p>
+                  </Link>
+                  <Link to="/breathe" className="group rounded-xl border border-border p-4 transition-colors hover:bg-muted/50">
+                    <span className="flex size-9 items-center justify-center rounded-xl bg-primary/10 text-primary"><Wind className="size-5" /></span>
+                    <p className="mt-3 font-display text-sm font-bold">{t("dash.breathe", "Breathing")}</p>
+                    <p className="text-xs text-muted-foreground">{t("dash.breathe_note", "Guided calm sessions")}</p>
+                  </Link>
+                  <Link to="/heart-rhythm" className="group rounded-xl border border-border p-4 transition-colors hover:bg-muted/50">
+                    <span className="flex size-9 items-center justify-center rounded-xl bg-pulse/10 text-pulse"><HeartPulse className="size-5" /></span>
+                    <p className="mt-3 font-display text-sm font-bold">{t("dash.heart", "Heart Rhythm")}</p>
+                    <p className="text-xs text-muted-foreground">{t("dash.heart_note", "Camera pulse (PPG)")}</p>
+                  </Link>
+                </div>
+              </section>
             </div>
 
             <div className="mt-6 grid gap-6 lg:grid-cols-3">
