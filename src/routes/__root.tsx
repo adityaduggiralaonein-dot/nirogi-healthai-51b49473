@@ -15,6 +15,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { LanguageProvider } from "@/lib/i18n";
 import { ActiveMemberProvider } from "@/lib/active-member";
+import { InstallPrompt } from "@/components/site/InstallPrompt";
 
 function NotFoundComponent() {
   return (
@@ -80,7 +81,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   head: () => ({
     meta: [
       { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
+      { name: "theme-color", content: "#0d6e7c" },
+      { name: "mobile-web-app-capable", content: "yes" },
+      { name: "apple-mobile-web-app-capable", content: "yes" },
+      { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" },
+      { name: "apple-mobile-web-app-title", content: "Nirogi" },
       { title: "NIROGI.AI" },
       { name: "description", content: "Nirogi turns powerful medical AI into nine simple tools — check your medicines, scan your skin, read your meals, assess cancer, diabetes & heart risk and more." },
       { name: "author", content: "Lovable" },
@@ -99,6 +105,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         rel: "stylesheet",
         href: appCss,
       },
+      { rel: "manifest", href: "/manifest.webmanifest" },
+      { rel: "apple-touch-icon", href: "/icons/nirogi-512.png" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
@@ -146,6 +154,7 @@ function RootComponent() {
         <ActiveMemberProvider>
           {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
           <Outlet />
+          <InstallPrompt />
           <Toaster richColors position="top-center" />
         </ActiveMemberProvider>
       </LanguageProvider>
