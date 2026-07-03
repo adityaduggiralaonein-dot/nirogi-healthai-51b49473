@@ -21,7 +21,9 @@ import { Route as AuthenticatedSleepTrackerRouteImport } from './routes/_authent
 import { Route as AuthenticatedHistoryRouteImport } from './routes/_authenticated/history'
 import { Route as AuthenticatedGoalsRouteImport } from './routes/_authenticated/goals'
 import { Route as AuthenticatedExerciseTrackerRouteImport } from './routes/_authenticated/exercise-tracker'
+import { Route as AuthenticatedDietPlanRouteImport } from './routes/_authenticated/diet-plan'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedBreatheRouteImport } from './routes/_authenticated/breathe'
 import { Route as AuthenticatedToolsToolRouteImport } from './routes/_authenticated/tools/$tool'
 
 const TermsRoute = TermsRouteImport.update({
@@ -86,9 +88,19 @@ const AuthenticatedExerciseTrackerRoute =
     path: '/exercise-tracker',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedDietPlanRoute = AuthenticatedDietPlanRouteImport.update({
+  id: '/diet-plan',
+  path: '/diet-plan',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedBreatheRoute = AuthenticatedBreatheRouteImport.update({
+  id: '/breathe',
+  path: '/breathe',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedToolsToolRoute = AuthenticatedToolsToolRouteImport.update({
@@ -104,7 +116,9 @@ export interface FileRoutesByFullPath {
   '/privacy': typeof PrivacyRoute
   '/sos': typeof SosRoute
   '/terms': typeof TermsRoute
+  '/breathe': typeof AuthenticatedBreatheRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/diet-plan': typeof AuthenticatedDietPlanRoute
   '/exercise-tracker': typeof AuthenticatedExerciseTrackerRoute
   '/goals': typeof AuthenticatedGoalsRoute
   '/history': typeof AuthenticatedHistoryRoute
@@ -119,7 +133,9 @@ export interface FileRoutesByTo {
   '/privacy': typeof PrivacyRoute
   '/sos': typeof SosRoute
   '/terms': typeof TermsRoute
+  '/breathe': typeof AuthenticatedBreatheRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/diet-plan': typeof AuthenticatedDietPlanRoute
   '/exercise-tracker': typeof AuthenticatedExerciseTrackerRoute
   '/goals': typeof AuthenticatedGoalsRoute
   '/history': typeof AuthenticatedHistoryRoute
@@ -136,7 +152,9 @@ export interface FileRoutesById {
   '/privacy': typeof PrivacyRoute
   '/sos': typeof SosRoute
   '/terms': typeof TermsRoute
+  '/_authenticated/breathe': typeof AuthenticatedBreatheRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/diet-plan': typeof AuthenticatedDietPlanRoute
   '/_authenticated/exercise-tracker': typeof AuthenticatedExerciseTrackerRoute
   '/_authenticated/goals': typeof AuthenticatedGoalsRoute
   '/_authenticated/history': typeof AuthenticatedHistoryRoute
@@ -153,7 +171,9 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/sos'
     | '/terms'
+    | '/breathe'
     | '/dashboard'
+    | '/diet-plan'
     | '/exercise-tracker'
     | '/goals'
     | '/history'
@@ -168,7 +188,9 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/sos'
     | '/terms'
+    | '/breathe'
     | '/dashboard'
+    | '/diet-plan'
     | '/exercise-tracker'
     | '/goals'
     | '/history'
@@ -184,7 +206,9 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/sos'
     | '/terms'
+    | '/_authenticated/breathe'
     | '/_authenticated/dashboard'
+    | '/_authenticated/diet-plan'
     | '/_authenticated/exercise-tracker'
     | '/_authenticated/goals'
     | '/_authenticated/history'
@@ -289,11 +313,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedExerciseTrackerRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/diet-plan': {
+      id: '/_authenticated/diet-plan'
+      path: '/diet-plan'
+      fullPath: '/diet-plan'
+      preLoaderRoute: typeof AuthenticatedDietPlanRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/breathe': {
+      id: '/_authenticated/breathe'
+      path: '/breathe'
+      fullPath: '/breathe'
+      preLoaderRoute: typeof AuthenticatedBreatheRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/tools/$tool': {
@@ -307,7 +345,9 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedBreatheRoute: typeof AuthenticatedBreatheRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedDietPlanRoute: typeof AuthenticatedDietPlanRoute
   AuthenticatedExerciseTrackerRoute: typeof AuthenticatedExerciseTrackerRoute
   AuthenticatedGoalsRoute: typeof AuthenticatedGoalsRoute
   AuthenticatedHistoryRoute: typeof AuthenticatedHistoryRoute
@@ -317,7 +357,9 @@ interface AuthenticatedRouteRouteChildren {
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedBreatheRoute: AuthenticatedBreatheRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedDietPlanRoute: AuthenticatedDietPlanRoute,
   AuthenticatedExerciseTrackerRoute: AuthenticatedExerciseTrackerRoute,
   AuthenticatedGoalsRoute: AuthenticatedGoalsRoute,
   AuthenticatedHistoryRoute: AuthenticatedHistoryRoute,
