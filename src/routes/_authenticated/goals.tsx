@@ -53,7 +53,7 @@ function GoalsPage() {
 
   useEffect(() => {
     if (goal) {
-      setGoalType(goal.goal_type);
+      setGoalType(goal.goal_type as (typeof GOAL_TYPES)[number]["value"]);
       setWeight(String(goal.current_weight_kg ?? ""));
       setHeight(String(goal.current_height_cm ?? ""));
       setTargetWeight(goal.target_weight_kg ? String(goal.target_weight_kg) : "");
