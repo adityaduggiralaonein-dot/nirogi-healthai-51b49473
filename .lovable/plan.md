@@ -1,66 +1,58 @@
-# Nirogi — Complete Wiring + PWA + Dashboard Hub
+# Nirogi — Devices, new tools, family invite & SenseCheck (single shipment)
 
-Two goals: (1) finish and expose every backend feature that is already built but has no UI, and (2) turn Nirogi into an installable mobile-style PWA with a full personal-health dashboard hub of sensor-driven modules and a Connected Devices page. Scope confirmed: **all modules, functional depth**; **phone sensors real, Health Connect / Google Fit as clearly-labelled best-effort UI**.
+Four priorities, all reusing the existing website style (Sora/Manrope, teal/emerald tokens, `SiteLayout`, `ClinicalDisclaimer`, `ReportActions`, the `runTool` AI pipeline, Recharts). No new DB tables — new modules persist per-user via localStorage; AI insight reuses the existing gateway.
 
-## Current state (what already exists)
+## Priority 1 — Connected Devices card + page
 
-- **Backend built, no UI yet:** `goals.functions` (weight/BMI/calorie targets), `diet.functions` (7-day plan generate + upload + compliance), `family-invite.functions` (invite links + accept), `voice.functions` (TTS/STT), `wellness.functions` breathing + heart-rate logging, `health-score.functions` (already 4-pillar).
-- **Pages that exist:** dashboard, water-tracker, exercise-tracker, sleep-tracker, tools/$tool, history, auth, home + legal pages.
-- **Missing:** every new page/route for the built backend, all PWA plumbing, and all new spec modules.
+- **Dashboard card:** add an "Integrations & devices" card to `dashboard.tsx` (next to the Goals/wellness grid) linking to a new `/dashboard/devices` route, showing a live connected-count badge read from localStorage.
+- **New route `_authenticated/dashboard.devices.tsx`** with 3 tabs (shadcn `Tabs`), nothing auto-enabled:
+  - **Phone Sensors** — GPS, Motion/Accelerometer, Microphone, Camera, Notifications. Each row has an Enable toggle that requests the *real* permission on tap (`navigator.geolocation`, `DeviceMotionEvent.requestPermission`, `getUserMedia` audio/video, `Notification.requestPermission`) and persists granted/denied status in localStorage. Denied → clear inline fallback text.
+  - **Android Health Connect** — clearly-labelled best-effort: "Install the free Nirogi Sync companion app (coming soon)" with the data-type list (steps, heart rate, sleep, weight, SpO2). No fake "connected" state.
+  - **Google Fit** — a "Connect (setup required)" flow scaffolded (OAuth implicit-flow button + REST fetch stubs) that stays disabled with a note until a Google client ID is provided. No secrets requested now.
+- Connection status stored under `nirogi_devices` and surfaced as status pills on each row and on the dashboard card.
 
-## Phase 1 — Expose the already-built features (Priority 1)
+## Priority 2 — Remaining health tools/modules
 
-New routes + dashboard cards so each backend feature is usable:
+Two delivery styles, both opening as their own pages and styled like the current tool pages.
 
-- `/goals` — Health Goals: goal type, current/target weight, timeline; AI daily calorie target; weekly weigh-in logging with a Recharts progress-vs-target chart and BMI. Wired to `goals.functions`.
-- `/diet-plan` — Diet Plan: questionnaire → AI 7-day plan with tick-off compliance; upload doctor/trainer plan (image/PDF) → AI extract → activate. Today's meals surface on dashboard. Wired to `diet.functions`.
-- `/breathe` — BreatheEasy: animated guided breathing (Box, 4-7-8, Calm) with pacing + session logging via `logBreathing`.
-- `/heart-rhythm` — HeartRhythm: camera finger-on-lens PPG over ~30s, live pulse waveform, BPM logged via `logHeartRate`, AI rhythm note ("not a medical ECG").
-- `/sense-check` — voice-guided vision + hearing test using `voice.functions` TTS/STT, typed fallback, red-flag dialog.
-- `/invite/$token` — public invite-accept: shows inviter, Google sign-in, links the new auth user to the family record after session hydration (`getInviteInfo` / `acceptFamilyInvite`). Family card gets a "Generate invite link" action.
-- Dashboard: add cards for Goals, Diet, Breathe, HeartRhythm, SenseCheck; extend `FamilySection` with invite generation + joined-status.
-- Register all new tools in `src/lib/tools.tsx` where they belong in the grid; keep the compact disclaimer + danger-triangle dialog style.
+**A. Questionnaire / manual AI tools** — added to `src/lib/tools.tsx` (`TOOLS` array) with a matching `buildToolPrompt` case in `health-tools.server.ts`, so they immediately run through the existing `ToolRunner` at `/tools/$tool`, get history + downloadable reports, disclaimers and red-flag dialogs for free:
+- **StressSense** — mental-health & stress questionnaire (PSS-style: sleep, mood, workload, anxiety), returns stress level, drivers, coping plan, links to `/breathe`.
+- **GlucoTrack** — manual glucose reading (fasting/post-meal mg/dL) + symptoms → interpretation vs thresholds, trend advice, ties into SugarSense.
+- **ThermoCheck** — body temperature + symptoms → fever severity, hydration/med guidance, red-flag escalation.
+- **BoneHealth** — bone & joint questionnaire (pain, stiffness, calcium/vit-D, activity, age/gender) → osteoporosis/arthritis risk, exercises, tests + INR costs.
+- **BioAge** — biological age index computed from saved profile + lifestyle inputs → bio-age vs chronological, top ageing accelerators, 3 weekly actions (uses `preventionScore` meter).
 
-## Phase 2 — PWA / installable app (Priority 2)
+**B. Sensor / live-measurement modules** — dedicated pages that reuse the tool-page shell (header hero + how-it-works + result panel via `ToolRunner`'s result renderer or a shared result card), measure on-device, then call `runTool` with the measured value as fields for the AI insight:
+- **OxySense (SpO2/oxygen)** — camera-lens PPG (same getUserMedia + red-channel sampling as `heart-rhythm.tsx`) estimating SpO2 %; clearly "not a medical pulse-oximeter"; AI note + logged.
+- **HearWell (hearing health)** — Web Audio tone-sweep / dB self-test with left/right playback and a "can you hear this?" response grid → hearing screen + 60-60 rule; ENT referral flagging.
+- **EyeStrain (screen eye strain)** — screen-time via Page Visibility + a 20-20-20 timer and symptom check → strain score, break plan.
+- **UVGuard (UV & skin exposure)** — geolocation + Open-Meteo UV API (public, no key) → current UV index, safe-exposure minutes by skin type, sunscreen advice.
 
-Per the PWA skill (offline requested → guarded `vite-plugin-pwa`, `generateSW`):
+All new module pages: back arrow to dashboard, a 7-day Recharts trend from localStorage history, "Log manually", a "Data source" footer line, the AI insight box, empty state when no data (no mock numbers), and `ClinicalDisclaimer`.
 
-- `public/manifest.webmanifest` (name Nirogi AI, standalone, theme `#00E5C3`, bg `#060B18`, portrait) + generated `icon-192`/`icon-512` (maskable) and an apple-touch-icon.
-- Head tags for manifest + theme-color + apple-touch-icon in `__root.tsx`.
-- `vite-plugin-pwa` with `registerType: autoUpdate`, `devOptions.enabled=false`, `injectRegister: null`; a single guarded registration wrapper that refuses to register in dev / iframe / Lovable preview hostnames / `?sw=off`, unregisters stale workers there, uses NetworkFirst for navigations, CacheFirst for hashed assets, and excludes `/~oauth`.
-- **Install prompt UI:** an in-app install banner/toast that listens for `beforeinstallprompt` (Android/Chrome) and shows iOS "Add to Home Screen" instructions on iOS Safari. Dismissible, remembered in localStorage. Offline works only in the published app (noted to user).
+**Dashboard wiring:** extend the dashboard hub grid so every new tool/module has a card (icon in its accent colour) opening its page. Questionnaire tools also appear automatically in the existing "Jump into a tool" list since they're in `TOOLS`.
 
-## Phase 3 — Dashboard hub + all modules (Priority 1 + 2)
+## Priority 3 — Family invite acceptance page
 
-Restyle the dashboard into a mobile-app-style hub grid. Every module page follows the spec's shared template: back arrow to dashboard, 7-day Recharts trend, "Log manually", a "Data Source" footer, and a Lovable-AI insight box; **no mock data** — empty state when none. New/rebuilt module routes under `/dashboard/*`:
+- **New public route `src/routes/invite.$token.tsx`** (top-level, SSR-safe, no auth gate). Loader-free; calls `getInviteInfo` client-side to show the inviter name, the member label/relation, and invite status (pending/accepted/revoked/invalid) with tailored messaging.
+- If signed out: "Continue with Google" via `lovable.auth.signInWithOAuth` with `redirect_uri = ${origin}/invite/${token}` (public route, safe), token also stashed in `sessionStorage` as backup.
+- On return with a session (via `useAuth`): auto-call `acceptFamilyInvite({ token })`, handle `INVALID_INVITE / REVOKED / SELF_INVITE / ALREADY_USED`, then success state → button to `/dashboard`. Each member logs in with their own Google account and sees only their own data (existing backend already links `member_user_id`).
+- **FamilySection:** add a "Generate invite link" action (dialog collecting name + relation → `createFamilyInvite`, copy-to-clipboard link), list existing invites with status via `listFamilyInvites`, and a revoke button via `revokeFamilyInvite`.
 
-```text
-sleep  fitness  water  heart-rate  stress  weight  glucose
-spo2   temperature  bone-health  hearing-health  eye-strain
-bio-age  uv-exposure  altitude  menstrual  energy  devices
-```
+## Priority 4 — Voice-guided SenseCheck page
 
-- Existing water/sleep/exercise get `/dashboard/*` entries (reuse current logic; old routes redirect).
-- **Real phone sensors:** heart-rate + spo2 (camera PPG via getUserMedia + canvas red-channel), fitness (DeviceMotion steps + geolocation route), hearing-health (Web Audio dB meter), altitude (Generic Sensor barometer + GPS fallback), uv-exposure (GPS + Open-Meteo UV API), eye-strain (Page Visibility screen-time + optional blink cam), stress (mood check-in + 4-7-8 breathing).
-- **Manual + computed:** weight/BMI (+goal, links to Goals), glucose (mg/dL thresholds + SugarSense inline), temperature, bone-health, menstrual (gated by profile gender), bio-age (weighted model over available inputs), energy (composite over sleep/steps/hydration/nutrition).
-- **Storage:** new modules use per-key localStorage as the spec specifies (`nirogi_sleep_logs`, `nirogi_fitness_logs`, …); AI insight sentences via a `createServerFn` calling Lovable AI. No new DB tables required for these modules.
-
-## Phase 4 — Connected Devices page (`/dashboard/devices`)
-
-Three tabs, nothing auto-enabled:
-
-- **Phone Sensors:** GPS, Accelerometer, Microphone, Rear/Front Camera, Barometer, Notifications — each with an Enable toggle that requests the real permission on tap and persists status; feeds the modules above. A dashboard **Integrations card** links here.
-- **Android Health Connect:** clearly-labelled "install the free Nirogi Sync app (coming soon)" best-effort path with the data-type list — no fake connection.
-- **Google Fit:** connect flow scaffolded (OAuth implicit flow + REST fetch stubs) but disabled/best-effort until a Google OAuth client ID is provided; shown as "Connect (setup required)".
+- **New route `_authenticated/sense-check.tsx`** — a guided, accessible flow for the existing `sensecheck` prompt: step-through vision then hearing prompts, each with a mic "Speak your answer" button (Web Speech API, same pattern as `ToolRunner.startVoice`) and a typed fallback. Optional TTS read-out of each question using the browser `speechSynthesis` (with the existing `voice.functions` as server fallback).
+- Submits combined answers through `runTool({ tool: "sensecheck" })`, renders the result with the shared result card including warnings/urgent red-flag dialog, specialist and `ReportActions`.
+- Dashboard hub + the SenseCheck tool card link here (the generic `/tools/sensecheck` remains as a fallback).
 
 ## Technical notes
 
-- New pages are TanStack routes under `src/routes/_authenticated/` (auth-gated) except `/invite/$token` (public). File names use dot convention, e.g. `_authenticated/dashboard.heart-rate.tsx` → `/dashboard/heart-rate`.
-- Reuse `ReportActions`, `ClinicalDisclaimer`, i18n `t()`, Recharts, and the teal/emerald Sora/Manrope style throughout for consistency.
-- AI insights use the existing Lovable AI Gateway pattern via server functions (no key in client), Hindi honoured through the `lang` passthrough.
-- One dashboard `AudioContext`/camera stream per active use; strict cleanup on unmount; permission-denied fallbacks everywhere.
+- New auth-gated pages live under `src/routes/_authenticated/` using dot-convention filenames (`dashboard.devices.tsx` → `/dashboard/devices`); the invite page is the only public one.
+- Sensor code: one camera/`AudioContext` stream per active use, strict cleanup on unmount, permission-denied fallbacks everywhere.
+- AI insight for sensor modules and all questionnaire tools flows through the existing `runTool` + `buildToolPrompt` (no client API key; Hindi honoured via `lang`).
+- Reuse `ReportActions`, `ClinicalDisclaimer`, i18n `t()`, Recharts and shadcn primitives throughout for consistent UI/UX.
 
 ## Verification
 
-- Typecheck/build clean.
-- Playwright smoke test: install banner appears; each new page renders with empty-state (no mock numbers); camera/mic permission fallbacks; invite-accept flow; diet-plan generate; goals weigh-in; devices toggles request permissions.
+- Typecheck/build clean; `routeTree.gen` regenerates from new files.
+- Playwright smoke: each new tool page renders with empty-state (no mock numbers); device toggles request real permissions; invite page resolves a token and shows accept/sign-in states; a questionnaire tool (e.g. StressSense) returns an AI result; SenseCheck voice page submits and shows warnings.

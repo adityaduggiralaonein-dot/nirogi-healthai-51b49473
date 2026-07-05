@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Loader2, Plus, Users, Trash2, Pencil, User } from "lucide-react";
+import { Loader2, Plus, Users, Trash2, Pencil, User, Link2, Copy, Check, X } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,9 +21,11 @@ import {
   updateFamilyMember,
   deleteFamilyMember,
 } from "@/lib/family.functions";
+import { createFamilyInvite, listFamilyInvites, revokeFamilyInvite } from "@/lib/family-invite.functions";
 import { useActiveMember } from "@/lib/active-member";
 import { useI18n } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
+
 
 type MemberRow = {
   id: string;
@@ -67,15 +69,66 @@ export function FamilySection() {
   const updFn = useServerFn(updateFamilyMember);
   const delFn = useServerFn(deleteFamilyMember);
 
+  const inviteFn = useServerFn(createFamilyInvite);
+  const listInvitesFn = useServerFn(listFamilyInvites);
+  const revokeFn = useServerFn(revokeFamilyInvite);
+
   const [open, setOpen] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
   const [form, setForm] = useState<FormState>(empty);
+
+  const [inviteOpen, setInviteOpen] = useState(false);
+  const [inviteName, setInviteName] = useState("");
+  const [inviteRelation, setInviteRelation] = useState("");
+  const [copied, setCopied] = useState(false);
 
   const { data, isLoading } = useQuery({
     queryKey: ["family-members"],
     queryFn: () => listFn(),
   });
   const members = (data?.members ?? []) as MemberRow[];
+
+  const { data: invitesData } = useQuery({
+    queryKey: ["family-invites"],
+    queryFn: () => listInvitesFn(),
+  });
+  const invites = (invitesData?.invites ?? []) as { id: string; token: string; label: string; relation: string | null; status: string }[];
+
+  const inviteLink = (token: string) => `${typeof window !== "undefined" ? window.location.origin : ""}/invite/${token}`;
+
+  const inviteMut = useMutation({
+    mutationFn: () => inviteFn({ data: { full_name: inviteName.trim(), relation: inviteRelation || null } }),
+    onSuccess: async (res) => {
+      qc.invalidateQueries({ queryKey: ["family-invites"] });
+      qc.invalidateQueries({ queryKey: ["family-members"] });
+      try {
+        await navigator.clipboard.writeText(inviteLink(res.token));
+        toast.success("Invite link copied to clipboard.");
+      } catch {
+        toast.success("Invite created.");
+      }
+      setInviteName("");
+      setInviteRelation("");
+      setInviteOpen(false);
+    },
+    onError: (e) => {
+      const msg = e instanceof Error ? e.message : "";
+      if (msg.includes("LIMIT_REACHED")) toast.error("You can add up to 6 family members.");
+      else toast.error("Couldn't create the invite. Please try again.");
+    },
+  });
+
+  const revokeMut = useMutation({
+    mutationFn: (id: string) => revokeFn({ data: { id } }),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ["family-invites"] }); toast.success("Invite revoked."); },
+    onError: () => toast.error("Couldn't revoke the invite."),
+  });
+
+  const copyLink = async (token: string) => {
+    try { await navigator.clipboard.writeText(inviteLink(token)); setCopied(true); setTimeout(() => setCopied(false), 1500); toast.success("Link copied."); }
+    catch { toast.error("Couldn't copy."); }
+  };
+
 
   const invalidate = () => {
     qc.invalidateQueries({ queryKey: ["family-members"] });

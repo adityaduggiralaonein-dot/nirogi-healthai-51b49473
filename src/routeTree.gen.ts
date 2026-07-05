@@ -16,8 +16,10 @@ import { Route as CookiesRouteImport } from './routes/cookies'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as InviteTokenRouteImport } from './routes/invite.$token'
 import { Route as AuthenticatedWaterTrackerRouteImport } from './routes/_authenticated/water-tracker'
 import { Route as AuthenticatedSleepTrackerRouteImport } from './routes/_authenticated/sleep-tracker'
+import { Route as AuthenticatedSenseCheckRouteImport } from './routes/_authenticated/sense-check'
 import { Route as AuthenticatedHistoryRouteImport } from './routes/_authenticated/history'
 import { Route as AuthenticatedHeartRhythmRouteImport } from './routes/_authenticated/heart-rhythm'
 import { Route as AuthenticatedGoalsRouteImport } from './routes/_authenticated/goals'
@@ -26,6 +28,11 @@ import { Route as AuthenticatedDietPlanRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedBreatheRouteImport } from './routes/_authenticated/breathe'
 import { Route as AuthenticatedToolsToolRouteImport } from './routes/_authenticated/tools/$tool'
+import { Route as AuthenticatedDashboardUvRouteImport } from './routes/_authenticated/dashboard.uv'
+import { Route as AuthenticatedDashboardOxygenRouteImport } from './routes/_authenticated/dashboard.oxygen'
+import { Route as AuthenticatedDashboardHearingRouteImport } from './routes/_authenticated/dashboard.hearing'
+import { Route as AuthenticatedDashboardEyeStrainRouteImport } from './routes/_authenticated/dashboard.eye-strain'
+import { Route as AuthenticatedDashboardDevicesRouteImport } from './routes/_authenticated/dashboard.devices'
 
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
@@ -61,6 +68,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const InviteTokenRoute = InviteTokenRouteImport.update({
+  id: '/invite/$token',
+  path: '/invite/$token',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedWaterTrackerRoute =
   AuthenticatedWaterTrackerRouteImport.update({
     id: '/water-tracker',
@@ -73,6 +85,11 @@ const AuthenticatedSleepTrackerRoute =
     path: '/sleep-tracker',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedSenseCheckRoute = AuthenticatedSenseCheckRouteImport.update({
+  id: '/sense-check',
+  path: '/sense-check',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedHistoryRoute = AuthenticatedHistoryRouteImport.update({
   id: '/history',
   path: '/history',
@@ -115,6 +132,36 @@ const AuthenticatedToolsToolRoute = AuthenticatedToolsToolRouteImport.update({
   path: '/tools/$tool',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedDashboardUvRoute =
+  AuthenticatedDashboardUvRouteImport.update({
+    id: '/uv',
+    path: '/uv',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardOxygenRoute =
+  AuthenticatedDashboardOxygenRouteImport.update({
+    id: '/oxygen',
+    path: '/oxygen',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardHearingRoute =
+  AuthenticatedDashboardHearingRouteImport.update({
+    id: '/hearing',
+    path: '/hearing',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardEyeStrainRoute =
+  AuthenticatedDashboardEyeStrainRouteImport.update({
+    id: '/eye-strain',
+    path: '/eye-strain',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardDevicesRoute =
+  AuthenticatedDashboardDevicesRouteImport.update({
+    id: '/devices',
+    path: '/devices',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -124,14 +171,21 @@ export interface FileRoutesByFullPath {
   '/sos': typeof SosRoute
   '/terms': typeof TermsRoute
   '/breathe': typeof AuthenticatedBreatheRoute
-  '/dashboard': typeof AuthenticatedDashboardRoute
+  '/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/diet-plan': typeof AuthenticatedDietPlanRoute
   '/exercise-tracker': typeof AuthenticatedExerciseTrackerRoute
   '/goals': typeof AuthenticatedGoalsRoute
   '/heart-rhythm': typeof AuthenticatedHeartRhythmRoute
   '/history': typeof AuthenticatedHistoryRoute
+  '/sense-check': typeof AuthenticatedSenseCheckRoute
   '/sleep-tracker': typeof AuthenticatedSleepTrackerRoute
   '/water-tracker': typeof AuthenticatedWaterTrackerRoute
+  '/invite/$token': typeof InviteTokenRoute
+  '/dashboard/devices': typeof AuthenticatedDashboardDevicesRoute
+  '/dashboard/eye-strain': typeof AuthenticatedDashboardEyeStrainRoute
+  '/dashboard/hearing': typeof AuthenticatedDashboardHearingRoute
+  '/dashboard/oxygen': typeof AuthenticatedDashboardOxygenRoute
+  '/dashboard/uv': typeof AuthenticatedDashboardUvRoute
   '/tools/$tool': typeof AuthenticatedToolsToolRoute
 }
 export interface FileRoutesByTo {
@@ -142,14 +196,21 @@ export interface FileRoutesByTo {
   '/sos': typeof SosRoute
   '/terms': typeof TermsRoute
   '/breathe': typeof AuthenticatedBreatheRoute
-  '/dashboard': typeof AuthenticatedDashboardRoute
+  '/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/diet-plan': typeof AuthenticatedDietPlanRoute
   '/exercise-tracker': typeof AuthenticatedExerciseTrackerRoute
   '/goals': typeof AuthenticatedGoalsRoute
   '/heart-rhythm': typeof AuthenticatedHeartRhythmRoute
   '/history': typeof AuthenticatedHistoryRoute
+  '/sense-check': typeof AuthenticatedSenseCheckRoute
   '/sleep-tracker': typeof AuthenticatedSleepTrackerRoute
   '/water-tracker': typeof AuthenticatedWaterTrackerRoute
+  '/invite/$token': typeof InviteTokenRoute
+  '/dashboard/devices': typeof AuthenticatedDashboardDevicesRoute
+  '/dashboard/eye-strain': typeof AuthenticatedDashboardEyeStrainRoute
+  '/dashboard/hearing': typeof AuthenticatedDashboardHearingRoute
+  '/dashboard/oxygen': typeof AuthenticatedDashboardOxygenRoute
+  '/dashboard/uv': typeof AuthenticatedDashboardUvRoute
   '/tools/$tool': typeof AuthenticatedToolsToolRoute
 }
 export interface FileRoutesById {
@@ -162,14 +223,21 @@ export interface FileRoutesById {
   '/sos': typeof SosRoute
   '/terms': typeof TermsRoute
   '/_authenticated/breathe': typeof AuthenticatedBreatheRoute
-  '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/_authenticated/diet-plan': typeof AuthenticatedDietPlanRoute
   '/_authenticated/exercise-tracker': typeof AuthenticatedExerciseTrackerRoute
   '/_authenticated/goals': typeof AuthenticatedGoalsRoute
   '/_authenticated/heart-rhythm': typeof AuthenticatedHeartRhythmRoute
   '/_authenticated/history': typeof AuthenticatedHistoryRoute
+  '/_authenticated/sense-check': typeof AuthenticatedSenseCheckRoute
   '/_authenticated/sleep-tracker': typeof AuthenticatedSleepTrackerRoute
   '/_authenticated/water-tracker': typeof AuthenticatedWaterTrackerRoute
+  '/invite/$token': typeof InviteTokenRoute
+  '/_authenticated/dashboard/devices': typeof AuthenticatedDashboardDevicesRoute
+  '/_authenticated/dashboard/eye-strain': typeof AuthenticatedDashboardEyeStrainRoute
+  '/_authenticated/dashboard/hearing': typeof AuthenticatedDashboardHearingRoute
+  '/_authenticated/dashboard/oxygen': typeof AuthenticatedDashboardOxygenRoute
+  '/_authenticated/dashboard/uv': typeof AuthenticatedDashboardUvRoute
   '/_authenticated/tools/$tool': typeof AuthenticatedToolsToolRoute
 }
 export interface FileRouteTypes {
@@ -188,8 +256,15 @@ export interface FileRouteTypes {
     | '/goals'
     | '/heart-rhythm'
     | '/history'
+    | '/sense-check'
     | '/sleep-tracker'
     | '/water-tracker'
+    | '/invite/$token'
+    | '/dashboard/devices'
+    | '/dashboard/eye-strain'
+    | '/dashboard/hearing'
+    | '/dashboard/oxygen'
+    | '/dashboard/uv'
     | '/tools/$tool'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -206,8 +281,15 @@ export interface FileRouteTypes {
     | '/goals'
     | '/heart-rhythm'
     | '/history'
+    | '/sense-check'
     | '/sleep-tracker'
     | '/water-tracker'
+    | '/invite/$token'
+    | '/dashboard/devices'
+    | '/dashboard/eye-strain'
+    | '/dashboard/hearing'
+    | '/dashboard/oxygen'
+    | '/dashboard/uv'
     | '/tools/$tool'
   id:
     | '__root__'
@@ -225,8 +307,15 @@ export interface FileRouteTypes {
     | '/_authenticated/goals'
     | '/_authenticated/heart-rhythm'
     | '/_authenticated/history'
+    | '/_authenticated/sense-check'
     | '/_authenticated/sleep-tracker'
     | '/_authenticated/water-tracker'
+    | '/invite/$token'
+    | '/_authenticated/dashboard/devices'
+    | '/_authenticated/dashboard/eye-strain'
+    | '/_authenticated/dashboard/hearing'
+    | '/_authenticated/dashboard/oxygen'
+    | '/_authenticated/dashboard/uv'
     | '/_authenticated/tools/$tool'
   fileRoutesById: FileRoutesById
 }
@@ -238,6 +327,7 @@ export interface RootRouteChildren {
   PrivacyRoute: typeof PrivacyRoute
   SosRoute: typeof SosRoute
   TermsRoute: typeof TermsRoute
+  InviteTokenRoute: typeof InviteTokenRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -291,6 +381,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/invite/$token': {
+      id: '/invite/$token'
+      path: '/invite/$token'
+      fullPath: '/invite/$token'
+      preLoaderRoute: typeof InviteTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/water-tracker': {
       id: '/_authenticated/water-tracker'
       path: '/water-tracker'
@@ -303,6 +400,13 @@ declare module '@tanstack/react-router' {
       path: '/sleep-tracker'
       fullPath: '/sleep-tracker'
       preLoaderRoute: typeof AuthenticatedSleepTrackerRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/sense-check': {
+      id: '/_authenticated/sense-check'
+      path: '/sense-check'
+      fullPath: '/sense-check'
+      preLoaderRoute: typeof AuthenticatedSenseCheckRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/history': {
@@ -361,17 +465,75 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedToolsToolRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/dashboard/uv': {
+      id: '/_authenticated/dashboard/uv'
+      path: '/uv'
+      fullPath: '/dashboard/uv'
+      preLoaderRoute: typeof AuthenticatedDashboardUvRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/oxygen': {
+      id: '/_authenticated/dashboard/oxygen'
+      path: '/oxygen'
+      fullPath: '/dashboard/oxygen'
+      preLoaderRoute: typeof AuthenticatedDashboardOxygenRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/hearing': {
+      id: '/_authenticated/dashboard/hearing'
+      path: '/hearing'
+      fullPath: '/dashboard/hearing'
+      preLoaderRoute: typeof AuthenticatedDashboardHearingRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/eye-strain': {
+      id: '/_authenticated/dashboard/eye-strain'
+      path: '/eye-strain'
+      fullPath: '/dashboard/eye-strain'
+      preLoaderRoute: typeof AuthenticatedDashboardEyeStrainRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/devices': {
+      id: '/_authenticated/dashboard/devices'
+      path: '/devices'
+      fullPath: '/dashboard/devices'
+      preLoaderRoute: typeof AuthenticatedDashboardDevicesRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
   }
 }
 
+interface AuthenticatedDashboardRouteChildren {
+  AuthenticatedDashboardDevicesRoute: typeof AuthenticatedDashboardDevicesRoute
+  AuthenticatedDashboardEyeStrainRoute: typeof AuthenticatedDashboardEyeStrainRoute
+  AuthenticatedDashboardHearingRoute: typeof AuthenticatedDashboardHearingRoute
+  AuthenticatedDashboardOxygenRoute: typeof AuthenticatedDashboardOxygenRoute
+  AuthenticatedDashboardUvRoute: typeof AuthenticatedDashboardUvRoute
+}
+
+const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
+  {
+    AuthenticatedDashboardDevicesRoute: AuthenticatedDashboardDevicesRoute,
+    AuthenticatedDashboardEyeStrainRoute: AuthenticatedDashboardEyeStrainRoute,
+    AuthenticatedDashboardHearingRoute: AuthenticatedDashboardHearingRoute,
+    AuthenticatedDashboardOxygenRoute: AuthenticatedDashboardOxygenRoute,
+    AuthenticatedDashboardUvRoute: AuthenticatedDashboardUvRoute,
+  }
+
+const AuthenticatedDashboardRouteWithChildren =
+  AuthenticatedDashboardRoute._addFileChildren(
+    AuthenticatedDashboardRouteChildren,
+  )
+
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedBreatheRoute: typeof AuthenticatedBreatheRoute
-  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRouteWithChildren
   AuthenticatedDietPlanRoute: typeof AuthenticatedDietPlanRoute
   AuthenticatedExerciseTrackerRoute: typeof AuthenticatedExerciseTrackerRoute
   AuthenticatedGoalsRoute: typeof AuthenticatedGoalsRoute
   AuthenticatedHeartRhythmRoute: typeof AuthenticatedHeartRhythmRoute
   AuthenticatedHistoryRoute: typeof AuthenticatedHistoryRoute
+  AuthenticatedSenseCheckRoute: typeof AuthenticatedSenseCheckRoute
   AuthenticatedSleepTrackerRoute: typeof AuthenticatedSleepTrackerRoute
   AuthenticatedWaterTrackerRoute: typeof AuthenticatedWaterTrackerRoute
   AuthenticatedToolsToolRoute: typeof AuthenticatedToolsToolRoute
@@ -379,12 +541,13 @@ interface AuthenticatedRouteRouteChildren {
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedBreatheRoute: AuthenticatedBreatheRoute,
-  AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedDashboardRoute: AuthenticatedDashboardRouteWithChildren,
   AuthenticatedDietPlanRoute: AuthenticatedDietPlanRoute,
   AuthenticatedExerciseTrackerRoute: AuthenticatedExerciseTrackerRoute,
   AuthenticatedGoalsRoute: AuthenticatedGoalsRoute,
   AuthenticatedHeartRhythmRoute: AuthenticatedHeartRhythmRoute,
   AuthenticatedHistoryRoute: AuthenticatedHistoryRoute,
+  AuthenticatedSenseCheckRoute: AuthenticatedSenseCheckRoute,
   AuthenticatedSleepTrackerRoute: AuthenticatedSleepTrackerRoute,
   AuthenticatedWaterTrackerRoute: AuthenticatedWaterTrackerRoute,
   AuthenticatedToolsToolRoute: AuthenticatedToolsToolRoute,
@@ -401,17 +564,8 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyRoute: PrivacyRoute,
   SosRoute: SosRoute,
   TermsRoute: TermsRoute,
+  InviteTokenRoute: InviteTokenRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

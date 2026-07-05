@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { Loader2, LogOut, Upload, FileText, ArrowRight, History, Target, UtensilsCrossed, Wind, HeartPulse } from "lucide-react";
+import { Loader2, LogOut, Upload, FileText, ArrowRight, History, Target, UtensilsCrossed, Wind, HeartPulse, Ear, Brain, Droplet, Thermometer, Bone, Hourglass, Eye, Sun, Smartphone } from "lucide-react";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -205,9 +205,45 @@ function Dashboard() {
                     <p className="mt-3 font-display text-sm font-bold">{t("dash.heart", "Heart Rhythm")}</p>
                     <p className="text-xs text-muted-foreground">{t("dash.heart_note", "Camera pulse (PPG)")}</p>
                   </Link>
+                  <Link to="/sense-check" className="group rounded-xl border border-border p-4 transition-colors hover:bg-muted/50">
+                    <span className="flex size-9 items-center justify-center rounded-xl bg-success/10 text-success"><Ear className="size-5" /></span>
+                    <p className="mt-3 font-display text-sm font-bold">{t("dash.sense", "SenseCheck")}</p>
+                    <p className="text-xs text-muted-foreground">{t("dash.sense_note", "Voice vision & hearing")}</p>
+                  </Link>
                 </div>
               </section>
             </div>
+
+            <div className="mt-6">
+              <section className="rounded-2xl border border-border bg-card p-6 shadow-card">
+                <div className="flex items-center justify-between">
+                  <h2 className="font-display text-lg font-semibold">{t("dash.modules", "Health modules")}</h2>
+                  <Link to="/dashboard/devices" className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-xs font-semibold hover:bg-muted">
+                    <Smartphone className="size-3.5" /> {t("dash.devices", "Connected devices")}
+                  </Link>
+                </div>
+                <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                  {[
+                    { to: "/dashboard/oxygen" as const, icon: Wind, accent: "bg-primary/10 text-primary", name: "Blood Oxygen", note: "SpO2 via camera" },
+                    { to: "/dashboard/hearing" as const, icon: Ear, accent: "bg-success/10 text-success", name: "Hearing", note: "Tone self-test" },
+                    { to: "/dashboard/eye-strain" as const, icon: Eye, accent: "bg-warning/10 text-warning", name: "Eye Strain", note: "Screen time & breaks" },
+                    { to: "/dashboard/uv" as const, icon: Sun, accent: "bg-warning/10 text-warning", name: "UV Exposure", note: "Sun safety" },
+                    { to: "/tools/$tool" as const, params: { tool: "stresssense" }, icon: Brain, accent: "bg-primary/10 text-primary", name: "Stress & Mind", note: "Mental wellbeing" },
+                    { to: "/tools/$tool" as const, params: { tool: "glucotrack" }, icon: Droplet, accent: "bg-warning/10 text-warning", name: "Blood Glucose", note: "Reading insight" },
+                    { to: "/tools/$tool" as const, params: { tool: "thermocheck" }, icon: Thermometer, accent: "bg-pulse/10 text-pulse", name: "Temperature", note: "Fever guidance" },
+                    { to: "/tools/$tool" as const, params: { tool: "bonehealth" }, icon: Bone, accent: "bg-success/10 text-success", name: "Bone & Joint", note: "Osteo risk" },
+                    { to: "/tools/$tool" as const, params: { tool: "bioage" }, icon: Hourglass, accent: "bg-primary/10 text-primary", name: "Biological Age", note: "Body age index" },
+                  ].map((m) => (
+                    <Link key={m.name} to={m.to} params={m.params} className="group rounded-xl border border-border p-4 transition-colors hover:bg-muted/50">
+                      <span className={`flex size-9 items-center justify-center rounded-xl ${m.accent}`}><m.icon className="size-5" /></span>
+                      <p className="mt-3 font-display text-sm font-bold">{m.name}</p>
+                      <p className="text-xs text-muted-foreground">{m.note}</p>
+                    </Link>
+                  ))}
+                </div>
+              </section>
+            </div>
+
 
             <div className="mt-6 grid gap-6 lg:grid-cols-3">
               <div className="space-y-6 lg:col-span-2">
