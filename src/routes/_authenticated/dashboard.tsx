@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { Loader2, LogOut, Upload, FileText, ArrowRight, History, Target, UtensilsCrossed, Wind, HeartPulse, Ear, Brain, Droplet, Thermometer, Bone, Hourglass, Eye, Sun, Smartphone } from "lucide-react";
+import { Loader2, LogOut, Upload, FileText, ArrowRight, History, Target, UtensilsCrossed, Wind, HeartPulse, Ear, Brain, Droplet, Thermometer, Bone, Hourglass, Eye, Sun, Smartphone, Scale, Zap } from "lucide-react";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
