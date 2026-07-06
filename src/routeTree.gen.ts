@@ -31,6 +31,7 @@ import { Route as AuthenticatedToolsToolRouteImport } from './routes/_authentica
 import { Route as AuthenticatedDashboardWeightRouteImport } from './routes/_authenticated/dashboard.weight'
 import { Route as AuthenticatedDashboardUvRouteImport } from './routes/_authenticated/dashboard.uv'
 import { Route as AuthenticatedDashboardTemperatureRouteImport } from './routes/_authenticated/dashboard.temperature'
+import { Route as AuthenticatedDashboardStressRouteImport } from './routes/_authenticated/dashboard.stress'
 import { Route as AuthenticatedDashboardOxygenRouteImport } from './routes/_authenticated/dashboard.oxygen'
 import { Route as AuthenticatedDashboardHearingRouteImport } from './routes/_authenticated/dashboard.hearing'
 import { Route as AuthenticatedDashboardGlucoseRouteImport } from './routes/_authenticated/dashboard.glucose'
@@ -154,6 +155,12 @@ const AuthenticatedDashboardTemperatureRoute =
     path: '/temperature',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
+const AuthenticatedDashboardStressRoute =
+  AuthenticatedDashboardStressRouteImport.update({
+    id: '/stress',
+    path: '/stress',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
 const AuthenticatedDashboardOxygenRoute =
   AuthenticatedDashboardOxygenRouteImport.update({
     id: '/oxygen',
@@ -215,6 +222,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/glucose': typeof AuthenticatedDashboardGlucoseRoute
   '/dashboard/hearing': typeof AuthenticatedDashboardHearingRoute
   '/dashboard/oxygen': typeof AuthenticatedDashboardOxygenRoute
+  '/dashboard/stress': typeof AuthenticatedDashboardStressRoute
   '/dashboard/temperature': typeof AuthenticatedDashboardTemperatureRoute
   '/dashboard/uv': typeof AuthenticatedDashboardUvRoute
   '/dashboard/weight': typeof AuthenticatedDashboardWeightRoute
@@ -244,6 +252,7 @@ export interface FileRoutesByTo {
   '/dashboard/glucose': typeof AuthenticatedDashboardGlucoseRoute
   '/dashboard/hearing': typeof AuthenticatedDashboardHearingRoute
   '/dashboard/oxygen': typeof AuthenticatedDashboardOxygenRoute
+  '/dashboard/stress': typeof AuthenticatedDashboardStressRoute
   '/dashboard/temperature': typeof AuthenticatedDashboardTemperatureRoute
   '/dashboard/uv': typeof AuthenticatedDashboardUvRoute
   '/dashboard/weight': typeof AuthenticatedDashboardWeightRoute
@@ -275,6 +284,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard/glucose': typeof AuthenticatedDashboardGlucoseRoute
   '/_authenticated/dashboard/hearing': typeof AuthenticatedDashboardHearingRoute
   '/_authenticated/dashboard/oxygen': typeof AuthenticatedDashboardOxygenRoute
+  '/_authenticated/dashboard/stress': typeof AuthenticatedDashboardStressRoute
   '/_authenticated/dashboard/temperature': typeof AuthenticatedDashboardTemperatureRoute
   '/_authenticated/dashboard/uv': typeof AuthenticatedDashboardUvRoute
   '/_authenticated/dashboard/weight': typeof AuthenticatedDashboardWeightRoute
@@ -306,6 +316,7 @@ export interface FileRouteTypes {
     | '/dashboard/glucose'
     | '/dashboard/hearing'
     | '/dashboard/oxygen'
+    | '/dashboard/stress'
     | '/dashboard/temperature'
     | '/dashboard/uv'
     | '/dashboard/weight'
@@ -335,6 +346,7 @@ export interface FileRouteTypes {
     | '/dashboard/glucose'
     | '/dashboard/hearing'
     | '/dashboard/oxygen'
+    | '/dashboard/stress'
     | '/dashboard/temperature'
     | '/dashboard/uv'
     | '/dashboard/weight'
@@ -365,6 +377,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard/glucose'
     | '/_authenticated/dashboard/hearing'
     | '/_authenticated/dashboard/oxygen'
+    | '/_authenticated/dashboard/stress'
     | '/_authenticated/dashboard/temperature'
     | '/_authenticated/dashboard/uv'
     | '/_authenticated/dashboard/weight'
@@ -538,6 +551,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardTemperatureRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
+    '/_authenticated/dashboard/stress': {
+      id: '/_authenticated/dashboard/stress'
+      path: '/stress'
+      fullPath: '/dashboard/stress'
+      preLoaderRoute: typeof AuthenticatedDashboardStressRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
     '/_authenticated/dashboard/oxygen': {
       id: '/_authenticated/dashboard/oxygen'
       path: '/oxygen'
@@ -590,6 +610,7 @@ interface AuthenticatedDashboardRouteChildren {
   AuthenticatedDashboardGlucoseRoute: typeof AuthenticatedDashboardGlucoseRoute
   AuthenticatedDashboardHearingRoute: typeof AuthenticatedDashboardHearingRoute
   AuthenticatedDashboardOxygenRoute: typeof AuthenticatedDashboardOxygenRoute
+  AuthenticatedDashboardStressRoute: typeof AuthenticatedDashboardStressRoute
   AuthenticatedDashboardTemperatureRoute: typeof AuthenticatedDashboardTemperatureRoute
   AuthenticatedDashboardUvRoute: typeof AuthenticatedDashboardUvRoute
   AuthenticatedDashboardWeightRoute: typeof AuthenticatedDashboardWeightRoute
@@ -604,6 +625,7 @@ const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
     AuthenticatedDashboardGlucoseRoute: AuthenticatedDashboardGlucoseRoute,
     AuthenticatedDashboardHearingRoute: AuthenticatedDashboardHearingRoute,
     AuthenticatedDashboardOxygenRoute: AuthenticatedDashboardOxygenRoute,
+    AuthenticatedDashboardStressRoute: AuthenticatedDashboardStressRoute,
     AuthenticatedDashboardTemperatureRoute:
       AuthenticatedDashboardTemperatureRoute,
     AuthenticatedDashboardUvRoute: AuthenticatedDashboardUvRoute,
