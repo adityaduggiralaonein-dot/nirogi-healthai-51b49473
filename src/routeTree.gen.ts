@@ -38,6 +38,7 @@ import { Route as AuthenticatedDashboardGlucoseRouteImport } from './routes/_aut
 import { Route as AuthenticatedDashboardEyeStrainRouteImport } from './routes/_authenticated/dashboard.eye-strain'
 import { Route as AuthenticatedDashboardDevicesRouteImport } from './routes/_authenticated/dashboard.devices'
 import { Route as AuthenticatedDashboardBoneHealthRouteImport } from './routes/_authenticated/dashboard.bone-health'
+import { Route as AuthenticatedDashboardBioAgeRouteImport } from './routes/_authenticated/dashboard.bio-age'
 
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
@@ -197,6 +198,12 @@ const AuthenticatedDashboardBoneHealthRoute =
     path: '/bone-health',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
+const AuthenticatedDashboardBioAgeRoute =
+  AuthenticatedDashboardBioAgeRouteImport.update({
+    id: '/bio-age',
+    path: '/bio-age',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -216,6 +223,7 @@ export interface FileRoutesByFullPath {
   '/sleep-tracker': typeof AuthenticatedSleepTrackerRoute
   '/water-tracker': typeof AuthenticatedWaterTrackerRoute
   '/invite/$token': typeof InviteTokenRoute
+  '/dashboard/bio-age': typeof AuthenticatedDashboardBioAgeRoute
   '/dashboard/bone-health': typeof AuthenticatedDashboardBoneHealthRoute
   '/dashboard/devices': typeof AuthenticatedDashboardDevicesRoute
   '/dashboard/eye-strain': typeof AuthenticatedDashboardEyeStrainRoute
@@ -246,6 +254,7 @@ export interface FileRoutesByTo {
   '/sleep-tracker': typeof AuthenticatedSleepTrackerRoute
   '/water-tracker': typeof AuthenticatedWaterTrackerRoute
   '/invite/$token': typeof InviteTokenRoute
+  '/dashboard/bio-age': typeof AuthenticatedDashboardBioAgeRoute
   '/dashboard/bone-health': typeof AuthenticatedDashboardBoneHealthRoute
   '/dashboard/devices': typeof AuthenticatedDashboardDevicesRoute
   '/dashboard/eye-strain': typeof AuthenticatedDashboardEyeStrainRoute
@@ -278,6 +287,7 @@ export interface FileRoutesById {
   '/_authenticated/sleep-tracker': typeof AuthenticatedSleepTrackerRoute
   '/_authenticated/water-tracker': typeof AuthenticatedWaterTrackerRoute
   '/invite/$token': typeof InviteTokenRoute
+  '/_authenticated/dashboard/bio-age': typeof AuthenticatedDashboardBioAgeRoute
   '/_authenticated/dashboard/bone-health': typeof AuthenticatedDashboardBoneHealthRoute
   '/_authenticated/dashboard/devices': typeof AuthenticatedDashboardDevicesRoute
   '/_authenticated/dashboard/eye-strain': typeof AuthenticatedDashboardEyeStrainRoute
@@ -310,6 +320,7 @@ export interface FileRouteTypes {
     | '/sleep-tracker'
     | '/water-tracker'
     | '/invite/$token'
+    | '/dashboard/bio-age'
     | '/dashboard/bone-health'
     | '/dashboard/devices'
     | '/dashboard/eye-strain'
@@ -340,6 +351,7 @@ export interface FileRouteTypes {
     | '/sleep-tracker'
     | '/water-tracker'
     | '/invite/$token'
+    | '/dashboard/bio-age'
     | '/dashboard/bone-health'
     | '/dashboard/devices'
     | '/dashboard/eye-strain'
@@ -371,6 +383,7 @@ export interface FileRouteTypes {
     | '/_authenticated/sleep-tracker'
     | '/_authenticated/water-tracker'
     | '/invite/$token'
+    | '/_authenticated/dashboard/bio-age'
     | '/_authenticated/dashboard/bone-health'
     | '/_authenticated/dashboard/devices'
     | '/_authenticated/dashboard/eye-strain'
@@ -600,10 +613,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardBoneHealthRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
+    '/_authenticated/dashboard/bio-age': {
+      id: '/_authenticated/dashboard/bio-age'
+      path: '/bio-age'
+      fullPath: '/dashboard/bio-age'
+      preLoaderRoute: typeof AuthenticatedDashboardBioAgeRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
   }
 }
 
 interface AuthenticatedDashboardRouteChildren {
+  AuthenticatedDashboardBioAgeRoute: typeof AuthenticatedDashboardBioAgeRoute
   AuthenticatedDashboardBoneHealthRoute: typeof AuthenticatedDashboardBoneHealthRoute
   AuthenticatedDashboardDevicesRoute: typeof AuthenticatedDashboardDevicesRoute
   AuthenticatedDashboardEyeStrainRoute: typeof AuthenticatedDashboardEyeStrainRoute
@@ -618,6 +639,7 @@ interface AuthenticatedDashboardRouteChildren {
 
 const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
   {
+    AuthenticatedDashboardBioAgeRoute: AuthenticatedDashboardBioAgeRoute,
     AuthenticatedDashboardBoneHealthRoute:
       AuthenticatedDashboardBoneHealthRoute,
     AuthenticatedDashboardDevicesRoute: AuthenticatedDashboardDevicesRoute,
