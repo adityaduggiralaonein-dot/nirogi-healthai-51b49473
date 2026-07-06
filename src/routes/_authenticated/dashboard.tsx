@@ -228,13 +228,15 @@ function Dashboard() {
                     { to: "/dashboard/hearing" as const, icon: Ear, accent: "bg-success/10 text-success", name: "Hearing", note: "Tone self-test" },
                     { to: "/dashboard/eye-strain" as const, icon: Eye, accent: "bg-warning/10 text-warning", name: "Eye Strain", note: "Screen time & breaks" },
                     { to: "/dashboard/uv" as const, icon: Sun, accent: "bg-warning/10 text-warning", name: "UV Exposure", note: "Sun safety" },
-                    { to: "/tools/$tool" as const, params: { tool: "stresssense" }, icon: Brain, accent: "bg-primary/10 text-primary", name: "Stress & Mind", note: "Mental wellbeing" },
-                    { to: "/tools/$tool" as const, params: { tool: "glucotrack" }, icon: Droplet, accent: "bg-warning/10 text-warning", name: "Blood Glucose", note: "Reading insight" },
-                    { to: "/tools/$tool" as const, params: { tool: "thermocheck" }, icon: Thermometer, accent: "bg-pulse/10 text-pulse", name: "Temperature", note: "Fever guidance" },
-                    { to: "/tools/$tool" as const, params: { tool: "bonehealth" }, icon: Bone, accent: "bg-success/10 text-success", name: "Bone & Joint", note: "Osteo risk" },
-                    { to: "/tools/$tool" as const, params: { tool: "bioage" }, icon: Hourglass, accent: "bg-primary/10 text-primary", name: "Biological Age", note: "Body age index" },
+                    { to: "/dashboard/stress" as const, icon: Brain, accent: "bg-primary/10 text-primary", name: "Stress & Mind", note: "Mood check-in" },
+                    { to: "/dashboard/glucose" as const, icon: Droplet, accent: "bg-warning/10 text-warning", name: "Blood Glucose", note: "Reading insight" },
+                    { to: "/dashboard/temperature" as const, icon: Thermometer, accent: "bg-pulse/10 text-pulse", name: "Temperature", note: "Fever guidance" },
+                    { to: "/dashboard/weight" as const, icon: Scale, accent: "bg-primary/10 text-primary", name: "Weight & BMI", note: "Trend & BMI" },
+                    { to: "/dashboard/bone-health" as const, icon: Bone, accent: "bg-success/10 text-success", name: "Bone & Joint", note: "Pain tracker" },
+                    { to: "/dashboard/bio-age" as const, icon: Hourglass, accent: "bg-primary/10 text-primary", name: "Biological Age", note: "Body age index" },
+                    { to: "/dashboard/energy" as const, icon: Zap, accent: "bg-warning/10 text-warning", name: "Energy & Recovery", note: "Daily readiness" },
                   ].map((m) => (
-                    <Link key={m.name} to={m.to} params={m.params} className="group rounded-xl border border-border p-4 transition-colors hover:bg-muted/50">
+                    <Link key={m.name} to={m.to} className="group rounded-xl border border-border p-4 transition-colors hover:bg-muted/50">
                       <span className={`flex size-9 items-center justify-center rounded-xl ${m.accent}`}><m.icon className="size-5" /></span>
                       <p className="mt-3 font-display text-sm font-bold">{m.name}</p>
                       <p className="text-xs text-muted-foreground">{m.note}</p>
