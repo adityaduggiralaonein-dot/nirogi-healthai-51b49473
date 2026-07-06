@@ -205,12 +205,9 @@ function Dashboard() {
                     <p className="mt-3 font-display text-sm font-bold">{t("dash.heart", "Heart Rhythm")}</p>
                     <p className="text-xs text-muted-foreground">{t("dash.heart_note", "Camera pulse (PPG)")}</p>
                   </Link>
-                  <Link to="/sense-check" className="group rounded-xl border border-border p-4 transition-colors hover:bg-muted/50">
-                    <span className="flex size-9 items-center justify-center rounded-xl bg-success/10 text-success"><Ear className="size-5" /></span>
-                    <p className="mt-3 font-display text-sm font-bold">{t("dash.sense", "SenseCheck")}</p>
-                    <p className="text-xs text-muted-foreground">{t("dash.sense_note", "Voice vision & hearing")}</p>
-                  </Link>
                 </div>
+              </section>
+            </div>
               </section>
             </div>
 
