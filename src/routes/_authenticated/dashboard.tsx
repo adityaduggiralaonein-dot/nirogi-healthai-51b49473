@@ -208,8 +208,6 @@ function Dashboard() {
                 </div>
               </section>
             </div>
-              </section>
-            </div>
 
             <div className="mt-6">
               <section className="rounded-2xl border border-border bg-card p-6 shadow-card">
