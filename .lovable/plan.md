@@ -1,58 +1,71 @@
-# Nirogi — Devices, new tools, family invite & SenseCheck (single shipment)
+# Nirogi — Spec-aligned Modules, Devices, Doctors (Priorities 1–6)
 
-Four priorities, all reusing the existing website style (Sora/Manrope, teal/emerald tokens, `SiteLayout`, `ClinicalDisclaimer`, `ReportActions`, the `runTool` AI pipeline, Recharts). No new DB tables — new modules persist per-user via localStorage; AI insight reuses the existing gateway.
+Built to match the two Word specs. Every module page follows the doc's rule set: back arrow, real data only (localStorage/sensors — never fake numbers), 7‑day Recharts trend, "Log manually" button, a "Data source" footer, and a Lovable‑AI insight box. Empty state: *"No data yet. Enable a data source below or log manually."*
 
-## Priority 1 — Connected Devices card + page
+## Priority 1 — Reorganise & rebuild trackers into real tracker pages
 
-- **Dashboard card:** add an "Integrations & devices" card to `dashboard.tsx` (next to the Goals/wellness grid) linking to a new `/dashboard/devices` route, showing a live connected-count badge read from localStorage.
-- **New route `_authenticated/dashboard.devices.tsx`** with 3 tabs (shadcn `Tabs`), nothing auto-enabled:
-  - **Phone Sensors** — GPS, Motion/Accelerometer, Microphone, Camera, Notifications. Each row has an Enable toggle that requests the *real* permission on tap (`navigator.geolocation`, `DeviceMotionEvent.requestPermission`, `getUserMedia` audio/video, `Notification.requestPermission`) and persists granted/denied status in localStorage. Denied → clear inline fallback text.
-  - **Android Health Connect** — clearly-labelled best-effort: "Install the free Nirogi Sync companion app (coming soon)" with the data-type list (steps, heart rate, sleep, weight, SpO2). No fake "connected" state.
-  - **Google Fit** — a "Connect (setup required)" flow scaffolded (OAuth implicit-flow button + REST fetch stubs) that stays disabled with a note until a Google client ID is provided. No secrets requested now.
-- Connection status stored under `nirogi_devices` and surfaced as status pills on each row and on the dashboard card.
+**Move out of the main 9 tools → dedicated Health‑Module pages** (no more questionnaire `ToolRunner` for these). Each gets its own route, manual logging, trend chart, and AI insight:
 
-## Priority 2 — Remaining health tools/modules
+- Stress & Mind → `/dashboard/stress` (mood emoji check‑in, 4‑7‑8 breathing link, journal, 7‑day mood calendar)
+- Blood Glucose → `/dashboard/glucose` (fasting/post‑meal logs, colour bands 70‑99 / 100‑125 / ≥126, HbA1c estimate)
+- Temperature → `/dashboard/temperature` (°C/°F log, fever bands)
+- Bone & Joint → `/dashboard/bone-health` (pain/mobility check‑in + AI guidance)
+- Biological Age → `/dashboard/bio-age` (weighted model from RHR, sleep, BMI, steps, glucose, stress → age offset)
 
-Two delivery styles, both opening as their own pages and styled like the current tool pages.
+Remove `stresssense/glucotrack/thermocheck/bonehealth/bioage` from the `TOOLS` array and the `/tools/$tool` path; delete `sensecheck` from the Goals & Wellness row (Eye Strain + Hearing modules already cover that).
 
-**A. Questionnaire / manual AI tools** — added to `src/lib/tools.tsx` (`TOOLS` array) with a matching `buildToolPrompt` case in `health-tools.server.ts`, so they immediately run through the existing `ToolRunner` at `/tools/$tool`, get history + downloadable reports, disclaimers and red-flag dialogs for free:
-- **StressSense** — mental-health & stress questionnaire (PSS-style: sleep, mood, workload, anxiety), returns stress level, drivers, coping plan, links to `/breathe`.
-- **GlucoTrack** — manual glucose reading (fasting/post-meal mg/dL) + symptoms → interpretation vs thresholds, trend advice, ties into SugarSense.
-- **ThermoCheck** — body temperature + symptoms → fever severity, hydration/med guidance, red-flag escalation.
-- **BoneHealth** — bone & joint questionnaire (pain, stiffness, calcium/vit-D, activity, age/gender) → osteoporosis/arthritis risk, exercises, tests + INR costs.
-- **BioAge** — biological age index computed from saved profile + lifestyle inputs → bio-age vs chronological, top ageing accelerators, 3 weekly actions (uses `preventionScore` meter).
+**Upgrade the existing weak trackers to the doc spec:**
 
-**B. Sensor / live-measurement modules** — dedicated pages that reuse the tool-page shell (header hero + how-it-works + result panel via `ToolRunner`'s result renderer or a shared result card), measure on-device, then call `runTool` with the measured value as fields for the AI insight:
-- **OxySense (SpO2/oxygen)** — camera-lens PPG (same getUserMedia + red-channel sampling as `heart-rhythm.tsx`) estimating SpO2 %; clearly "not a medical pulse-oximeter"; AI note + logged.
-- **HearWell (hearing health)** — Web Audio tone-sweep / dB self-test with left/right playback and a "can you hear this?" response grid → hearing screen + 60-60 rule; ENT referral flagging.
-- **EyeStrain (screen eye strain)** — screen-time via Page Visibility + a 20-20-20 timer and symptom check → strain score, break plan.
-- **UVGuard (UV & skin exposure)** — geolocation + Open-Meteo UV API (public, no key) → current UV index, safe-exposure minutes by skin type, sunscreen advice.
+- Sleep `/dashboard/sleep` — last‑night card (hours, efficiency %), stage donut, quality 1‑5, manual bedtime/wake entry, optional mic "sleep recording" toggle, `nirogi_sleep_logs`.
+- Fitness `/dashboard/fitness` — accelerometer step counter (DeviceMotionEvent), ring toward 8,000, calories via MET, activity selector, 7‑day steps bar chart, `nirogi_fitness_logs`.
+- Water `/dashboard/water` — preset 150/250/500/custom, animated fill, goal = weight×35 ml, reminder‑interval editor, hydration badge.
+- Weight & BMI `/dashboard/weight` — kg entry, BMI ring + category colours, target weight + progress, 30‑day trend (merge with existing Goals logic).
 
-All new module pages: back arrow to dashboard, a 7-day Recharts trend from localStorage history, "Log manually", a "Data source" footer line, the AI insight box, empty state when no data (no mock numbers), and `ClinicalDisclaimer`.
+## Priority 2 — Remaining modules (build to spec)
 
-**Dashboard wiring:** extend the dashboard hub grid so every new tool/module has a card (icon in its accent colour) opening its page. Questionnaire tools also appear automatically in the existing "Jump into a tool" list since they're in `TOOLS`.
+- Blood Oxygen `/dashboard/spo2` — keep camera PPG, add colour bands + altitude note.
+- UV & Skin Exposure `/dashboard/uv-exposure` — GPS + Open‑Meteo `uv_index`, colour band, SPF advice, skin‑type selector, weekly chart.
+- **Energy & Recovery** `/dashboard/energy` (new card) — composite 0‑100 from sleep 30% / stress 25% / steps 20% / hydration 15% / nutrition 10%, emoji tier, factor breakdown, 14‑day trend.
+- Hearing `/dashboard/hearing-health` and Eye Strain `/dashboard/eye-strain` — keep, align to doc (dB meter / 20‑20‑20).
+- Menstrual `/dashboard/menstrual` and Altitude `/dashboard/altitude` — noted as later‑priority; scaffolds only if time permits (flagged, not blocking).
 
-## Priority 3 — Family invite acceptance page
+Dashboard "Health modules" grid re‑pointed to all the new routes with correct icons.
 
-- **New public route `src/routes/invite.$token.tsx`** (top-level, SSR-safe, no auth gate). Loader-free; calls `getInviteInfo` client-side to show the inviter name, the member label/relation, and invite status (pending/accepted/revoked/invalid) with tailored messaging.
-- If signed out: "Continue with Google" via `lovable.auth.signInWithOAuth` with `redirect_uri = ${origin}/invite/${token}` (public route, safe), token also stashed in `sessionStorage` as backup.
-- On return with a session (via `useAuth`): auto-call `acceptFamilyInvite({ token })`, handle `INVALID_INVITE / REVOKED / SELF_INVITE / ALREADY_USED`, then success state → button to `/dashboard`. Each member logs in with their own Google account and sees only their own data (existing backend already links `member_user_id`).
-- **FamilySection:** add a "Generate invite link" action (dialog collecting name + relation → `createFamilyInvite`, copy-to-clipboard link), list existing invites with status via `listFamilyInvites`, and a revoke button via `revokeFamilyInvite`.
+## Priority 3 — Connected Devices card `/dashboard/devices`
 
-## Priority 4 — Voice-guided SenseCheck page
+Three tabs (already partly built, completed to spec):
 
-- **New route `_authenticated/sense-check.tsx`** — a guided, accessible flow for the existing `sensecheck` prompt: step-through vision then hearing prompts, each with a mic "Speak your answer" button (Web Speech API, same pattern as `ToolRunner.startVoice`) and a typed fallback. Optional TTS read-out of each question using the browser `speechSynthesis` (with the existing `voice.functions` as server fallback).
-- Submits combined answers through `runTool({ tool: "sensecheck" })`, renders the result with the shared result card including warnings/urgent red-flag dialog, specialist and `ReportActions`.
-- Dashboard hub + the SenseCheck tool card link here (the generic `/tools/sensecheck` remains as a fallback).
+- **Phone Sensors** — GPS, Accelerometer, Mic, Rear/Front camera, Barometer, Notifications; each with Enable toggle that requests permission only on tap; status saved to `nirogi_devices_config`.
+- **Android Health Connect** — Android detection + "Install Nirogi Sync app (coming soon)" best‑effort path with data‑type list.
+- **Google Fit** — "Connect Google Fit" OAuth implicit button reading `VITE_GOOGLE_FIT_CLIENT_ID`; `/auth/google-fit` callback stores token; button shows "Add client ID to enable" until the key is provided (best‑effort as agreed). Connection status shown per tab.
+
+## Priority 4 — Health Score rework + Prescription→Reminder flow
+
+- Rework `health-score.functions.ts` to the doc's pillar model (Physical / Hydration / Sleep / Personal‑OS) blending module localStorage summaries the client passes in, keeping the DB snapshot history. Health Score card shows pillar bars.
+- **Prescription approval:** after `analyzePrescription`, AI also returns a structured medicine list; the dashboard shows each detected medicine with an **"Add as reminder"** confirm step (user approves before anything is saved to `medicine_reminders`). Add **"Clear prescription"** to wipe the stored analysis and upload a fresh one.
+
+## Priority 5 — PWA logo + intro animation
+
+- Wait for your uploaded logo, then generate `icon-192`/`icon-512` (maskable), apple‑touch icon, and splash from it; update `manifest.webmanifest` (name "Nirogi AI", theme `#00E5C3`, bg `#060B18`).
+- Add a one‑time framer‑motion splash/intro (logo reveal) on app launch in standalone mode.
+
+## Priority 6 — AI Doctor Avatar system (first version, full stack)
+
+- Enable the **ElevenLabs** connector (voice) and add `@react-three/fiber`, `@react-three/drei`, `@readyplayerme/visage` for 3D avatars.
+- 12 doctor profiles (name, specialty, personality, connected tools, RPM avatar URL, ElevenLabs voice) in a config module.
+- Dashboard **"My Doctors"** swipeable row (below Health Score) → doctor page `/dashboard/doctor/$id` with large 3D avatar (idle/talking states), bio, Start Chat + Voice Call.
+- **Chat:** Lovable AI, per‑doctor system prompt + injected profile, history saved to a new `doctor_chats`/`doctor_messages` table (Cloud). **Voice:** ElevenLabs TTS + Web Speech input.
+- **Credit system:** `user_credits` + `credit_transactions` tables, signup/tool/streak earning, 1 credit/message & 5/min voice, credit pill in nav, low‑credit nudge, zero‑credit modal (no hard paywall). Tool‑result "Discuss with Dr. X" banner routing.
+
+## Later (as you ordered) — not in this shipment
+
+- Priority 7 (family Google‑sign‑in completion) and Priority 8 (delete SkinScan images immediately after scan).
 
 ## Technical notes
 
-- New auth-gated pages live under `src/routes/_authenticated/` using dot-convention filenames (`dashboard.devices.tsx` → `/dashboard/devices`); the invite page is the only public one.
-- Sensor code: one camera/`AudioContext` stream per active use, strict cleanup on unmount, permission-denied fallbacks everywhere.
-- AI insight for sensor modules and all questionnaire tools flows through the existing `runTool` + `buildToolPrompt` (no client API key; Hindi honoured via `lang`).
-- Reuse `ReportActions`, `ClinicalDisclaimer`, i18n `t()`, Recharts and shadcn primitives throughout for consistent UI/UX.
+- New DB migrations: `doctor_chats`, `doctor_messages`, `user_credits`, `credit_transactions` — all with GRANTs + RLS scoped to `auth.uid()`. Server functions via `createServerFn` + `requireSupabaseAuth`.
+- All sensor/measurement data stays in localStorage per the privacy spec; only summarised numbers go to Lovable AI.
+- ElevenLabs voice runs through a server route using the connector `ELEVENLABS_API_KEY` (never client‑side).
+- Reuse `ModuleLayout`, `TrendCard`, `AiResultPanel`, `ClinicalDisclaimer`, i18n `t()`; verify with a typecheck/build and Playwright smoke of key new pages.
 
-## Verification
-
-- Typecheck/build clean; `routeTree.gen` regenerates from new files.
-- Playwright smoke: each new tool page renders with empty-state (no mock numbers); device toggles request real permissions; invite page resolves a token and shows accept/sign-in states; a questionnaire tool (e.g. StressSense) returns an AI result; SenseCheck voice page submits and shows warnings.
+**Scope note:** Priorities 1–6 are a very large single shipment. If any piece must slip, Menstrual/Altitude scaffolds and RPM avatar polish are the first candidates — the doctor chat, voice, credits, all tracker rebuilds, devices, health score, prescription flow, and PWA logo are the committed core. Also give an option for me to upload logo . like you tell upload the logo here.
