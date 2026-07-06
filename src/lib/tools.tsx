@@ -8,11 +8,6 @@ import {
   Droplets,
   HeartPulse,
   ScanLine,
-  Brain,
-  Droplet,
-  Thermometer,
-  Bone,
-  Hourglass,
   type LucideIcon,
 } from "lucide-react";
 
