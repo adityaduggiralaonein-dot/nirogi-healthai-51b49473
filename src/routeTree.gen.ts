@@ -36,6 +36,7 @@ import { Route as AuthenticatedDashboardOxygenRouteImport } from './routes/_auth
 import { Route as AuthenticatedDashboardHearingRouteImport } from './routes/_authenticated/dashboard.hearing'
 import { Route as AuthenticatedDashboardGlucoseRouteImport } from './routes/_authenticated/dashboard.glucose'
 import { Route as AuthenticatedDashboardEyeStrainRouteImport } from './routes/_authenticated/dashboard.eye-strain'
+import { Route as AuthenticatedDashboardEnergyRouteImport } from './routes/_authenticated/dashboard.energy'
 import { Route as AuthenticatedDashboardDevicesRouteImport } from './routes/_authenticated/dashboard.devices'
 import { Route as AuthenticatedDashboardBoneHealthRouteImport } from './routes/_authenticated/dashboard.bone-health'
 import { Route as AuthenticatedDashboardBioAgeRouteImport } from './routes/_authenticated/dashboard.bio-age'
@@ -186,6 +187,12 @@ const AuthenticatedDashboardEyeStrainRoute =
     path: '/eye-strain',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
+const AuthenticatedDashboardEnergyRoute =
+  AuthenticatedDashboardEnergyRouteImport.update({
+    id: '/energy',
+    path: '/energy',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
 const AuthenticatedDashboardDevicesRoute =
   AuthenticatedDashboardDevicesRouteImport.update({
     id: '/devices',
@@ -226,6 +233,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/bio-age': typeof AuthenticatedDashboardBioAgeRoute
   '/dashboard/bone-health': typeof AuthenticatedDashboardBoneHealthRoute
   '/dashboard/devices': typeof AuthenticatedDashboardDevicesRoute
+  '/dashboard/energy': typeof AuthenticatedDashboardEnergyRoute
   '/dashboard/eye-strain': typeof AuthenticatedDashboardEyeStrainRoute
   '/dashboard/glucose': typeof AuthenticatedDashboardGlucoseRoute
   '/dashboard/hearing': typeof AuthenticatedDashboardHearingRoute
@@ -257,6 +265,7 @@ export interface FileRoutesByTo {
   '/dashboard/bio-age': typeof AuthenticatedDashboardBioAgeRoute
   '/dashboard/bone-health': typeof AuthenticatedDashboardBoneHealthRoute
   '/dashboard/devices': typeof AuthenticatedDashboardDevicesRoute
+  '/dashboard/energy': typeof AuthenticatedDashboardEnergyRoute
   '/dashboard/eye-strain': typeof AuthenticatedDashboardEyeStrainRoute
   '/dashboard/glucose': typeof AuthenticatedDashboardGlucoseRoute
   '/dashboard/hearing': typeof AuthenticatedDashboardHearingRoute
@@ -290,6 +299,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard/bio-age': typeof AuthenticatedDashboardBioAgeRoute
   '/_authenticated/dashboard/bone-health': typeof AuthenticatedDashboardBoneHealthRoute
   '/_authenticated/dashboard/devices': typeof AuthenticatedDashboardDevicesRoute
+  '/_authenticated/dashboard/energy': typeof AuthenticatedDashboardEnergyRoute
   '/_authenticated/dashboard/eye-strain': typeof AuthenticatedDashboardEyeStrainRoute
   '/_authenticated/dashboard/glucose': typeof AuthenticatedDashboardGlucoseRoute
   '/_authenticated/dashboard/hearing': typeof AuthenticatedDashboardHearingRoute
@@ -323,6 +333,7 @@ export interface FileRouteTypes {
     | '/dashboard/bio-age'
     | '/dashboard/bone-health'
     | '/dashboard/devices'
+    | '/dashboard/energy'
     | '/dashboard/eye-strain'
     | '/dashboard/glucose'
     | '/dashboard/hearing'
@@ -354,6 +365,7 @@ export interface FileRouteTypes {
     | '/dashboard/bio-age'
     | '/dashboard/bone-health'
     | '/dashboard/devices'
+    | '/dashboard/energy'
     | '/dashboard/eye-strain'
     | '/dashboard/glucose'
     | '/dashboard/hearing'
@@ -386,6 +398,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard/bio-age'
     | '/_authenticated/dashboard/bone-health'
     | '/_authenticated/dashboard/devices'
+    | '/_authenticated/dashboard/energy'
     | '/_authenticated/dashboard/eye-strain'
     | '/_authenticated/dashboard/glucose'
     | '/_authenticated/dashboard/hearing'
@@ -599,6 +612,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardEyeStrainRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
+    '/_authenticated/dashboard/energy': {
+      id: '/_authenticated/dashboard/energy'
+      path: '/energy'
+      fullPath: '/dashboard/energy'
+      preLoaderRoute: typeof AuthenticatedDashboardEnergyRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
     '/_authenticated/dashboard/devices': {
       id: '/_authenticated/dashboard/devices'
       path: '/devices'
@@ -627,6 +647,7 @@ interface AuthenticatedDashboardRouteChildren {
   AuthenticatedDashboardBioAgeRoute: typeof AuthenticatedDashboardBioAgeRoute
   AuthenticatedDashboardBoneHealthRoute: typeof AuthenticatedDashboardBoneHealthRoute
   AuthenticatedDashboardDevicesRoute: typeof AuthenticatedDashboardDevicesRoute
+  AuthenticatedDashboardEnergyRoute: typeof AuthenticatedDashboardEnergyRoute
   AuthenticatedDashboardEyeStrainRoute: typeof AuthenticatedDashboardEyeStrainRoute
   AuthenticatedDashboardGlucoseRoute: typeof AuthenticatedDashboardGlucoseRoute
   AuthenticatedDashboardHearingRoute: typeof AuthenticatedDashboardHearingRoute
@@ -643,6 +664,7 @@ const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
     AuthenticatedDashboardBoneHealthRoute:
       AuthenticatedDashboardBoneHealthRoute,
     AuthenticatedDashboardDevicesRoute: AuthenticatedDashboardDevicesRoute,
+    AuthenticatedDashboardEnergyRoute: AuthenticatedDashboardEnergyRoute,
     AuthenticatedDashboardEyeStrainRoute: AuthenticatedDashboardEyeStrainRoute,
     AuthenticatedDashboardGlucoseRoute: AuthenticatedDashboardGlucoseRoute,
     AuthenticatedDashboardHearingRoute: AuthenticatedDashboardHearingRoute,
