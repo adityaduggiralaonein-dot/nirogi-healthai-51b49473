@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import logo from "@/assets/nirogi-logo.png";
 
 export const Route = createFileRoute("/auth")({
+  ssr: false,
   head: () => ({
     meta: [
       { title: "Sign in · Nirogi" },
@@ -33,7 +34,7 @@ function AuthPage() {
     setBusy(provider);
     try {
       const result = await lovable.auth.signInWithOAuth(provider, {
-        redirect_uri: `${window.location.origin}/dashboard`,
+        redirect_uri: window.location.origin,
       });
       if (result?.error) {
         toast.error("Sign-in failed. Please try again.");

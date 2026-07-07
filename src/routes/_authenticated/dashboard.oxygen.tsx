@@ -148,6 +148,13 @@ function OxygenPage() {
   };
 
   const last = latestEntry(MODULE);
+  const spo2Band = last
+    ? last.value >= 95
+      ? { label: "Normal (95–100%)", cls: "text-success", bg: "bg-success/15" }
+      : last.value >= 90
+        ? { label: "Mildly low (90–94%)", cls: "text-warning", bg: "bg-warning/15" }
+        : { label: "Low (<90%) — see a doctor", cls: "text-destructive", bg: "bg-destructive/15" }
+    : null;
 
   return (
     <ModuleLayout icon={Wind} accent="primary" title="Blood Oxygen (SpO2)" subtitle="Estimate oxygen saturation with your camera" disclaimer={disclaimer}>
@@ -181,7 +188,12 @@ function OxygenPage() {
             <p className="text-sm opacity-90">Last estimate</p>
             <div className="font-display text-6xl font-extrabold">{last ? `${last.value}` : "—"}</div>
             <p className="text-sm opacity-90">% SpO2</p>
+            {spo2Band && <p className={`mt-2 inline-block rounded-full px-3 py-1 text-sm font-semibold ${spo2Band.bg} ${spo2Band.cls}`}>{spo2Band.label}</p>}
           </section>
+
+          <p className="rounded-xl border border-border bg-muted/30 p-3 text-xs text-muted-foreground">
+            At high altitude (above ~2500 m) a slightly lower SpO2 can be normal. Track your <span className="font-medium text-foreground">Altitude</span> module alongside this if you're travelling to the mountains.
+          </p>
 
           <section className="rounded-2xl border border-border bg-card p-6 shadow-card">
             <h2 className="font-display text-lg font-semibold">Manual entry</h2>
