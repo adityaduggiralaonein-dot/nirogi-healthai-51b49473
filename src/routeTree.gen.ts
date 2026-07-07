@@ -33,6 +33,7 @@ import { Route as AuthenticatedDashboardUvRouteImport } from './routes/_authenti
 import { Route as AuthenticatedDashboardTemperatureRouteImport } from './routes/_authenticated/dashboard.temperature'
 import { Route as AuthenticatedDashboardStressRouteImport } from './routes/_authenticated/dashboard.stress'
 import { Route as AuthenticatedDashboardOxygenRouteImport } from './routes/_authenticated/dashboard.oxygen'
+import { Route as AuthenticatedDashboardMenstrualRouteImport } from './routes/_authenticated/dashboard.menstrual'
 import { Route as AuthenticatedDashboardHearingRouteImport } from './routes/_authenticated/dashboard.hearing'
 import { Route as AuthenticatedDashboardGlucoseRouteImport } from './routes/_authenticated/dashboard.glucose'
 import { Route as AuthenticatedDashboardEyeStrainRouteImport } from './routes/_authenticated/dashboard.eye-strain'
@@ -170,6 +171,12 @@ const AuthenticatedDashboardOxygenRoute =
     path: '/oxygen',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
+const AuthenticatedDashboardMenstrualRoute =
+  AuthenticatedDashboardMenstrualRouteImport.update({
+    id: '/menstrual',
+    path: '/menstrual',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
 const AuthenticatedDashboardHearingRoute =
   AuthenticatedDashboardHearingRouteImport.update({
     id: '/hearing',
@@ -245,6 +252,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/eye-strain': typeof AuthenticatedDashboardEyeStrainRoute
   '/dashboard/glucose': typeof AuthenticatedDashboardGlucoseRoute
   '/dashboard/hearing': typeof AuthenticatedDashboardHearingRoute
+  '/dashboard/menstrual': typeof AuthenticatedDashboardMenstrualRoute
   '/dashboard/oxygen': typeof AuthenticatedDashboardOxygenRoute
   '/dashboard/stress': typeof AuthenticatedDashboardStressRoute
   '/dashboard/temperature': typeof AuthenticatedDashboardTemperatureRoute
@@ -278,6 +286,7 @@ export interface FileRoutesByTo {
   '/dashboard/eye-strain': typeof AuthenticatedDashboardEyeStrainRoute
   '/dashboard/glucose': typeof AuthenticatedDashboardGlucoseRoute
   '/dashboard/hearing': typeof AuthenticatedDashboardHearingRoute
+  '/dashboard/menstrual': typeof AuthenticatedDashboardMenstrualRoute
   '/dashboard/oxygen': typeof AuthenticatedDashboardOxygenRoute
   '/dashboard/stress': typeof AuthenticatedDashboardStressRoute
   '/dashboard/temperature': typeof AuthenticatedDashboardTemperatureRoute
@@ -313,6 +322,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard/eye-strain': typeof AuthenticatedDashboardEyeStrainRoute
   '/_authenticated/dashboard/glucose': typeof AuthenticatedDashboardGlucoseRoute
   '/_authenticated/dashboard/hearing': typeof AuthenticatedDashboardHearingRoute
+  '/_authenticated/dashboard/menstrual': typeof AuthenticatedDashboardMenstrualRoute
   '/_authenticated/dashboard/oxygen': typeof AuthenticatedDashboardOxygenRoute
   '/_authenticated/dashboard/stress': typeof AuthenticatedDashboardStressRoute
   '/_authenticated/dashboard/temperature': typeof AuthenticatedDashboardTemperatureRoute
@@ -348,6 +358,7 @@ export interface FileRouteTypes {
     | '/dashboard/eye-strain'
     | '/dashboard/glucose'
     | '/dashboard/hearing'
+    | '/dashboard/menstrual'
     | '/dashboard/oxygen'
     | '/dashboard/stress'
     | '/dashboard/temperature'
@@ -381,6 +392,7 @@ export interface FileRouteTypes {
     | '/dashboard/eye-strain'
     | '/dashboard/glucose'
     | '/dashboard/hearing'
+    | '/dashboard/menstrual'
     | '/dashboard/oxygen'
     | '/dashboard/stress'
     | '/dashboard/temperature'
@@ -415,6 +427,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard/eye-strain'
     | '/_authenticated/dashboard/glucose'
     | '/_authenticated/dashboard/hearing'
+    | '/_authenticated/dashboard/menstrual'
     | '/_authenticated/dashboard/oxygen'
     | '/_authenticated/dashboard/stress'
     | '/_authenticated/dashboard/temperature'
@@ -604,6 +617,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardOxygenRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
+    '/_authenticated/dashboard/menstrual': {
+      id: '/_authenticated/dashboard/menstrual'
+      path: '/menstrual'
+      fullPath: '/dashboard/menstrual'
+      preLoaderRoute: typeof AuthenticatedDashboardMenstrualRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
     '/_authenticated/dashboard/hearing': {
       id: '/_authenticated/dashboard/hearing'
       path: '/hearing'
@@ -672,6 +692,7 @@ interface AuthenticatedDashboardRouteChildren {
   AuthenticatedDashboardEyeStrainRoute: typeof AuthenticatedDashboardEyeStrainRoute
   AuthenticatedDashboardGlucoseRoute: typeof AuthenticatedDashboardGlucoseRoute
   AuthenticatedDashboardHearingRoute: typeof AuthenticatedDashboardHearingRoute
+  AuthenticatedDashboardMenstrualRoute: typeof AuthenticatedDashboardMenstrualRoute
   AuthenticatedDashboardOxygenRoute: typeof AuthenticatedDashboardOxygenRoute
   AuthenticatedDashboardStressRoute: typeof AuthenticatedDashboardStressRoute
   AuthenticatedDashboardTemperatureRoute: typeof AuthenticatedDashboardTemperatureRoute
@@ -690,6 +711,7 @@ const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
     AuthenticatedDashboardEyeStrainRoute: AuthenticatedDashboardEyeStrainRoute,
     AuthenticatedDashboardGlucoseRoute: AuthenticatedDashboardGlucoseRoute,
     AuthenticatedDashboardHearingRoute: AuthenticatedDashboardHearingRoute,
+    AuthenticatedDashboardMenstrualRoute: AuthenticatedDashboardMenstrualRoute,
     AuthenticatedDashboardOxygenRoute: AuthenticatedDashboardOxygenRoute,
     AuthenticatedDashboardStressRoute: AuthenticatedDashboardStressRoute,
     AuthenticatedDashboardTemperatureRoute:
