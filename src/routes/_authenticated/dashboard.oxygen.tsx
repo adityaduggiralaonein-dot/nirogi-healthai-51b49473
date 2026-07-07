@@ -148,6 +148,13 @@ function OxygenPage() {
   };
 
   const last = latestEntry(MODULE);
+  const spo2Band = last
+    ? last.value >= 95
+      ? { label: "Normal (95–100%)", cls: "text-success", bg: "bg-success/15" }
+      : last.value >= 90
+        ? { label: "Mildly low (90–94%)", cls: "text-warning", bg: "bg-warning/15" }
+        : { label: "Low (<90%) — see a doctor", cls: "text-destructive", bg: "bg-destructive/15" }
+    : null;
 
   return (
     <ModuleLayout icon={Wind} accent="primary" title="Blood Oxygen (SpO2)" subtitle="Estimate oxygen saturation with your camera" disclaimer={disclaimer}>
