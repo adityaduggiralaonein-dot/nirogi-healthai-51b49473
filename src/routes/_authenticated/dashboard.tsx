@@ -219,6 +219,10 @@ function Dashboard() {
                 </div>
                 <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                   {[
+                    { to: "/dashboard/sleep" as const, icon: Moon, accent: "bg-primary/10 text-primary", name: "Sleep", note: "Duration & quality" },
+                    { to: "/dashboard/fitness" as const, icon: Footprints, accent: "bg-success/10 text-success", name: "Fitness", note: "Steps & activity" },
+                    { to: "/dashboard/water" as const, icon: GlassWater, accent: "bg-primary/10 text-primary", name: "Water", note: "Hydration tracker" },
+                    { to: "/dashboard/heart-rate" as const, icon: HeartPulse, accent: "bg-pulse/10 text-pulse", name: "Heart Rate", note: "Camera pulse (PPG)" },
                     { to: "/dashboard/oxygen" as const, icon: Wind, accent: "bg-primary/10 text-primary", name: "Blood Oxygen", note: "SpO2 via camera" },
                     { to: "/dashboard/hearing" as const, icon: Ear, accent: "bg-success/10 text-success", name: "Hearing", note: "Tone self-test" },
                     { to: "/dashboard/eye-strain" as const, icon: Eye, accent: "bg-warning/10 text-warning", name: "Eye Strain", note: "Screen time & breaks" },
@@ -229,7 +233,11 @@ function Dashboard() {
                     { to: "/dashboard/weight" as const, icon: Scale, accent: "bg-primary/10 text-primary", name: "Weight & BMI", note: "Trend & BMI" },
                     { to: "/dashboard/bone-health" as const, icon: Bone, accent: "bg-success/10 text-success", name: "Bone & Joint", note: "Pain tracker" },
                     { to: "/dashboard/bio-age" as const, icon: Hourglass, accent: "bg-primary/10 text-primary", name: "Biological Age", note: "Body age index" },
+                    { to: "/dashboard/altitude" as const, icon: Mountain, accent: "bg-primary/10 text-primary", name: "Altitude", note: "Height & breathing" },
                     { to: "/dashboard/energy" as const, icon: Zap, accent: "bg-warning/10 text-warning", name: "Energy & Recovery", note: "Daily readiness" },
+                    ...(form.gender.trim().toLowerCase() !== "male"
+                      ? [{ to: "/dashboard/menstrual" as const, icon: Flower2, accent: "bg-pulse/10 text-pulse", name: "Menstrual Health", note: "Cycle & symptoms" }]
+                      : []),
                   ].map((m) => (
                     <Link key={m.name} to={m.to} className="group rounded-xl border border-border p-4 transition-colors hover:bg-muted/50">
                       <span className={`flex size-9 items-center justify-center rounded-xl ${m.accent}`}><m.icon className="size-5" /></span>
