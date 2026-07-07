@@ -40,6 +40,7 @@ import { Route as AuthenticatedDashboardEnergyRouteImport } from './routes/_auth
 import { Route as AuthenticatedDashboardDevicesRouteImport } from './routes/_authenticated/dashboard.devices'
 import { Route as AuthenticatedDashboardBoneHealthRouteImport } from './routes/_authenticated/dashboard.bone-health'
 import { Route as AuthenticatedDashboardBioAgeRouteImport } from './routes/_authenticated/dashboard.bio-age'
+import { Route as AuthenticatedDashboardAltitudeRouteImport } from './routes/_authenticated/dashboard.altitude'
 
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
@@ -211,6 +212,12 @@ const AuthenticatedDashboardBioAgeRoute =
     path: '/bio-age',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
+const AuthenticatedDashboardAltitudeRoute =
+  AuthenticatedDashboardAltitudeRouteImport.update({
+    id: '/altitude',
+    path: '/altitude',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -230,6 +237,7 @@ export interface FileRoutesByFullPath {
   '/sleep-tracker': typeof AuthenticatedSleepTrackerRoute
   '/water-tracker': typeof AuthenticatedWaterTrackerRoute
   '/invite/$token': typeof InviteTokenRoute
+  '/dashboard/altitude': typeof AuthenticatedDashboardAltitudeRoute
   '/dashboard/bio-age': typeof AuthenticatedDashboardBioAgeRoute
   '/dashboard/bone-health': typeof AuthenticatedDashboardBoneHealthRoute
   '/dashboard/devices': typeof AuthenticatedDashboardDevicesRoute
@@ -262,6 +270,7 @@ export interface FileRoutesByTo {
   '/sleep-tracker': typeof AuthenticatedSleepTrackerRoute
   '/water-tracker': typeof AuthenticatedWaterTrackerRoute
   '/invite/$token': typeof InviteTokenRoute
+  '/dashboard/altitude': typeof AuthenticatedDashboardAltitudeRoute
   '/dashboard/bio-age': typeof AuthenticatedDashboardBioAgeRoute
   '/dashboard/bone-health': typeof AuthenticatedDashboardBoneHealthRoute
   '/dashboard/devices': typeof AuthenticatedDashboardDevicesRoute
@@ -296,6 +305,7 @@ export interface FileRoutesById {
   '/_authenticated/sleep-tracker': typeof AuthenticatedSleepTrackerRoute
   '/_authenticated/water-tracker': typeof AuthenticatedWaterTrackerRoute
   '/invite/$token': typeof InviteTokenRoute
+  '/_authenticated/dashboard/altitude': typeof AuthenticatedDashboardAltitudeRoute
   '/_authenticated/dashboard/bio-age': typeof AuthenticatedDashboardBioAgeRoute
   '/_authenticated/dashboard/bone-health': typeof AuthenticatedDashboardBoneHealthRoute
   '/_authenticated/dashboard/devices': typeof AuthenticatedDashboardDevicesRoute
@@ -330,6 +340,7 @@ export interface FileRouteTypes {
     | '/sleep-tracker'
     | '/water-tracker'
     | '/invite/$token'
+    | '/dashboard/altitude'
     | '/dashboard/bio-age'
     | '/dashboard/bone-health'
     | '/dashboard/devices'
@@ -362,6 +373,7 @@ export interface FileRouteTypes {
     | '/sleep-tracker'
     | '/water-tracker'
     | '/invite/$token'
+    | '/dashboard/altitude'
     | '/dashboard/bio-age'
     | '/dashboard/bone-health'
     | '/dashboard/devices'
@@ -395,6 +407,7 @@ export interface FileRouteTypes {
     | '/_authenticated/sleep-tracker'
     | '/_authenticated/water-tracker'
     | '/invite/$token'
+    | '/_authenticated/dashboard/altitude'
     | '/_authenticated/dashboard/bio-age'
     | '/_authenticated/dashboard/bone-health'
     | '/_authenticated/dashboard/devices'
@@ -640,10 +653,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardBioAgeRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
+    '/_authenticated/dashboard/altitude': {
+      id: '/_authenticated/dashboard/altitude'
+      path: '/altitude'
+      fullPath: '/dashboard/altitude'
+      preLoaderRoute: typeof AuthenticatedDashboardAltitudeRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
   }
 }
 
 interface AuthenticatedDashboardRouteChildren {
+  AuthenticatedDashboardAltitudeRoute: typeof AuthenticatedDashboardAltitudeRoute
   AuthenticatedDashboardBioAgeRoute: typeof AuthenticatedDashboardBioAgeRoute
   AuthenticatedDashboardBoneHealthRoute: typeof AuthenticatedDashboardBoneHealthRoute
   AuthenticatedDashboardDevicesRoute: typeof AuthenticatedDashboardDevicesRoute
@@ -660,6 +681,7 @@ interface AuthenticatedDashboardRouteChildren {
 
 const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
   {
+    AuthenticatedDashboardAltitudeRoute: AuthenticatedDashboardAltitudeRoute,
     AuthenticatedDashboardBioAgeRoute: AuthenticatedDashboardBioAgeRoute,
     AuthenticatedDashboardBoneHealthRoute:
       AuthenticatedDashboardBoneHealthRoute,
