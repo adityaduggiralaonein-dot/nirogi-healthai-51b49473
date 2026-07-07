@@ -1,71 +1,71 @@
-# Nirogi — Spec-aligned Modules, Devices, Doctors (Priorities 1–6)
+# Complete & fix the dashboard module pages
 
-Built to match the two Word specs. Every module page follows the doc's rule set: back arrow, real data only (localStorage/sensors — never fake numbers), 7‑day Recharts trend, "Log manually" button, a "Data source" footer, and a Lovable‑AI insight box. Empty state: *"No data yet. Enable a data source below or log manually."*
+## What I found (important)
 
-## Priority 1 — Reorganise & rebuild trackers into real tracker pages
+Most of the pages you listed **are already built and wired up** — they open as their own pages with a back arrow, a 7‑day Recharts trend, a "Data source" line, manual logging, and an AI insight box:
 
-**Move out of the main 9 tools → dedicated Health‑Module pages** (no more questionnaire `ToolRunner` for these). Each gets its own route, manual logging, trend chart, and AI insight:
+- Built & registered: `stress`, `glucose`, `temperature`, `bone-health`, `bio-age`, `energy`, `weight`, `oxygen` (SpO2, with real camera PPG), `uv` (real GPS + Open‑Meteo), `hearing`, `eye-strain`, `devices`, plus `sense-check`.
 
-- Stress & Mind → `/dashboard/stress` (mood emoji check‑in, 4‑7‑8 breathing link, journal, 7‑day mood calendar)
-- Blood Glucose → `/dashboard/glucose` (fasting/post‑meal logs, colour bands 70‑99 / 100‑125 / ≥126, HbA1c estimate)
-- Temperature → `/dashboard/temperature` (°C/°F log, fever bands)
-- Bone & Joint → `/dashboard/bone-health` (pain/mobility check‑in + AI guidance)
-- Biological Age → `/dashboard/bio-age` (weighted model from RHR, sleep, BMI, steps, glucose, stress → age offset)
+So why do they look "not built" to you: **you're stuck on `/auth`.** Every module lives under the `_authenticated` guard, so if sign‑in doesn't complete, each page just bounces back to `/auth` and looks empty. There's also a **hydration crash on the `/auth` page itself** that can break the sign‑in screen. That's the real blocker — not missing pages.
 
-Remove `stresssense/glucotrack/thermocheck/bonehealth/bioage` from the `TOOLS` array and the `/tools/$tool` path; delete `sensecheck` from the Goals & Wellness row (Eye Strain + Hearing modules already cover that).
+There are also genuine gaps vs. the Word doc, which I'll close.
 
-**Upgrade the existing weak trackers to the doc spec:**
+## Plan
 
-- Sleep `/dashboard/sleep` — last‑night card (hours, efficiency %), stage donut, quality 1‑5, manual bedtime/wake entry, optional mic "sleep recording" toggle, `nirogi_sleep_logs`.
-- Fitness `/dashboard/fitness` — accelerometer step counter (DeviceMotionEvent), ring toward 8,000, calories via MET, activity selector, 7‑day steps bar chart, `nirogi_fitness_logs`.
-- Water `/dashboard/water` — preset 150/250/500/custom, animated fill, goal = weight×35 ml, reminder‑interval editor, hydration badge.
-- Weight & BMI `/dashboard/weight` — kg entry, BMI ring + category colours, target weight + progress, 30‑day trend (merge with existing Goals logic).
+### 1. Fix the access blocker (do this first)
 
-## Priority 2 — Remaining modules (build to spec)
+- Fix the `/auth` hydration mismatch (server renders a Suspense boundary, client renders the page) by rendering the auth screen client‑only (`ssr: false` on the `/auth` route). This restores a working sign‑in screen.
+- After that, sign in and click through every module card to confirm each page loads (verify with a browser pass), fixing any page that errors.
 
-- Blood Oxygen `/dashboard/spo2` — keep camera PPG, add colour bands + altitude note.
-- UV & Skin Exposure `/dashboard/uv-exposure` — GPS + Open‑Meteo `uv_index`, colour band, SPF advice, skin‑type selector, weekly chart.
-- **Energy & Recovery** `/dashboard/energy` (new card) — composite 0‑100 from sleep 30% / stress 25% / steps 20% / hydration 15% / nutrition 10%, emoji tier, factor breakdown, 14‑day trend.
-- Hearing `/dashboard/hearing-health` and Eye Strain `/dashboard/eye-strain` — keep, align to doc (dB meter / 20‑20‑20).
-- Menstrual `/dashboard/menstrual` and Altitude `/dashboard/altitude` — noted as later‑priority; scaffolds only if time permits (flagged, not blocking).
+### 2. Align routes to the doc's paths
 
-Dashboard "Health modules" grid re‑pointed to all the new routes with correct icons.
+The doc specifies exact routes. I'll make these resolve (add the spec path as the canonical route, keep the old one redirecting so nothing breaks):
 
-## Priority 3 — Connected Devices card `/dashboard/devices`
+- `/dashboard/oxygen` → `**/dashboard/spo2**`
+- `/dashboard/uv` → `**/dashboard/uv-exposure**`
+- `/dashboard/hearing` → `**/dashboard/hearing-health**`
+- Add dashboard entries/links for the existing trackers so they're reachable from the hub at the doc paths: Sleep (`/dashboard/sleep`), Fitness (`/dashboard/fitness`), Water (`/dashboard/water`), Heart Rate (`/dashboard/heart-rate`) — these exist today as top‑level routes (`/sleep-tracker`, etc.); I'll expose them under `/dashboard/*` per the spec.
 
-Three tabs (already partly built, completed to spec):
+### 3. Build the two pages that are actually missing
 
-- **Phone Sensors** — GPS, Accelerometer, Mic, Rear/Front camera, Barometer, Notifications; each with Enable toggle that requests permission only on tap; status saved to `nirogi_devices_config`.
-- **Android Health Connect** — Android detection + "Install Nirogi Sync app (coming soon)" best‑effort path with data‑type list.
-- **Google Fit** — "Connect Google Fit" OAuth implicit button reading `VITE_GOOGLE_FIT_CLIENT_ID`; `/auth/google-fit` callback stores token; button shows "Add client ID to enable" until the key is provided (best‑effort as agreed). Connection status shown per tab.
+- `**/dashboard/altitude**` — barometric pressure via Generic Sensor API with GPS‑altitude fallback, altitude‑sickness alert >2500m, 7‑day history, manual log, data source, AI insight.
+- `**/dashboard/menstrual**` — only shown for users who select Female / Prefer‑not‑to‑say or opt in; cycle start, duration, flow, symptoms, predicted next period & fertile window, cycle‑length trend, AI insight.
 
-## Priority 4 — Health Score rework + Prescription→Reminder flow
+### 4. Deepen the pages you named to full Section‑3 spec
 
-- Rework `health-score.functions.ts` to the doc's pillar model (Physical / Hydration / Sleep / Personal‑OS) blending module localStorage summaries the client passes in, keeping the DB snapshot history. Health Score card shows pillar bars.
-- **Prescription approval:** after `analyzePrescription`, AI also returns a structured medicine list; the dashboard shows each detected medicine with an **"Add as reminder"** confirm step (user approves before anything is saved to `medicine_reminders`). Add **"Clear prescription"** to wipe the stored analysis and upload a fresh one.
+Bring these up to exactly what the doc describes (keeping the shared ModuleLayout / TrendCard / AiResultPanel / disclaimer pattern):
 
-## Priority 5 — PWA logo + intro animation
+- **Stress & Mental Health** — add the built‑in 4‑7‑8 breathing guide inline, 7‑day mood calendar with colour coding, Page‑Visibility screen‑time proxy (already has mood check‑in + journal + AI).
+- **Blood Glucose** — colour‑code readings by fasting (<100 / 100‑125 / >126) and post‑meal (<140) thresholds, fasting‑vs‑post‑meal pattern, estimated HbA1c from average, 14‑day trend.
+- **Weight & BMI** — BMI ring with category colour, target‑weight goal + progress bar + estimated date, 30‑day trend, body‑composition slots if provided.
+- **Blood Oxygen (SpO2)** — keep camera PPG; add colour bands (95‑100 green / 90‑94 yellow / <90 red) and altitude note.
+- **Eye Strain** — Page‑Visibility screen‑time estimate + 20‑20‑20 reminder toggle + tips + link to SenseCheck vision test.
+- **Energy & Recovery** — 14‑day trend + recommended activity level + recovery advice (already computes the composite score).
+- **Bio‑Age**, **UV**, **Hearing**, **Bone & Joint**, **Temperature**, **Energy** — confirm each has back arrow, real data source, 7‑day trend, manual log, AI insight, and the empty‑state message "No data yet…" (no hardcoded fake numbers).
 
-- Wait for your uploaded logo, then generate `icon-192`/`icon-512` (maskable), apple‑touch icon, and splash from it; update `manifest.webmanifest` (name "Nirogi AI", theme `#00E5C3`, bg `#060B18`).
-- Add a one‑time framer‑motion splash/intro (logo reveal) on app launch in standalone mode.
+### 5. General spec compliance pass (all module pages)
 
-## Priority 6 — AI Doctor Avatar system (first version, full stack)
+- Back arrow to `/dashboard` ✓ (already in ModuleLayout)
+- "Data source" section ✓
+- 7‑day Recharts trend ✓
+- "Log manually" ✓
+- AI insight from Lovable AI based on recent data ✓
+- No mock data; show "No data yet. Enable a data source below or log manually." for empty states.
 
-- Enable the **ElevenLabs** connector (voice) and add `@react-three/fiber`, `@react-three/drei`, `@readyplayerme/visage` for 3D avatars.
-- 12 doctor profiles (name, specialty, personality, connected tools, RPM avatar URL, ElevenLabs voice) in a config module.
-- Dashboard **"My Doctors"** swipeable row (below Health Score) → doctor page `/dashboard/doctor/$id` with large 3D avatar (idle/talking states), bio, Start Chat + Voice Call.
-- **Chat:** Lovable AI, per‑doctor system prompt + injected profile, history saved to a new `doctor_chats`/`doctor_messages` table (Cloud). **Voice:** ElevenLabs TTS + Web Speech input.
-- **Credit system:** `user_credits` + `credit_transactions` tables, signup/tool/streak earning, 1 credit/message & 5/min voice, credit pill in nav, low‑credit nudge, zero‑credit modal (no hard paywall). Tool‑result "Discuss with Dr. X" banner routing.
+## Order of work
 
-## Later (as you ordered) — not in this shipment
-
-- Priority 7 (family Google‑sign‑in completion) and Priority 8 (delete SkinScan images immediately after scan).
+1. Auth hydration fix (unblocks everything) → verify sign‑in.
+2. Route alignment + dashboard hub links.
+3. Missing pages: altitude, menstrual.
+4. Deepen the named pages to full spec.
+5. Browser verification pass over every module page.
 
 ## Technical notes
 
-- New DB migrations: `doctor_chats`, `doctor_messages`, `user_credits`, `credit_transactions` — all with GRANTs + RLS scoped to `auth.uid()`. Server functions via `createServerFn` + `requireSupabaseAuth`.
-- All sensor/measurement data stays in localStorage per the privacy spec; only summarised numbers go to Lovable AI.
-- ElevenLabs voice runs through a server route using the connector `ELEVENLABS_API_KEY` (never client‑side).
-- Reuse `ModuleLayout`, `TrendCard`, `AiResultPanel`, `ClinicalDisclaimer`, i18n `t()`; verify with a typecheck/build and Playwright smoke of key new pages.
+- All sensor/measurement data stays in `localStorage` (per‑module keys via `local-health.ts`); only summarised numbers go to Lovable AI. This matches the doc's localStorage‑key model (`nirogi_sleep_logs`, `nirogi_fitness_logs`, `nirogi_water_logs`, etc.) — I'll standardise the keys to the doc's names where they're referenced.
+- Reuse existing `ModuleLayout`, `TrendCard`, `AiResultPanel`, `ClinicalDisclaimer`, and i18n.
+- `routeTree.gen.ts` is auto‑generated — I won't hand‑edit it; new/renamed route files regenerate it.
 
-**Scope note:** Priorities 1–6 are a very large single shipment. If any piece must slip, Menstrual/Altitude scaffolds and RPM avatar polish are the first candidates — the doctor chat, voice, credits, all tracker rebuilds, devices, health score, prescription flow, and PWA logo are the committed core. Also give an option for me to upload logo . like you tell upload the logo here.
+After this, everything under Priorities 1 & 2 opens as its own working page and behaves as the doc's Section 3 requires. Priorities 6 → 5 → 3 follow in the order you specified.
+
+**Note:** since the pages largely exist, most of this is a fix‑and‑complete pass rather than a from‑scratch rebuild — that's faster and avoids throwing away working code. If you'd rather I hard‑rebuild specific pages regardless, tell me which. Also after signning in those pages are not opening and it is getting redirected upwards like auth as you mentioned. so please fix those issues and those pages should load.  Also the image is uploaded for priority 5.
