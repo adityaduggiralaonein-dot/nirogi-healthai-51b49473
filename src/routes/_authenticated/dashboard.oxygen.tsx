@@ -188,7 +188,12 @@ function OxygenPage() {
             <p className="text-sm opacity-90">Last estimate</p>
             <div className="font-display text-6xl font-extrabold">{last ? `${last.value}` : "—"}</div>
             <p className="text-sm opacity-90">% SpO2</p>
+            {spo2Band && <p className={`mt-2 inline-block rounded-full px-3 py-1 text-sm font-semibold ${spo2Band.bg} ${spo2Band.cls}`}>{spo2Band.label}</p>}
           </section>
+
+          <p className="rounded-xl border border-border bg-muted/30 p-3 text-xs text-muted-foreground">
+            At high altitude (above ~2500 m) a slightly lower SpO2 can be normal. Track your <span className="font-medium text-foreground">Altitude</span> module alongside this if you're travelling to the mountains.
+          </p>
 
           <section className="rounded-2xl border border-border bg-card p-6 shadow-card">
             <h2 className="font-display text-lg font-semibold">Manual entry</h2>
