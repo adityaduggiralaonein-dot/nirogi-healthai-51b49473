@@ -29,6 +29,7 @@ import { Route as AuthenticatedDashboardRouteImport } from './routes/_authentica
 import { Route as AuthenticatedBreatheRouteImport } from './routes/_authenticated/breathe'
 import { Route as AuthenticatedToolsToolRouteImport } from './routes/_authenticated/tools/$tool'
 import { Route as AuthenticatedDashboardWeightRouteImport } from './routes/_authenticated/dashboard.weight'
+import { Route as AuthenticatedDashboardWaterRouteImport } from './routes/_authenticated/dashboard.water'
 import { Route as AuthenticatedDashboardUvExposureRouteImport } from './routes/_authenticated/dashboard.uv-exposure'
 import { Route as AuthenticatedDashboardUvRouteImport } from './routes/_authenticated/dashboard.uv'
 import { Route as AuthenticatedDashboardTemperatureRouteImport } from './routes/_authenticated/dashboard.temperature'
@@ -37,9 +38,11 @@ import { Route as AuthenticatedDashboardSpo2RouteImport } from './routes/_authen
 import { Route as AuthenticatedDashboardSleepRouteImport } from './routes/_authenticated/dashboard.sleep'
 import { Route as AuthenticatedDashboardOxygenRouteImport } from './routes/_authenticated/dashboard.oxygen'
 import { Route as AuthenticatedDashboardMenstrualRouteImport } from './routes/_authenticated/dashboard.menstrual'
+import { Route as AuthenticatedDashboardHeartRateRouteImport } from './routes/_authenticated/dashboard.heart-rate'
 import { Route as AuthenticatedDashboardHearingHealthRouteImport } from './routes/_authenticated/dashboard.hearing-health'
 import { Route as AuthenticatedDashboardHearingRouteImport } from './routes/_authenticated/dashboard.hearing'
 import { Route as AuthenticatedDashboardGlucoseRouteImport } from './routes/_authenticated/dashboard.glucose'
+import { Route as AuthenticatedDashboardFitnessRouteImport } from './routes/_authenticated/dashboard.fitness'
 import { Route as AuthenticatedDashboardEyeStrainRouteImport } from './routes/_authenticated/dashboard.eye-strain'
 import { Route as AuthenticatedDashboardEnergyRouteImport } from './routes/_authenticated/dashboard.energy'
 import { Route as AuthenticatedDashboardDevicesRouteImport } from './routes/_authenticated/dashboard.devices'
@@ -151,6 +154,12 @@ const AuthenticatedDashboardWeightRoute =
     path: '/weight',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
+const AuthenticatedDashboardWaterRoute =
+  AuthenticatedDashboardWaterRouteImport.update({
+    id: '/water',
+    path: '/water',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
 const AuthenticatedDashboardUvExposureRoute =
   AuthenticatedDashboardUvExposureRouteImport.update({
     id: '/uv-exposure',
@@ -199,6 +208,12 @@ const AuthenticatedDashboardMenstrualRoute =
     path: '/menstrual',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
+const AuthenticatedDashboardHeartRateRoute =
+  AuthenticatedDashboardHeartRateRouteImport.update({
+    id: '/heart-rate',
+    path: '/heart-rate',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
 const AuthenticatedDashboardHearingHealthRoute =
   AuthenticatedDashboardHearingHealthRouteImport.update({
     id: '/hearing-health',
@@ -215,6 +230,12 @@ const AuthenticatedDashboardGlucoseRoute =
   AuthenticatedDashboardGlucoseRouteImport.update({
     id: '/glucose',
     path: '/glucose',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardFitnessRoute =
+  AuthenticatedDashboardFitnessRouteImport.update({
+    id: '/fitness',
+    path: '/fitness',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
 const AuthenticatedDashboardEyeStrainRoute =
@@ -278,9 +299,11 @@ export interface FileRoutesByFullPath {
   '/dashboard/devices': typeof AuthenticatedDashboardDevicesRoute
   '/dashboard/energy': typeof AuthenticatedDashboardEnergyRoute
   '/dashboard/eye-strain': typeof AuthenticatedDashboardEyeStrainRoute
+  '/dashboard/fitness': typeof AuthenticatedDashboardFitnessRoute
   '/dashboard/glucose': typeof AuthenticatedDashboardGlucoseRoute
   '/dashboard/hearing': typeof AuthenticatedDashboardHearingRoute
   '/dashboard/hearing-health': typeof AuthenticatedDashboardHearingHealthRoute
+  '/dashboard/heart-rate': typeof AuthenticatedDashboardHeartRateRoute
   '/dashboard/menstrual': typeof AuthenticatedDashboardMenstrualRoute
   '/dashboard/oxygen': typeof AuthenticatedDashboardOxygenRoute
   '/dashboard/sleep': typeof AuthenticatedDashboardSleepRoute
@@ -289,6 +312,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/temperature': typeof AuthenticatedDashboardTemperatureRoute
   '/dashboard/uv': typeof AuthenticatedDashboardUvRoute
   '/dashboard/uv-exposure': typeof AuthenticatedDashboardUvExposureRoute
+  '/dashboard/water': typeof AuthenticatedDashboardWaterRoute
   '/dashboard/weight': typeof AuthenticatedDashboardWeightRoute
   '/tools/$tool': typeof AuthenticatedToolsToolRoute
 }
@@ -316,9 +340,11 @@ export interface FileRoutesByTo {
   '/dashboard/devices': typeof AuthenticatedDashboardDevicesRoute
   '/dashboard/energy': typeof AuthenticatedDashboardEnergyRoute
   '/dashboard/eye-strain': typeof AuthenticatedDashboardEyeStrainRoute
+  '/dashboard/fitness': typeof AuthenticatedDashboardFitnessRoute
   '/dashboard/glucose': typeof AuthenticatedDashboardGlucoseRoute
   '/dashboard/hearing': typeof AuthenticatedDashboardHearingRoute
   '/dashboard/hearing-health': typeof AuthenticatedDashboardHearingHealthRoute
+  '/dashboard/heart-rate': typeof AuthenticatedDashboardHeartRateRoute
   '/dashboard/menstrual': typeof AuthenticatedDashboardMenstrualRoute
   '/dashboard/oxygen': typeof AuthenticatedDashboardOxygenRoute
   '/dashboard/sleep': typeof AuthenticatedDashboardSleepRoute
@@ -327,6 +353,7 @@ export interface FileRoutesByTo {
   '/dashboard/temperature': typeof AuthenticatedDashboardTemperatureRoute
   '/dashboard/uv': typeof AuthenticatedDashboardUvRoute
   '/dashboard/uv-exposure': typeof AuthenticatedDashboardUvExposureRoute
+  '/dashboard/water': typeof AuthenticatedDashboardWaterRoute
   '/dashboard/weight': typeof AuthenticatedDashboardWeightRoute
   '/tools/$tool': typeof AuthenticatedToolsToolRoute
 }
@@ -356,9 +383,11 @@ export interface FileRoutesById {
   '/_authenticated/dashboard/devices': typeof AuthenticatedDashboardDevicesRoute
   '/_authenticated/dashboard/energy': typeof AuthenticatedDashboardEnergyRoute
   '/_authenticated/dashboard/eye-strain': typeof AuthenticatedDashboardEyeStrainRoute
+  '/_authenticated/dashboard/fitness': typeof AuthenticatedDashboardFitnessRoute
   '/_authenticated/dashboard/glucose': typeof AuthenticatedDashboardGlucoseRoute
   '/_authenticated/dashboard/hearing': typeof AuthenticatedDashboardHearingRoute
   '/_authenticated/dashboard/hearing-health': typeof AuthenticatedDashboardHearingHealthRoute
+  '/_authenticated/dashboard/heart-rate': typeof AuthenticatedDashboardHeartRateRoute
   '/_authenticated/dashboard/menstrual': typeof AuthenticatedDashboardMenstrualRoute
   '/_authenticated/dashboard/oxygen': typeof AuthenticatedDashboardOxygenRoute
   '/_authenticated/dashboard/sleep': typeof AuthenticatedDashboardSleepRoute
@@ -367,6 +396,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard/temperature': typeof AuthenticatedDashboardTemperatureRoute
   '/_authenticated/dashboard/uv': typeof AuthenticatedDashboardUvRoute
   '/_authenticated/dashboard/uv-exposure': typeof AuthenticatedDashboardUvExposureRoute
+  '/_authenticated/dashboard/water': typeof AuthenticatedDashboardWaterRoute
   '/_authenticated/dashboard/weight': typeof AuthenticatedDashboardWeightRoute
   '/_authenticated/tools/$tool': typeof AuthenticatedToolsToolRoute
 }
@@ -396,9 +426,11 @@ export interface FileRouteTypes {
     | '/dashboard/devices'
     | '/dashboard/energy'
     | '/dashboard/eye-strain'
+    | '/dashboard/fitness'
     | '/dashboard/glucose'
     | '/dashboard/hearing'
     | '/dashboard/hearing-health'
+    | '/dashboard/heart-rate'
     | '/dashboard/menstrual'
     | '/dashboard/oxygen'
     | '/dashboard/sleep'
@@ -407,6 +439,7 @@ export interface FileRouteTypes {
     | '/dashboard/temperature'
     | '/dashboard/uv'
     | '/dashboard/uv-exposure'
+    | '/dashboard/water'
     | '/dashboard/weight'
     | '/tools/$tool'
   fileRoutesByTo: FileRoutesByTo
@@ -434,9 +467,11 @@ export interface FileRouteTypes {
     | '/dashboard/devices'
     | '/dashboard/energy'
     | '/dashboard/eye-strain'
+    | '/dashboard/fitness'
     | '/dashboard/glucose'
     | '/dashboard/hearing'
     | '/dashboard/hearing-health'
+    | '/dashboard/heart-rate'
     | '/dashboard/menstrual'
     | '/dashboard/oxygen'
     | '/dashboard/sleep'
@@ -445,6 +480,7 @@ export interface FileRouteTypes {
     | '/dashboard/temperature'
     | '/dashboard/uv'
     | '/dashboard/uv-exposure'
+    | '/dashboard/water'
     | '/dashboard/weight'
     | '/tools/$tool'
   id:
@@ -473,9 +509,11 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard/devices'
     | '/_authenticated/dashboard/energy'
     | '/_authenticated/dashboard/eye-strain'
+    | '/_authenticated/dashboard/fitness'
     | '/_authenticated/dashboard/glucose'
     | '/_authenticated/dashboard/hearing'
     | '/_authenticated/dashboard/hearing-health'
+    | '/_authenticated/dashboard/heart-rate'
     | '/_authenticated/dashboard/menstrual'
     | '/_authenticated/dashboard/oxygen'
     | '/_authenticated/dashboard/sleep'
@@ -484,6 +522,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard/temperature'
     | '/_authenticated/dashboard/uv'
     | '/_authenticated/dashboard/uv-exposure'
+    | '/_authenticated/dashboard/water'
     | '/_authenticated/dashboard/weight'
     | '/_authenticated/tools/$tool'
   fileRoutesById: FileRoutesById
@@ -641,6 +680,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardWeightRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
+    '/_authenticated/dashboard/water': {
+      id: '/_authenticated/dashboard/water'
+      path: '/water'
+      fullPath: '/dashboard/water'
+      preLoaderRoute: typeof AuthenticatedDashboardWaterRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
     '/_authenticated/dashboard/uv-exposure': {
       id: '/_authenticated/dashboard/uv-exposure'
       path: '/uv-exposure'
@@ -697,6 +743,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardMenstrualRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
+    '/_authenticated/dashboard/heart-rate': {
+      id: '/_authenticated/dashboard/heart-rate'
+      path: '/heart-rate'
+      fullPath: '/dashboard/heart-rate'
+      preLoaderRoute: typeof AuthenticatedDashboardHeartRateRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
     '/_authenticated/dashboard/hearing-health': {
       id: '/_authenticated/dashboard/hearing-health'
       path: '/hearing-health'
@@ -716,6 +769,13 @@ declare module '@tanstack/react-router' {
       path: '/glucose'
       fullPath: '/dashboard/glucose'
       preLoaderRoute: typeof AuthenticatedDashboardGlucoseRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/fitness': {
+      id: '/_authenticated/dashboard/fitness'
+      path: '/fitness'
+      fullPath: '/dashboard/fitness'
+      preLoaderRoute: typeof AuthenticatedDashboardFitnessRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
     '/_authenticated/dashboard/eye-strain': {
@@ -770,9 +830,11 @@ interface AuthenticatedDashboardRouteChildren {
   AuthenticatedDashboardDevicesRoute: typeof AuthenticatedDashboardDevicesRoute
   AuthenticatedDashboardEnergyRoute: typeof AuthenticatedDashboardEnergyRoute
   AuthenticatedDashboardEyeStrainRoute: typeof AuthenticatedDashboardEyeStrainRoute
+  AuthenticatedDashboardFitnessRoute: typeof AuthenticatedDashboardFitnessRoute
   AuthenticatedDashboardGlucoseRoute: typeof AuthenticatedDashboardGlucoseRoute
   AuthenticatedDashboardHearingRoute: typeof AuthenticatedDashboardHearingRoute
   AuthenticatedDashboardHearingHealthRoute: typeof AuthenticatedDashboardHearingHealthRoute
+  AuthenticatedDashboardHeartRateRoute: typeof AuthenticatedDashboardHeartRateRoute
   AuthenticatedDashboardMenstrualRoute: typeof AuthenticatedDashboardMenstrualRoute
   AuthenticatedDashboardOxygenRoute: typeof AuthenticatedDashboardOxygenRoute
   AuthenticatedDashboardSleepRoute: typeof AuthenticatedDashboardSleepRoute
@@ -781,6 +843,7 @@ interface AuthenticatedDashboardRouteChildren {
   AuthenticatedDashboardTemperatureRoute: typeof AuthenticatedDashboardTemperatureRoute
   AuthenticatedDashboardUvRoute: typeof AuthenticatedDashboardUvRoute
   AuthenticatedDashboardUvExposureRoute: typeof AuthenticatedDashboardUvExposureRoute
+  AuthenticatedDashboardWaterRoute: typeof AuthenticatedDashboardWaterRoute
   AuthenticatedDashboardWeightRoute: typeof AuthenticatedDashboardWeightRoute
 }
 
@@ -793,10 +856,12 @@ const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
     AuthenticatedDashboardDevicesRoute: AuthenticatedDashboardDevicesRoute,
     AuthenticatedDashboardEnergyRoute: AuthenticatedDashboardEnergyRoute,
     AuthenticatedDashboardEyeStrainRoute: AuthenticatedDashboardEyeStrainRoute,
+    AuthenticatedDashboardFitnessRoute: AuthenticatedDashboardFitnessRoute,
     AuthenticatedDashboardGlucoseRoute: AuthenticatedDashboardGlucoseRoute,
     AuthenticatedDashboardHearingRoute: AuthenticatedDashboardHearingRoute,
     AuthenticatedDashboardHearingHealthRoute:
       AuthenticatedDashboardHearingHealthRoute,
+    AuthenticatedDashboardHeartRateRoute: AuthenticatedDashboardHeartRateRoute,
     AuthenticatedDashboardMenstrualRoute: AuthenticatedDashboardMenstrualRoute,
     AuthenticatedDashboardOxygenRoute: AuthenticatedDashboardOxygenRoute,
     AuthenticatedDashboardSleepRoute: AuthenticatedDashboardSleepRoute,
@@ -807,6 +872,7 @@ const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
     AuthenticatedDashboardUvRoute: AuthenticatedDashboardUvRoute,
     AuthenticatedDashboardUvExposureRoute:
       AuthenticatedDashboardUvExposureRoute,
+    AuthenticatedDashboardWaterRoute: AuthenticatedDashboardWaterRoute,
     AuthenticatedDashboardWeightRoute: AuthenticatedDashboardWeightRoute,
   }
 
