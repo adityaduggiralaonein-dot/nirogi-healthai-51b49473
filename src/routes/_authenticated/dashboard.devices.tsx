@@ -140,10 +140,19 @@ function DevicesPage() {
                   <p className="text-sm text-muted-foreground">Import activity, steps & heart data</p>
                 </div>
               </div>
-              <div className="mt-4 rounded-xl border border-warning/30 bg-warning/5 p-3 text-sm text-muted-foreground">
-                Google Fit connection requires a Google OAuth client ID to be configured for Nirogi. Once set up, you'll be able to connect your account here and pull your fitness history.
-              </div>
-              <Button disabled className="mt-4 w-full">Connect (setup required)</Button>
+              {googleFitClientId ? (
+                <>
+                  <p className="mt-4 text-sm text-muted-foreground">Connect your Google account to pull your fitness history into Nirogi.</p>
+                  <Button className="mt-4 w-full" onClick={connectGoogleFit}>Connect Google Fit</Button>
+                </>
+              ) : (
+                <>
+                  <div className="mt-4 rounded-xl border border-warning/30 bg-warning/5 p-3 text-sm text-muted-foreground">
+                    Google Fit connection requires a Google OAuth client ID to be configured for Nirogi. Once set up, you'll be able to connect your account here and pull your fitness history.
+                  </div>
+                  <Button disabled className="mt-4 w-full">Connect (setup required)</Button>
+                </>
+              )}
             </div>
           </TabsContent>
         </Tabs>
