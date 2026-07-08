@@ -13,14 +13,15 @@ export const Route = createFileRoute("/_authenticated/dashboard/devices")({
   component: DevicesPage,
 });
 
-const STORAGE = "nirogi_devices";
-type SensorKey = "gps" | "motion" | "mic" | "camera" | "notifications";
+const STORAGE = "nirogi_devices_config";
+type SensorKey = "gps" | "motion" | "mic" | "camera" | "barometer" | "notifications";
 
 const SENSORS: { key: SensorKey; label: string; desc: string; icon: typeof MapPin }[] = [
   { key: "gps", label: "Location (GPS)", desc: "Powers UV index, altitude & route tracking", icon: MapPin },
   { key: "motion", label: "Motion / Accelerometer", desc: "Powers step counting & activity", icon: Activity },
   { key: "mic", label: "Microphone", desc: "Powers the hearing self-test & voice tools", icon: Mic },
   { key: "camera", label: "Camera", desc: "Powers heart rate & SpO2 (finger PPG)", icon: Camera },
+  { key: "barometer", label: "Barometer / Pressure", desc: "Powers altitude & weather-pressure tracking", icon: Gauge },
   { key: "notifications", label: "Notifications", desc: "Reminders for water, medicine & breaks", icon: Bell },
 ];
 
@@ -35,6 +36,17 @@ function save(state: Record<string, boolean>) {
 function DevicesPage() {
   const [state, setState] = useState<Record<string, boolean>>({});
   useEffect(() => setState(load()), []);
+
+  const googleFitClientId = import.meta.env.VITE_GOOGLE_FIT_CLIENT_ID as string | undefined;
+  const connectGoogleFit = () => {
+    if (!googleFitClientId) return;
+    const scope = "https://www.googleapis.com/auth/fitness.activity.read https://www.googleapis.com/auth/fitness.heart_rate.read";
+    const redirect = `${window.location.origin}/dashboard/devices`;
+    const url =
+      `https://accounts.google.com/o/oauth2/v2/auth?client_id=${encodeURIComponent(googleFitClientId)}` +
+      `&redirect_uri=${encodeURIComponent(redirect)}&response_type=token&scope=${encodeURIComponent(scope)}&include_granted_scopes=true`;
+    window.location.href = url;
+  };
 
   const setKey = (key: string, val: boolean) => {
     const next = { ...state, [key]: val };
@@ -53,6 +65,9 @@ function DevicesPage() {
         const s = await navigator.mediaDevices.getUserMedia({ video: true }); s.getTracks().forEach((t) => t.stop());
       } else if (key === "notifications") {
         const p = await Notification.requestPermission(); if (p !== "granted") throw new Error("denied");
+      } else if (key === "barometer") {
+        const hasBaro = typeof window !== "undefined" && "Barometer" in window;
+        if (!hasBaro) { toast.info("No barometer detected — altitude uses GPS instead."); }
       } else if (key === "motion") {
         const D = (window as unknown as { DeviceMotionEvent?: { requestPermission?: () => Promise<string> } }).DeviceMotionEvent;
         if (D?.requestPermission) { const p = await D.requestPermission(); if (p !== "granted") throw new Error("denied"); }
@@ -136,10 +151,19 @@ function DevicesPage() {
                   <p className="text-sm text-muted-foreground">Import activity, steps & heart data</p>
                 </div>
               </div>
-              <div className="mt-4 rounded-xl border border-warning/30 bg-warning/5 p-3 text-sm text-muted-foreground">
-                Google Fit connection requires a Google OAuth client ID to be configured for Nirogi. Once set up, you'll be able to connect your account here and pull your fitness history.
-              </div>
-              <Button disabled className="mt-4 w-full">Connect (setup required)</Button>
+              {googleFitClientId ? (
+                <>
+                  <p className="mt-4 text-sm text-muted-foreground">Connect your Google account to pull your fitness history into Nirogi.</p>
+                  <Button className="mt-4 w-full" onClick={connectGoogleFit}>Connect Google Fit</Button>
+                </>
+              ) : (
+                <>
+                  <div className="mt-4 rounded-xl border border-warning/30 bg-warning/5 p-3 text-sm text-muted-foreground">
+                    Google Fit connection requires a Google OAuth client ID to be configured for Nirogi. Once set up, you'll be able to connect your account here and pull your fitness history.
+                  </div>
+                  <Button disabled className="mt-4 w-full">Connect (setup required)</Button>
+                </>
+              )}
             </div>
           </TabsContent>
         </Tabs>

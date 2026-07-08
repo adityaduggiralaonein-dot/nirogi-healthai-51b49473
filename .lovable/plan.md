@@ -1,71 +1,71 @@
-# Complete & fix the dashboard module pages
+# Fix navigation + complete priorities 6 → 5 → 3 → 7 → 4 (+8) in one shipment
 
-## What I found (important)
+## The real navigation bug (root cause)
 
-Most of the pages you listed **are already built and wired up** — they open as their own pages with a back arrow, a 7‑day Recharts trend, a "Data source" line, manual logging, and an AI insight box:
+`/dashboard` has child routes (`dashboard.uv`, `dashboard.stress`, `dashboard.glucose`, `dashboard.temperature`, `dashboard.bone-health`, `dashboard.bio-age`, `dashboard.energy`, `dashboard.eye-strain`, `dashboard.hearing`, `dashboard.oxygen`, `dashboard.altitude`, `dashboard.menstrual`, `dashboard.devices`). That makes `dashboard.tsx` a **layout route**, but it renders the full hub with **no `<Outlet />**`. So navigating to `/dashboard/uv` matches the child, but the parent has nowhere to render it — the hub just re-renders, which looks like it "bounces back up."
 
-- Built & registered: `stress`, `glucose`, `temperature`, `bone-health`, `bio-age`, `energy`, `weight`, `oxygen` (SpO2, with real camera PPG), `uv` (real GPS + Open‑Meteo), `hearing`, `eye-strain`, `devices`, plus `sense-check`.
+Fitness/Water/Heart-rate/Sleep "work" only because they `throw redirect` to routes *outside* `/dashboard`, so they leave the layout entirely.
 
-So why do they look "not built" to you: **you're stuck on `/auth`.** Every module lives under the `_authenticated` guard, so if sign‑in doesn't complete, each page just bounces back to `/auth` and looks empty. There's also a **hydration crash on the `/auth` page itself** that can break the sign‑in screen. That's the real blocker — not missing pages.
+**Fix:** Split the hub out of the layout (standard TanStack pattern):
 
-There are also genuine gaps vs. the Word doc, which I'll close.
+- Create `src/routes/_authenticated/dashboard.index.tsx` = the current hub UI (moved verbatim).
+- Reduce `src/routes/_authenticated/dashboard.tsx` to a layout that renders only `<Outlet />`.
 
-## Plan
+This single change makes every in-place module page open correctly. I'll verify with a Playwright signed-in pass over uv, stress, glucose, energy, eye-strain, oxygen.
 
-### 1. Fix the access blocker (do this first)
+## Priority interpretation (from your approved plan numbering)
 
-- Fix the `/auth` hydration mismatch (server renders a Suspense boundary, client renders the page) by rendering the auth screen client‑only (`ssr: false` on the `/auth` route). This restores a working sign‑in screen.
-- After that, sign in and click through every module card to confirm each page loads (verify with a browser pass), fixing any page that errors.
+P6 = AI Doctor Avatars · P5 = PWA logo + intro animation · P3 = Connected Devices · P7 = Family Google sign-in · P4 = Health Score + prescription approval · P8 = delete skin-scan images. If any number means something else, tell me and I'll adjust — otherwise I build in the order 6 → 5 → 3 → 7 → 4, then 8.
 
-### 2. Align routes to the doc's paths
+## Priority 6 — AI Doctor Avatar Consultation System (first version)
 
-The doc specifies exact routes. I'll make these resolve (add the spec path as the canonical route, keep the old one redirecting so nothing breaks):
+DB tables already exist (`doctor_chats`, `doctor_messages`, `user_credits`, `credit_transactions`). Build the app on top:
 
-- `/dashboard/oxygen` → `**/dashboard/spo2**`
-- `/dashboard/uv` → `**/dashboard/uv-exposure**`
-- `/dashboard/hearing` → `**/dashboard/hearing-health**`
-- Add dashboard entries/links for the existing trackers so they're reachable from the hub at the doc paths: Sleep (`/dashboard/sleep`), Fitness (`/dashboard/fitness`), Water (`/dashboard/water`), Heart Rate (`/dashboard/heart-rate`) — these exist today as top‑level routes (`/sleep-tracker`, etc.); I'll expose them under `/dashboard/*` per the spec.
+- `src/lib/doctors.ts` — the 12 doctor profiles (name, specialty, bio, conditions, connected tools, accent, ElevenLabs voice id, per-doctor system prompt).
+- Generate 12 stylized doctor portrait images (`src/assets/doctors/`) for cards and the profile header. 3D: render a Ready Player Me GLB via `@react-three/fiber` + `@react-three/drei` **client-only** on the doctor page, with the portrait as fallback (keeps SSR safe and credits low).
+- Dashboard "My Doctors" horizontal swipe row (Framer Motion), added to `dashboard.index.tsx` under the trackers; online dot + rating.
+- `src/routes/_authenticated/doctors.$id.tsx` — profile page: avatar, bio, connected tools, credit pill, Start Chat / Voice Call, recent history.
+- `src/lib/doctor.functions.ts` + `doctor.server.ts` — `sendDoctorMessage` (Lovable AI Gateway with the doctor's system prompt + injected profile/tool context, persists messages, deducts 2 credits), `startCall`/`speakLine` (ElevenLabs TTS server-side via `ELEVENLABS_API_KEY`, 5 credits/min), `getCredits`, `earnCredits` (50 on profile complete).
+- Voice: Web Speech API (STT) client-side; ElevenLabs audio played back; simple mouth/idle animation. Credit pill in the doctor page header; graceful "earn more" modal at 0 credits — never a hard paywall.
 
-### 3. Build the two pages that are actually missing
+## Priority 5 — PWA logo + intro animation
 
-- `**/dashboard/altitude**` — barometric pressure via Generic Sensor API with GPS‑altitude fallback, altitude‑sickness alert >2500m, 7‑day history, manual log, data source, AI insight.
-- `**/dashboard/menstrual**` — only shown for users who select Female / Prefer‑not‑to‑say or opt in; cycle start, duration, flow, symptoms, predicted next period & fertile window, cycle‑length trend, AI insight.
+- Use the uploaded logo (`ChatGPT_Image_Jul_7_2026...png`): regenerate `public/icons/nirogi-512.png` (192/512 + maskable) and `apple-touch-icon`; keep manifest metadata.
+- Framer Motion launch/splash overlay on first mount (logo heartbeat → fade), shown once per session.
+- Apply consistent Framer Motion entrance to dashboard sections (reuse existing `Reveal`).
 
-### 4. Deepen the pages you named to full Section‑3 spec
+## Priority 3 — Connected Devices
 
-Bring these up to exactly what the doc describes (keeping the shared ModuleLayout / TrendCard / AiResultPanel / disclaimer pattern):
+Bring `dashboard.devices.tsx` to spec: Phone Sensors tab (GPS, Accelerometer, Mic, Camera, Barometer, Notifications — live permission/status, persisted to `nirogi_devices_config`), Android Health Connect tab (best-effort "install Nirogi Sync" guidance + status), Google Fit tab (implicit OAuth via `VITE_GOOGLE_FIT_CLIENT_ID`, best-effort until a client id is provided) — each with clear connection status.
 
-- **Stress & Mental Health** — add the built‑in 4‑7‑8 breathing guide inline, 7‑day mood calendar with colour coding, Page‑Visibility screen‑time proxy (already has mood check‑in + journal + AI).
-- **Blood Glucose** — colour‑code readings by fasting (<100 / 100‑125 / >126) and post‑meal (<140) thresholds, fasting‑vs‑post‑meal pattern, estimated HbA1c from average, 14‑day trend.
-- **Weight & BMI** — BMI ring with category colour, target‑weight goal + progress bar + estimated date, 30‑day trend, body‑composition slots if provided.
-- **Blood Oxygen (SpO2)** — keep camera PPG; add colour bands (95‑100 green / 90‑94 yellow / <90 red) and altitude note.
-- **Eye Strain** — Page‑Visibility screen‑time estimate + 20‑20‑20 reminder toggle + tips + link to SenseCheck vision test.
-- **Energy & Recovery** — 14‑day trend + recommended activity level + recovery advice (already computes the composite score).
-- **Bio‑Age**, **UV**, **Hearing**, **Bone & Joint**, **Temperature**, **Energy** — confirm each has back arrow, real data source, 7‑day trend, manual log, AI insight, and the empty‑state message "No data yet…" (no hardcoded fake numbers).
+## Priority 7 — Family Google sign-in (remaining 50%)
 
-### 5. General spec compliance pass (all module pages)
+Invite accept flow (`invite.$token.tsx`) already exists. Complete: in `FamilySection`, "Invite via Google" generates a shareable `/invite/$token` link with copy/share; ensure invited members appear with their profile after accepting; add member switching wired to `useActiveMember` so each family member's profile/data is scoped; revoke/remove controls. Verify token verification + add-to-family end to end.
 
-- Back arrow to `/dashboard` ✓ (already in ModuleLayout)
-- "Data source" section ✓
-- 7‑day Recharts trend ✓
-- "Log manually" ✓
-- AI insight from Lovable AI based on recent data ✓
-- No mock data; show "No data yet. Enable a data source below or log manually." for empty states.
+## Priority 4 — Health Score + prescription approval
+
+- Rework `HealthScoreCard` to the pillar model (Physical / Hydration / Sleep / Personal-OS) from cross-module `local-health` aggregates.
+- Prescription approval: after `analyzePrescription`, return a structured medicine list; dashboard shows each medicine with an "Add as reminder" confirm step before writing to `medicine_reminders`; add "Clear prescription" to wipe stored analysis and re-upload.
+
+## Priority 8 — Delete skin-scan images immediately
+
+In the SkinScan path, ensure the uploaded image is used only for the single AI call and never persisted — clear the in-memory data URL right after the result returns, and confirm no storage upload/DB write of the image occurs.
+
+## Notes on scope & credits
+
+- All sensor/measurement data stays in `localStorage`; only summarized numbers go to Lovable AI.
+- Reuse `ModuleLayout`, `TrendCard`, `AiResultPanel`, `ClinicalDisclaimer`, `Reveal`, i18n `t()` — no new patterns.
+- `routeTree.gen.ts` is auto-generated; I won't hand-edit it.
+- P6 is genuinely large (12 doctors, 3D, voice, credits). I'll ship a working first version; deep polish (full viseme lip-sync, streaming duplex audio) can follow. Everything else lands complete in this shipment.
 
 ## Order of work
 
-1. Auth hydration fix (unblocks everything) → verify sign‑in.
-2. Route alignment + dashboard hub links.
-3. Missing pages: altitude, menstrual.
-4. Deepen the named pages to full spec.
-5. Browser verification pass over every module page.
-
-## Technical notes
-
-- All sensor/measurement data stays in `localStorage` (per‑module keys via `local-health.ts`); only summarised numbers go to Lovable AI. This matches the doc's localStorage‑key model (`nirogi_sleep_logs`, `nirogi_fitness_logs`, `nirogi_water_logs`, etc.) — I'll standardise the keys to the doc's names where they're referenced.
-- Reuse existing `ModuleLayout`, `TrendCard`, `AiResultPanel`, `ClinicalDisclaimer`, and i18n.
-- `routeTree.gen.ts` is auto‑generated — I won't hand‑edit it; new/renamed route files regenerate it.
-
-After this, everything under Priorities 1 & 2 opens as its own working page and behaves as the doc's Section 3 requires. Priorities 6 → 5 → 3 follow in the order you specified.
-
-**Note:** since the pages largely exist, most of this is a fix‑and‑complete pass rather than a from‑scratch rebuild — that's faster and avoids throwing away working code. If you'd rather I hard‑rebuild specific pages regardless, tell me which. Also after signning in those pages are not opening and it is getting redirected upwards like auth as you mentioned. so please fix those issues and those pages should load.  Also the image is uploaded for priority 5.
+1. Navigation Outlet fix → Playwright verify module pages open.
+2. P6 doctors → P5 logo/intro → P3 devices → P7 family → P4 score/prescription → P8 skin images.
+3. Final signed-in Playwright smoke pass across new pages. 
+  **NOTE ;**
+  1. Complete all the work in single shipment and today.
+  2.  fix all the bugs and the pages should open in health module
+  3.  Remaining work should be completed today itself in this shipment. 
+  4.  No work should be left incomplete. 
+  5. Try to minimise credits and use it efficiently.
