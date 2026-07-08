@@ -37,6 +37,17 @@ function DevicesPage() {
   const [state, setState] = useState<Record<string, boolean>>({});
   useEffect(() => setState(load()), []);
 
+  const googleFitClientId = import.meta.env.VITE_GOOGLE_FIT_CLIENT_ID as string | undefined;
+  const connectGoogleFit = () => {
+    if (!googleFitClientId) return;
+    const scope = "https://www.googleapis.com/auth/fitness.activity.read https://www.googleapis.com/auth/fitness.heart_rate.read";
+    const redirect = `${window.location.origin}/dashboard/devices`;
+    const url =
+      `https://accounts.google.com/o/oauth2/v2/auth?client_id=${encodeURIComponent(googleFitClientId)}` +
+      `&redirect_uri=${encodeURIComponent(redirect)}&response_type=token&scope=${encodeURIComponent(scope)}&include_granted_scopes=true`;
+    window.location.href = url;
+  };
+
   const setKey = (key: string, val: boolean) => {
     const next = { ...state, [key]: val };
     setState(next);
