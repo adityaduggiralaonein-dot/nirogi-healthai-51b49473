@@ -27,7 +27,9 @@ import { Route as AuthenticatedExerciseTrackerRouteImport } from './routes/_auth
 import { Route as AuthenticatedDietPlanRouteImport } from './routes/_authenticated/diet-plan'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedBreatheRouteImport } from './routes/_authenticated/breathe'
+import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authenticated/dashboard.index'
 import { Route as AuthenticatedToolsToolRouteImport } from './routes/_authenticated/tools/$tool'
+import { Route as AuthenticatedDoctorsIdRouteImport } from './routes/_authenticated/doctors.$id'
 import { Route as AuthenticatedDashboardWeightRouteImport } from './routes/_authenticated/dashboard.weight'
 import { Route as AuthenticatedDashboardWaterRouteImport } from './routes/_authenticated/dashboard.water'
 import { Route as AuthenticatedDashboardUvExposureRouteImport } from './routes/_authenticated/dashboard.uv-exposure'
@@ -143,9 +145,20 @@ const AuthenticatedBreatheRoute = AuthenticatedBreatheRouteImport.update({
   path: '/breathe',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedDashboardIndexRoute =
+  AuthenticatedDashboardIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
 const AuthenticatedToolsToolRoute = AuthenticatedToolsToolRouteImport.update({
   id: '/tools/$tool',
   path: '/tools/$tool',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedDoctorsIdRoute = AuthenticatedDoctorsIdRouteImport.update({
+  id: '/doctors/$id',
+  path: '/doctors/$id',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedDashboardWeightRoute =
@@ -314,7 +327,9 @@ export interface FileRoutesByFullPath {
   '/dashboard/uv-exposure': typeof AuthenticatedDashboardUvExposureRoute
   '/dashboard/water': typeof AuthenticatedDashboardWaterRoute
   '/dashboard/weight': typeof AuthenticatedDashboardWeightRoute
+  '/doctors/$id': typeof AuthenticatedDoctorsIdRoute
   '/tools/$tool': typeof AuthenticatedToolsToolRoute
+  '/dashboard/': typeof AuthenticatedDashboardIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -324,7 +339,6 @@ export interface FileRoutesByTo {
   '/sos': typeof SosRoute
   '/terms': typeof TermsRoute
   '/breathe': typeof AuthenticatedBreatheRoute
-  '/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/diet-plan': typeof AuthenticatedDietPlanRoute
   '/exercise-tracker': typeof AuthenticatedExerciseTrackerRoute
   '/goals': typeof AuthenticatedGoalsRoute
@@ -355,7 +369,9 @@ export interface FileRoutesByTo {
   '/dashboard/uv-exposure': typeof AuthenticatedDashboardUvExposureRoute
   '/dashboard/water': typeof AuthenticatedDashboardWaterRoute
   '/dashboard/weight': typeof AuthenticatedDashboardWeightRoute
+  '/doctors/$id': typeof AuthenticatedDoctorsIdRoute
   '/tools/$tool': typeof AuthenticatedToolsToolRoute
+  '/dashboard': typeof AuthenticatedDashboardIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -398,7 +414,9 @@ export interface FileRoutesById {
   '/_authenticated/dashboard/uv-exposure': typeof AuthenticatedDashboardUvExposureRoute
   '/_authenticated/dashboard/water': typeof AuthenticatedDashboardWaterRoute
   '/_authenticated/dashboard/weight': typeof AuthenticatedDashboardWeightRoute
+  '/_authenticated/doctors/$id': typeof AuthenticatedDoctorsIdRoute
   '/_authenticated/tools/$tool': typeof AuthenticatedToolsToolRoute
+  '/_authenticated/dashboard/': typeof AuthenticatedDashboardIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -441,7 +459,9 @@ export interface FileRouteTypes {
     | '/dashboard/uv-exposure'
     | '/dashboard/water'
     | '/dashboard/weight'
+    | '/doctors/$id'
     | '/tools/$tool'
+    | '/dashboard/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -451,7 +471,6 @@ export interface FileRouteTypes {
     | '/sos'
     | '/terms'
     | '/breathe'
-    | '/dashboard'
     | '/diet-plan'
     | '/exercise-tracker'
     | '/goals'
@@ -482,7 +501,9 @@ export interface FileRouteTypes {
     | '/dashboard/uv-exposure'
     | '/dashboard/water'
     | '/dashboard/weight'
+    | '/doctors/$id'
     | '/tools/$tool'
+    | '/dashboard'
   id:
     | '__root__'
     | '/'
@@ -524,7 +545,9 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard/uv-exposure'
     | '/_authenticated/dashboard/water'
     | '/_authenticated/dashboard/weight'
+    | '/_authenticated/doctors/$id'
     | '/_authenticated/tools/$tool'
+    | '/_authenticated/dashboard/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -666,11 +689,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedBreatheRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/dashboard/': {
+      id: '/_authenticated/dashboard/'
+      path: '/'
+      fullPath: '/dashboard/'
+      preLoaderRoute: typeof AuthenticatedDashboardIndexRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
     '/_authenticated/tools/$tool': {
       id: '/_authenticated/tools/$tool'
       path: '/tools/$tool'
       fullPath: '/tools/$tool'
       preLoaderRoute: typeof AuthenticatedToolsToolRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/doctors/$id': {
+      id: '/_authenticated/doctors/$id'
+      path: '/doctors/$id'
+      fullPath: '/doctors/$id'
+      preLoaderRoute: typeof AuthenticatedDoctorsIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/dashboard/weight': {
@@ -845,6 +882,7 @@ interface AuthenticatedDashboardRouteChildren {
   AuthenticatedDashboardUvExposureRoute: typeof AuthenticatedDashboardUvExposureRoute
   AuthenticatedDashboardWaterRoute: typeof AuthenticatedDashboardWaterRoute
   AuthenticatedDashboardWeightRoute: typeof AuthenticatedDashboardWeightRoute
+  AuthenticatedDashboardIndexRoute: typeof AuthenticatedDashboardIndexRoute
 }
 
 const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
@@ -874,6 +912,7 @@ const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
       AuthenticatedDashboardUvExposureRoute,
     AuthenticatedDashboardWaterRoute: AuthenticatedDashboardWaterRoute,
     AuthenticatedDashboardWeightRoute: AuthenticatedDashboardWeightRoute,
+    AuthenticatedDashboardIndexRoute: AuthenticatedDashboardIndexRoute,
   }
 
 const AuthenticatedDashboardRouteWithChildren =
@@ -892,6 +931,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedSenseCheckRoute: typeof AuthenticatedSenseCheckRoute
   AuthenticatedSleepTrackerRoute: typeof AuthenticatedSleepTrackerRoute
   AuthenticatedWaterTrackerRoute: typeof AuthenticatedWaterTrackerRoute
+  AuthenticatedDoctorsIdRoute: typeof AuthenticatedDoctorsIdRoute
   AuthenticatedToolsToolRoute: typeof AuthenticatedToolsToolRoute
 }
 
@@ -906,6 +946,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedSenseCheckRoute: AuthenticatedSenseCheckRoute,
   AuthenticatedSleepTrackerRoute: AuthenticatedSleepTrackerRoute,
   AuthenticatedWaterTrackerRoute: AuthenticatedWaterTrackerRoute,
+  AuthenticatedDoctorsIdRoute: AuthenticatedDoctorsIdRoute,
   AuthenticatedToolsToolRoute: AuthenticatedToolsToolRoute,
 }
 
@@ -925,13 +966,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

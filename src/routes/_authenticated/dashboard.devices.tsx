@@ -13,14 +13,15 @@ export const Route = createFileRoute("/_authenticated/dashboard/devices")({
   component: DevicesPage,
 });
 
-const STORAGE = "nirogi_devices";
-type SensorKey = "gps" | "motion" | "mic" | "camera" | "notifications";
+const STORAGE = "nirogi_devices_config";
+type SensorKey = "gps" | "motion" | "mic" | "camera" | "barometer" | "notifications";
 
 const SENSORS: { key: SensorKey; label: string; desc: string; icon: typeof MapPin }[] = [
   { key: "gps", label: "Location (GPS)", desc: "Powers UV index, altitude & route tracking", icon: MapPin },
   { key: "motion", label: "Motion / Accelerometer", desc: "Powers step counting & activity", icon: Activity },
   { key: "mic", label: "Microphone", desc: "Powers the hearing self-test & voice tools", icon: Mic },
   { key: "camera", label: "Camera", desc: "Powers heart rate & SpO2 (finger PPG)", icon: Camera },
+  { key: "barometer", label: "Barometer / Pressure", desc: "Powers altitude & weather-pressure tracking", icon: Gauge },
   { key: "notifications", label: "Notifications", desc: "Reminders for water, medicine & breaks", icon: Bell },
 ];
 
@@ -53,6 +54,9 @@ function DevicesPage() {
         const s = await navigator.mediaDevices.getUserMedia({ video: true }); s.getTracks().forEach((t) => t.stop());
       } else if (key === "notifications") {
         const p = await Notification.requestPermission(); if (p !== "granted") throw new Error("denied");
+      } else if (key === "barometer") {
+        const hasBaro = typeof window !== "undefined" && "Barometer" in window;
+        if (!hasBaro) { toast.info("No barometer detected — altitude uses GPS instead."); }
       } else if (key === "motion") {
         const D = (window as unknown as { DeviceMotionEvent?: { requestPermission?: () => Promise<string> } }).DeviceMotionEvent;
         if (D?.requestPermission) { const p = await D.requestPermission(); if (p !== "granted") throw new Error("denied"); }
